@@ -1,0 +1,13 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="avatarTitle avatarDesc">
+  <title id="avatarTitle">Avatar de membre du BDE</title>
+  <desc id="avatarDesc">Silhouette circulaire minimaliste utilisée comme image temporaire.</desc>
+  <defs>
+    <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe492" />
+      <stop offset="100%" stop-color="#CC3533" />
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="url(#avatarGrad)" />
+  <circle cx="100" cy="76" r="36" fill="#ffffff" opacity="0.9" />
+  <path d="M50 154c8-34 36-52 50-52s42 18 50 52" fill="#ffffff" opacity="0.9" stroke="#ffffff" stroke-width="8" stroke-linecap="round" />
+</svg>
