@@ -1,0 +1,21 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Équipe du BDE</title>
+  <desc id="desc">Illustration abstraite représentant une équipe soudée.</desc>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#CC3533" />
+      <stop offset="100%" stop-color="#f8cf0e" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#grad)" rx="32" />
+  <g fill="#ffffff" opacity="0.85">
+    <circle cx="160" cy="360" r="80" />
+    <circle cx="320" cy="260" r="70" />
+    <circle cx="480" cy="340" r="90" />
+    <circle cx="640" cy="240" r="75" />
+    <rect x="140" y="420" width="120" height="110" rx="20" />
+    <rect x="280" y="320" width="140" height="130" rx="28" />
+    <rect x="440" y="400" width="160" height="130" rx="28" />
+    <rect x="600" y="320" width="140" height="140" rx="28" />
+  </g>
+</svg>
