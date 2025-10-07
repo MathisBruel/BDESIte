@@ -273,57 +273,141 @@ p {
 
 /* Buttons */
 .btn {
+  --btn-bg: linear-gradient(135deg, var(--color-red) 0%, var(--color-yellow) 100%);
+  --btn-color: var(--color-white);
+  --btn-border: transparent;
+  --btn-overlay: linear-gradient(120deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 55%);
+  --btn-glow: 0 18px 36px rgba(204, 53, 51, 0.25);
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.4rem;
+  padding: 0.9rem 1.8rem;
   font-family: 'Chunk Five', 'League Spartan', sans-serif;
-  letter-spacing: 0.04em;
-  padding: 0.85rem 1.6rem;
-  border-radius: 999px;
+  font-size: clamp(0.9rem, 0.5vw + 0.75rem, 1.05rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   text-decoration: none;
-  border: 2px solid transparent;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+  border-radius: 999px;
+  border: 2px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  box-shadow: var(--shadow-card);
+  isolation: isolate;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, color 0.35s ease, border-color 0.35s ease, background 0.35s ease;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-yellow) 100%);
-  color: var(--color-white);
+.btn::before,
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.btn::before {
+  background: var(--btn-overlay);
+  opacity: 0;
+  transform: translate3d(-35%, 0, 0) skewX(-12deg);
+  mix-blend-mode: screen;
+}
+
+.btn::after {
+  background: radial-gradient(circle at 20% -20%, rgba(255, 255, 255, 0.6) 0%, transparent 60%);
+  opacity: 0;
+  transform: translate3d(0, -45%, 0);
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--btn-glow);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) skewX(0deg);
+}
+
+.btn:hover::after,
+.btn:focus-visible::after {
+  opacity: 0.75;
+  transform: translate3d(0, 0, 0);
+}
+
+.btn:active {
+  transform: translateY(0);
   box-shadow: var(--shadow-card);
 }
 
-.btn-primary:hover,
-.btn-primary:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 32px rgba(204, 53, 51, 0.25);
+.btn-primary {
+  --btn-bg: linear-gradient(135deg, var(--color-red) 0%, var(--color-yellow) 100%);
+  --btn-border: transparent;
+  animation: cta-pulse 6s ease-in-out infinite;
 }
 
 .btn-secondary {
-  background: var(--color-white);
-  color: var(--color-red);
-  border-color: var(--color-red);
+  --btn-bg: linear-gradient(135deg, var(--color-white) 0%, var(--color-yellow-light) 100%);
+  --btn-color: var(--color-red);
+  --btn-border: var(--color-red);
+  --btn-overlay: linear-gradient(120deg, rgba(204, 53, 51, 0.12) 0%, rgba(248, 207, 14, 0.2) 65%);
+  --btn-glow: 0 18px 28px rgba(248, 207, 14, 0.35);
 }
 
 .btn-secondary:hover,
 .btn-secondary:focus-visible {
-  background: var(--color-red);
-  color: var(--color-white);
+  --btn-color: var(--color-white);
+  --btn-bg: linear-gradient(135deg, var(--color-red) 0%, var(--color-yellow) 100%);
 }
 
 .btn-outline {
-  background: transparent;
-  border-color: var(--color-black);
-  color: var(--color-black);
+  --btn-bg: transparent;
+  --btn-color: var(--color-black);
+  --btn-border: var(--color-black);
+  --btn-overlay: linear-gradient(120deg, rgba(204, 53, 51, 0.15) 0%, rgba(0, 0, 0, 0.08) 70%);
+  --btn-glow: 0 18px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .btn-outline:hover,
 .btn-outline:focus-visible {
-  background: var(--color-black);
-  color: var(--color-white);
+  --btn-bg: var(--color-black);
+  --btn-color: var(--color-white);
+  --btn-border: var(--color-black);
+  --btn-overlay: linear-gradient(120deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+  --btn-glow: 0 18px 32px rgba(0, 0, 0, 0.35);
 }
 
 .btn:focus-visible {
   outline: 3px solid var(--color-yellow);
   outline-offset: 4px;
+}
+
+@keyframes cta-pulse {
+  0%,
+  100% {
+    box-shadow: var(--shadow-card);
+  }
+  50% {
+    box-shadow: 0 22px 40px rgba(204, 53, 51, 0.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn::before,
+  .btn::after {
+    transition: none;
+  }
+
+  .btn {
+    animation: none;
+  }
 }
 
 /* Hero */
