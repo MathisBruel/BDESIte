@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Mathis BRUEL",
+    "role": "Président",
+    "photo": "/images/team/mathis.png",
+    "photoPosition": "top",
+    "links": {
+      "instagram": "https://instagram.com/mathis_bruel",
+      "linkedin": "https://linkedin.com/in/mathis-bruel"
+    }
+  },
+  {
+    "name": "Solenn COULON",
+    "role": "Trésorière",
+    "photo": "/images/team/solenn.png",
+    "photoPosition": "top",
+    "links": {
+      "instagram": "https://instagram.com/solenn_cln"
+    }
+  },
+  {
+    "name": "Lucien GUIBOUT",
+    "role": "Vice-Président",
+    "photo": "/images/team/lucien.png",
+    "photoPosition": "top",
+    "links": {
+      "instagram": "https://instagram.com/lucien_guibout"
+    }
+  },
+  {
+    "name": "Titouan LE BRUN A VALI PATEL",
+    "role": "Vice-Trésorier",
+    "photo": "/images/team/titouan.png",
+    "photoPosition": "top",
+    "links": {
+      "instagram": "https://instagram.com/titouan_lebrun"
+    }
+  },
+  {
+    "name": "Ivin HERNIO",
+    "role": "Responsable Événementiel",
+    "photo": "/images/team/ivin.png",
+    "photoPosition": "top",
+    "links": {
+      "instagram": "https://instagram.com/ivin_hernio"
+    }
+  },
+  {
+    "name": "Coline Treille",
+    "role": "Responsable Communication",
+    "photo": "/images/team/coline.png",
+    "photoPosition": "top",
+    "links": {
+      "instagram": "https://instagram.com/coline_treille"
+    }
+  },
+  {
+    "name": "Yoann RENAT",
+    "role": "Chargé Partenariat",
+    "photo": "/images/team/yoann.png",
+    "photoPosition": "top",
+    "links": {
+      "instagram": "https://instagram.com/yoann_renat"
+    }
+  }
+]
+

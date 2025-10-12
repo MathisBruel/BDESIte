@@ -1,0 +1,64 @@
+[
+  {
+    "id": "efs",
+    "name": "EFS - Établissement Français du Sang",
+    "category": "sante",
+    "city": "Rennes",
+    "advantages": [
+      "Organisation de collectes de sang sur le campus",
+      "Sensibilisation au don du sang",
+      "Possibilité de collecte à SDV (minimum 100 dons)"
+    ],
+    "conditions": "Réservation de créneau à prévoir 2-3 semaines à l'avance",
+    "active": false
+  },
+  {
+    "id": "monsieur-le-zinc",
+    "name": "Monsieur le Zinc",
+    "category": "bar",
+    "city": "Rennes",
+    "logo": "/images/partners/MrZinc.png",
+    "advantages": [
+      "Prix happy hour toute l'année sur Embuscade, Punch, Pinte blonde 'Le Zinc' et Limonade"
+    ],
+    "conditions": "Tarifs réservés aux porteurs de la carte BDE 2025-2026",
+    "website": "https://www.monsieur-lezinc.com/rennes-michel",
+    "address": "12 Rue Saint-Michel, 35000 Rennes",
+    "active": true
+  },
+  {
+    "id": "vandb-rennes",
+    "name": "V&B Rennes (3 boutiques)",
+    "category": "bar",
+    "city": "Rennes",
+    "logo": "/images/partners/v&b.png",
+    "address": "1 Rue de la Sauvaie, 35200 Rennes",
+    "website": "https://www.vandb.fr/",
+    "advantages": [
+      "Toute l’année, -1€ sur une sélection des deux premières bières blondes",
+      "50cl de Kasteel Rouge : 6€",
+      "50cl de Pils : 4€",
+      "50cl de Punch / Embuscade : 4€",
+      "Saucisson : 4€",
+      "Softs (canettes de sodas, Coca, Orangina, etc.) : 2€"
+    ],
+    "conditions": "Tarifs réservés aux porteurs de la carte BDE 2025-2026",
+    "active": true
+  },
+  {
+    "id": "boulangerie-ange",
+    "name": "Boulangerie Ange (3 boutiques)",
+    "category": "alimentaire",
+    "city": "Rennes",
+    "logo": "/images/partners/ange.png",
+    "address": "BOULANGERIE ANGE, 171 Rue de Châteaugiron, 35000 Rennes",
+    "website": "https://www.boulangerie-ange.fr/stores/boulangerie-ange-rennes-chateaugiron/?utm_source=google&utm_medium=organic&utm_campaign=mybusiness-website",
+    "advantages": [
+      "-10% sur le montant total",
+      "Priorité sur les grosses réservations"
+    ],
+    "conditions": "Valable dans les 3 boutiques Ange de Rennes, toute l'année 2025-2026 sous présentation de la carte BDE",
+    "active": true
+  }
+]
+
