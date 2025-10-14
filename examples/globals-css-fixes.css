@@ -1,3 +1,14 @@
+/**
+ * EXAMPLE: Required CSS changes for scroll flickering fix
+ * 
+ * Add these changes to app/globals.css to prevent scroll flickering
+ * on Windows browsers.
+ * 
+ * The issue: CSS smooth-scroll and JavaScript scrollTo() conflict
+ * Solution: Temporarily disable CSS smooth-scroll during JS scrolling
+ */
+
+/* ===== EXISTING CODE ===== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,18 +22,20 @@
     @apply bg-white text-brand-black font-merriweather antialiased;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-spartan;
   }
 
   html {
     scroll-behavior: smooth;
-    -webkit-scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth; /* ✅ ADD: Safari support */
+  }
+  
+  /* ✅ NEW: Disable CSS smooth scroll when JavaScript is handling it */
+  /* This prevents double-smoothing that causes flickering on Windows */
+  html.js-scrolling {
+    scroll-behavior: auto;
+    -webkit-scroll-behavior: auto;
   }
   
   /* Hardware acceleration for better animation performance on Windows */
@@ -34,6 +47,7 @@
   }
 }
 
+/* ===== EXISTING UTILITIES ===== */
 @layer utilities {
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -62,30 +76,18 @@
   }
 
   @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
   @-webkit-keyframes spin {
-    from {
-      -webkit-transform: rotate(0deg);
-    }
-    to {
-      -webkit-transform: rotate(360deg);
-    }
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
   }
 
   @-moz-keyframes spin {
-    from {
-      -moz-transform: rotate(0deg);
-    }
-    to {
-      -moz-transform: rotate(360deg);
-    }
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
   }
 
   .animate-fade-in {
@@ -133,6 +135,7 @@
     }
   }
 
+  /* ===== DELAY CLASSES ===== */
   .delay-100 {
     animation-delay: 0.1s;
     -webkit-animation-delay: 0.1s;
@@ -151,7 +154,7 @@
     -moz-animation-delay: 0.3s;
   }
 
-  /* Hardware acceleration utility classes */
+  /* ===== HARDWARE ACCELERATION UTILITIES ===== */
   .gpu-accelerated {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -170,5 +173,55 @@
     -moz-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
     -ms-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
   }
+
+  /* ✅ NEW: Scroll optimization for mobile */
+  @media (max-width: 768px) {
+    html {
+      /* Optimize scroll on mobile devices */
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Reduce animations on mobile for better performance */
+    .animate-pulse,
+    .animate-bounce {
+      animation-duration: 3s; /* Slower on mobile */
+    }
+  }
+
+  /* ✅ NEW: Performance hint for transforms */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .will-change-all {
+    will-change: transform, opacity;
+  }
 }
 
+/**
+ * Key Changes Summary:
+ * 
+ * 1. ✅ Added html.js-scrolling class
+ *    - Disables CSS smooth-scroll during JavaScript scrolling
+ *    - Prevents double-smoothing flicker on Windows
+ * 
+ * 2. ✅ Added -webkit-scroll-behavior
+ *    - Better Safari support
+ * 
+ * 3. ✅ Added mobile optimizations
+ *    - Touch scrolling optimization
+ *    - Slower animations on mobile
+ * 
+ * 4. ✅ Added will-change utilities
+ *    - Better performance hints for browsers
+ *    - Reusable classes for optimization
+ * 
+ * Usage Notes:
+ * - The .js-scrolling class is automatically added/removed by utils/scroll.ts
+ * - No manual class management needed in components
+ * - Works seamlessly with smoothScrollTo() utility
+ */

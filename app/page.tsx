@@ -11,6 +11,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Container } from "@/components/Container";
 import { getUpcomingEvents, getPastEvents, getSettings, getTeamMembers, getActivePartners } from "@/lib/data";
+import { getTransition, getOptimizedSpring, getViewportConfig, hardwareAcceleratedClasses } from "@/utils/animation";
 
 export default function HomePage() {
   const upcomingEvents = getUpcomingEvents(6);
@@ -25,24 +26,24 @@ export default function HomePage() {
       <main>
         <section className="relative bg-grad-secondary min-h-[85vh] flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 left-10 text-9xl animate-pulse">🎉</div>
-            <div className="absolute top-40 right-20 text-7xl animate-bounce delay-100">🎊</div>
-            <div className="absolute bottom-20 left-1/4 text-8xl animate-pulse delay-200">⭐</div>
-            <div className="absolute bottom-40 right-1/3 text-6xl animate-bounce">🔥</div>
+            <div className="absolute top-10 left-10 text-9xl animate-pulse gpu-accelerated">🎉</div>
+            <div className="absolute top-40 right-20 text-7xl animate-bounce delay-100 gpu-accelerated">🎊</div>
+            <div className="absolute bottom-20 left-1/4 text-8xl animate-pulse delay-200 gpu-accelerated">⭐</div>
+            <div className="absolute bottom-40 right-1/3 text-6xl animate-bounce gpu-accelerated">🔥</div>
           </div>
 
           <Container>
             <motion.div
-              className="relative z-10 text-center"
+              className={`relative z-10 text-center ${hardwareAcceleratedClasses}`}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={getTransition(0.8)}
             >
               <motion.div
                 initial={{ scale: 0.5, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.1, type: "spring", stiffness: 100 }}
-                className="mb-6"
+                transition={{ ...getOptimizedSpring(100, 10), delay: 0.1 }}
+                className={`mb-6 ${hardwareAcceleratedClasses}`}
               >
                 <Image
                   src="/images/assets/Logo couleur.png"
@@ -57,7 +58,8 @@ export default function HomePage() {
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={getTransition(0.6, 0.2)}
+                className={hardwareAcceleratedClasses}
               >
                 <Badge variant="yellow" className="text-base px-6 py-2 mb-6 text-brand-black font-bold">
                   ⚡ Année {settings.year} ⚡
@@ -65,37 +67,37 @@ export default function HomePage() {
               </motion.div>
 
               <motion.h1
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold font-spartan text-white mb-6 leading-tight"
+                className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold font-spartan text-white mb-6 leading-tight ${hardwareAcceleratedClasses}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+                transition={getTransition(0.8, 0.3)}
               >
                 BDE Sup&apos;RNova
               </motion.h1>
 
               <motion.p
-                className="text-2xl sm:text-3xl md:text-4xl text-white/95 mb-4 font-bold"
+                className={`text-2xl sm:text-3xl md:text-4xl text-white/95 mb-4 font-bold ${hardwareAcceleratedClasses}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                transition={getTransition(0.8, 0.4)}
               >
                 Ta vie étudiante à 100% ! 🚀
               </motion.p>
 
               <motion.p
-                className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto mb-10"
+                className={`text-lg sm:text-xl text-white/90 max-w-3xl mx-auto mb-10 ${hardwareAcceleratedClasses}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
+                transition={getTransition(0.8, 0.5)}
               >
                 Soirées de folie 🎉 • {partnersCount}+ partenaires 🤝 • Événements inoubliables 🎊 • Une équipe au top 💪
               </motion.p>
 
               <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                className={`flex flex-col sm:flex-row gap-4 justify-center items-center ${hardwareAcceleratedClasses}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
+                transition={getTransition(0.8, 0.6)}
               >
                 <button
                   onClick={() => {
@@ -148,11 +150,11 @@ export default function HomePage() {
 
         <Section id="presentation" className="bg-white">
           <motion.div
-            className="max-w-4xl mx-auto"
+            className={`max-w-4xl mx-auto ${hardwareAcceleratedClasses}`}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            transition={getTransition(0.6)}
+            viewport={getViewportConfig()}
           >
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-6 text-brand-red">
@@ -163,8 +165,9 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
               <motion.div
-                className="text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform"
+                className={`text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform smooth-transition ${hardwareAcceleratedClasses}`}
                 whileHover={{ y: -5 }}
+                transition={getTransition(0.3)}
               >
                 <div className="text-6xl mb-4">🤝</div>
                 <h3 className="text-2xl font-bold font-spartan mb-3 text-brand-red">Convivialité</h3>
@@ -174,8 +177,9 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div
-                className="text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform"
+                className={`text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform smooth-transition ${hardwareAcceleratedClasses}`}
                 whileHover={{ y: -5 }}
+                transition={getTransition(0.3)}
               >
                 <div className="text-6xl mb-4">🎉</div>
                 <h3 className="text-2xl font-bold font-spartan mb-3 text-brand-red">Événements</h3>
@@ -185,8 +189,9 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div
-                className="text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform"
+                className={`text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform smooth-transition ${hardwareAcceleratedClasses}`}
                 whileHover={{ y: -5 }}
+                transition={getTransition(0.3)}
               >
                 <div className="text-6xl mb-4">💪</div>
                 <h3 className="text-2xl font-bold font-spartan mb-3 text-brand-red">Engagement</h3>
@@ -207,10 +212,11 @@ export default function HomePage() {
         {upcomingEvents.length > 0 && (
           <Section background="gray" id="evenements">
             <motion.div
+              className={hardwareAcceleratedClasses}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
+              transition={getTransition(0.6)}
+              viewport={getViewportConfig()}
             >
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-4 text-brand-red">
@@ -226,10 +232,11 @@ export default function HomePage() {
                 {upcomingEvents.map((event, index) => (
                   <motion.div
                     key={event.slug}
+                    className={hardwareAcceleratedClasses}
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
+                    transition={getTransition(0.5, index * 0.1)}
+                    viewport={getViewportConfig()}
                     whileHover={{ scale: 1.03 }}
                   >
                     <EventCard event={event} />
@@ -243,10 +250,11 @@ export default function HomePage() {
         {pastEvents.length > 0 && (
           <Section className="bg-white">
             <motion.div
+              className={hardwareAcceleratedClasses}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
+              transition={getTransition(0.6)}
+              viewport={getViewportConfig()}
             >
               <div className="text-center mb-12">
                 <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-4 text-gray-700">
@@ -262,12 +270,12 @@ export default function HomePage() {
                 {pastEvents.map((event, index) => (
                   <motion.div
                     key={event.slug}
+                    className={`relative group ${hardwareAcceleratedClasses}`}
                     initial={{ opacity: 0, y: 50 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
+                    transition={getTransition(0.5, index * 0.1)}
+                    viewport={getViewportConfig()}
                     whileHover={{ scale: 1.03 }}
-                    className="relative group"
                   >
                     <div className="relative overflow-hidden rounded-xl bg-white border-2 border-gray-200 shadow-md hover:shadow-xl transition-all">
                       {event.cover && (
@@ -347,15 +355,15 @@ export default function HomePage() {
 
         <Section className="bg-grad-secondary relative overflow-hidden" id="carte-bde">
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-10 right-10 text-9xl animate-spin-slow">💳</div>
-            <div className="absolute bottom-10 left-10 text-8xl animate-pulse">✨</div>
+            <div className="absolute top-10 right-10 text-9xl animate-spin-slow gpu-accelerated">💳</div>
+            <div className="absolute bottom-10 left-10 text-8xl animate-pulse gpu-accelerated">✨</div>
           </div>
           <motion.div
-            className="relative z-10 text-center text-white py-12"
+            className={`relative z-10 text-center text-white py-12 ${hardwareAcceleratedClasses}`}
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            transition={getTransition(0.6)}
+            viewport={getViewportConfig()}
           >
             <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-6">
               💎 Carte BDE {settings.year}
@@ -394,10 +402,11 @@ export default function HomePage() {
 
         <Section id="equipe" className="bg-white">
           <motion.div
+            className={hardwareAcceleratedClasses}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            transition={getTransition(0.6)}
+            viewport={getViewportConfig()}
           >
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-4 text-brand-red">
@@ -410,10 +419,10 @@ export default function HomePage() {
             </div>
 
             <motion.div
-              className="mb-12 max-w-3xl mx-auto"
+              className={`mb-12 max-w-3xl mx-auto ${hardwareAcceleratedClasses}`}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={getTransition(0.8, 0.2)}
               viewport={{ once: true }}
             >
               <div className="relative rounded-2xl overflow-hidden shadow-xl group">
@@ -447,10 +456,11 @@ export default function HomePage() {
               {team.map((member, index) => (
                 <motion.div
                   key={member.name}
+                  className={hardwareAcceleratedClasses}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
+                  transition={getTransition(0.5, index * 0.1)}
+                  viewport={getViewportConfig()}
                   whileHover={{ scale: 1.05 }}
                 >
                   <TeamCard member={member} />
@@ -462,11 +472,11 @@ export default function HomePage() {
 
         <Section background="gray" id="contact">
           <motion.div
-            className="max-w-4xl mx-auto"
+            className={`max-w-4xl mx-auto ${hardwareAcceleratedClasses}`}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
+            transition={getTransition(0.6)}
+            viewport={getViewportConfig()}
           >
             <div className="text-center mb-12">
               <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-4 text-brand-red">
@@ -480,8 +490,9 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <motion.div
-                className="bg-white p-8 rounded-2xl shadow-lg text-center hover:scale-105 transition-transform"
+                className={`bg-white p-8 rounded-2xl shadow-lg text-center hover:scale-105 transition-transform smooth-transition ${hardwareAcceleratedClasses}`}
                 whileHover={{ y: -5 }}
+                transition={getTransition(0.3)}
               >
                 <div className="text-5xl mb-4">📧</div>
                 <h3 className="text-xl font-bold font-spartan mb-3">Email</h3>
@@ -498,8 +509,9 @@ export default function HomePage() {
                   href={settings.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white p-8 rounded-2xl shadow-lg text-center hover:scale-105 transition-transform block"
+                  className={`bg-white p-8 rounded-2xl shadow-lg text-center hover:scale-105 transition-transform smooth-transition block ${hardwareAcceleratedClasses}`}
                   whileHover={{ y: -5 }}
+                  transition={getTransition(0.3)}
                 >
                   <div className="flex justify-center mb-4">
                     <svg className="h-16 w-16" fill="url(#instagram-gradient)" viewBox="0 0 24 24">
@@ -525,8 +537,9 @@ export default function HomePage() {
                   href={settings.discord}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white p-8 rounded-2xl shadow-lg text-center hover:scale-105 transition-transform block"
+                  className={`bg-white p-8 rounded-2xl shadow-lg text-center hover:scale-105 transition-transform smooth-transition block ${hardwareAcceleratedClasses}`}
                   whileHover={{ y: -5 }}
+                  transition={getTransition(0.3)}
                 >
                   <div className="flex justify-center mb-4">
                     <svg className="h-16 w-16" fill="#5865F2" viewBox="0 0 24 24">
