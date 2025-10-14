@@ -263,7 +263,9 @@ export const staggerConfig = {
  * Logs animation performance for optimization
  */
 export function logAnimationPerformance(name: string, duration: number): void {
-  if (process.env.NODE_ENV === 'development') {
+  // Only log in development mode (check for localhost or dev environment)
+  if (typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
     const performanceData = {
       name,
       duration,
