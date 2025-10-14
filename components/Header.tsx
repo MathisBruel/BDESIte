@@ -68,9 +68,10 @@ export function Header() {
               alt="Logo Sup'RNova"
               width={50}
               height={50}
-              className="group-hover:scale-110 transition-transform"
+              className="group-hover:scale-110 transition-transform smooth-transition gpu-accelerated"
+              style={{ willChange: "transform" }}
             />
-            <div className="text-2xl font-bold font-spartan text-brand-red group-hover:text-brand-yellow transition-colors">
+            <div className="text-2xl font-bold font-spartan text-brand-red group-hover:text-brand-yellow transition-colors smooth-transition">
               Sup&apos;RNova
             </div>
           </button>
@@ -81,7 +82,8 @@ export function Header() {
                 <button
                   key={item.name}
                   onClick={(e) => handleScroll(e, item.scroll, item.href)}
-                  className="text-sm font-semibold text-gray-700 hover:text-brand-red transition-colors hover:scale-105 transform"
+                  className="text-sm font-semibold text-gray-700 hover:text-brand-red transition-colors hover:scale-105 transform smooth-transition gpu-accelerated"
+                  style={{ willChange: "transform, color" }}
                 >
                   {item.name}
                 </button>
@@ -89,7 +91,8 @@ export function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-sm font-semibold text-gray-700 hover:text-brand-red transition-colors hover:scale-105 transform"
+                  className="text-sm font-semibold text-gray-700 hover:text-brand-red transition-colors hover:scale-105 transform smooth-transition gpu-accelerated"
+                  style={{ willChange: "transform, color" }}
                 >
                   {item.name}
                 </Link>
