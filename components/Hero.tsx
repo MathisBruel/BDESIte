@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Button } from "./Button";
 import { Container } from "./Container";
+import { getTransition, hardwareAcceleratedClasses } from "@/utils/animation";
 
 interface HeroProps {
   title: string;
@@ -25,26 +26,26 @@ export function Hero({
     <section className="relative bg-grad-secondary py-24 sm:py-32 overflow-hidden">
       <Container>
         <motion.div
-          className="relative z-10 text-center"
+          className={`relative z-10 text-center ${hardwareAcceleratedClasses}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={getTransition(0.8)}
         >
           <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl font-bold font-spartan text-white mb-6"
+            className={`text-4xl sm:text-5xl md:text-6xl font-bold font-spartan text-white mb-6 ${hardwareAcceleratedClasses}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={getTransition(0.8, 0.2)}
           >
             {title}
           </motion.h1>
 
           {subtitle && (
             <motion.p
-              className="text-xl sm:text-2xl text-white/90 mb-4"
+              className={`text-xl sm:text-2xl text-white/90 mb-4 ${hardwareAcceleratedClasses}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
+              transition={getTransition(0.8, 0.3)}
             >
               {subtitle}
             </motion.p>
@@ -52,10 +53,10 @@ export function Hero({
 
           {description && (
             <motion.p
-              className="text-lg text-white/80 max-w-3xl mx-auto mb-8"
+              className={`text-lg text-white/80 max-w-3xl mx-auto mb-8 ${hardwareAcceleratedClasses}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={getTransition(0.8, 0.4)}
             >
               {description}
             </motion.p>
@@ -63,10 +64,10 @@ export function Hero({
 
           {showCtas && (primaryCta || secondaryCta) && (
             <motion.div
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+              className={`flex flex-col sm:flex-row gap-4 justify-center items-center ${hardwareAcceleratedClasses}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
+              transition={getTransition(0.8, 0.5)}
             >
               {primaryCta && (
                 <Button variant="cta" href={primaryCta.href}>
