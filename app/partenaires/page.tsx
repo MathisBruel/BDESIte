@@ -25,6 +25,7 @@ export default function PartnersPage() {
           subtitle="Des avantages exclusifs toute l'année avec votre carte BDE"
           description="Découvrez tous les commerces et services partenaires qui vous offrent des réductions et avantages avec votre carte BDE Sup'RNova."
           primaryCta={{ text: "Acheter ma carte", href: "/carte-bde" }}
+          variant="partners"
         />
 
         <PartnersClient partners={allPartners} categories={categories} cities={cities} />

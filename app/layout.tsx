@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { League_Spartan, Merriweather } from "next/font/google";
 import "./globals.css";
 import { defaultMetadata } from "@/lib/seo";
+import SmoothScroll from "./SmoothScroll";
 
 const leagueSpartan = League_Spartan({
   subsets: ["latin"],
@@ -29,7 +30,10 @@ export default function RootLayout({
       className={`${leagueSpartan.variable} ${merriweather.variable}`}
       style={{ "--font-chunk-five": "Impact, 'Arial Black', sans-serif" } as React.CSSProperties}
     >
-      <body>{children}</body>
+      <body>
+        <SmoothScroll />
+        {children}
+      </body>
     </html>
   );
 }

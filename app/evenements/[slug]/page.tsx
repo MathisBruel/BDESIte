@@ -6,7 +6,7 @@ import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getEventBySlug, getEvents } from "@/lib/data";
+import { getEventBySlug, getEvents, getTexts } from "@/lib/data";
 import { formatDateTime, formatDateTimeRange } from "@/lib/utils";
 
 export async function generateStaticParams() {
@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default function EventDetailPage({ params }: { params: { slug: string } }) {
   const event = getEventBySlug(params.slug);
+  const texts = getTexts();
 
   if (!event) {
     notFound();
@@ -98,6 +99,17 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
                   className="bg-white text-brand-red hover:bg-white/90"
                 >
                   Accéder à la billetterie
+                </Button>
+              </div>
+            )}
+
+            {event.photosUrl && (
+              <div className="mt-6 bg-brand-pale/40 p-6 rounded-xl text-center">
+                <h3 className="text-xl font-bold font-spartan text-brand-red mb-3">
+                  📸 Galerie photos
+                </h3>
+                <Button href={event.photosUrl} variant="secondary">
+                  {texts.home.past.photos}
                 </Button>
               </div>
             )}

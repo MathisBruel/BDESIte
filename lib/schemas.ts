@@ -33,6 +33,7 @@ export const EventSchema = z.object({
   tags: z.array(z.string()),
   description: z.string(),
   ticketUrl: z.string().url().optional(),
+  photosUrl: z.string().url().optional(),
   published: z.boolean().default(true),
 });
 
@@ -65,4 +66,96 @@ export type Partner = z.infer<typeof PartnerSchema>;
 export type Event = z.infer<typeof EventSchema>;
 export type TeamMember = z.infer<typeof TeamMemberSchema>;
 export type Settings = z.infer<typeof SettingsSchema>;
+
+// Texts schema for all UI copy
+export const TextsSchema = z.object({
+  header: z.object({
+    brand: z.string(),
+    nav: z.object({
+      home: z.string(),
+      events: z.string(),
+      partners: z.string(),
+      card: z.string(),
+      team: z.string(),
+      contact: z.string(),
+    }),
+    ctaBuyCard: z.string(),
+  }),
+  footer: z.object({
+    navigation: z.string(),
+    nav: z.object({
+      home: z.string(),
+      events: z.string(),
+      partners: z.string(),
+      team: z.string(),
+    }),
+    contact: z.string(),
+    social: z.string(),
+    legal: z.object({
+      mentions: z.string(),
+      privacy: z.string(),
+      copyright: z.string(),
+    }),
+    associationTypeBadge: z.string(),
+    schoolLine: z.string(),
+  }),
+  home: z.object({
+    badgeYearPrefix: z.string(),
+    title: z.string(),
+    subtitle: z.string(),
+    description: z.string(),
+    ctaViewEvents: z.string(),
+    ctaSeeAdvantages: z.string(),
+    scrollDownAria: z.string(),
+    presentation: z.object({
+      title: z.string(),
+      convivialityTitle: z.string(),
+      convivialityText: z.string(),
+      eventsTitle: z.string(),
+      eventsText: z.string(),
+      engagementTitle: z.string(),
+      engagementText: z.string(),
+      intro: z.string(),
+    }),
+    upcoming: z.object({
+      title: z.string(),
+      subtitle: z.string(),
+    }),
+    past: z.object({
+      title: z.string(),
+      subtitle: z.string(),
+      completed: z.string(),
+      moreComing: z.string(),
+      details: z.string(),
+      photos: z.string(),
+    }),
+    card: z.object({
+      title: z.string(),
+      subtitle: z.string(),
+      description: z.string(),
+      ctaBuy: z.string(),
+      ctaSeePartners: z.string(),
+      badges: z.array(z.string()),
+    }),
+    team: z.object({
+      title: z.string(),
+      hero: z.string(),
+      heroSubtitle: z.string(),
+      meet: z.string(),
+    }),
+    contact: z.object({
+      title: z.string(),
+      subtitle: z.string(),
+      email: z.string(),
+      instagram: z.object({ title: z.string(), subtitle: z.string() }),
+      discord: z.object({ title: z.string(), subtitle: z.string() }),
+    }),
+    accessibility: z.object({ menu: z.string() }),
+    brandAlt: z.string(),
+    brandAltBde: z.string(),
+    teamImageAlt: z.string(),
+  }),
+});
+
+export type Texts = z.infer<typeof TextsSchema>;
 

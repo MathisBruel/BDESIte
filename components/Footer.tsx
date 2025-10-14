@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "./Container";
-import { getSettings } from "@/lib/data";
+import { getSettings, getTexts } from "@/lib/data";
+import { formatText } from "@/lib/utils";
 import { Badge } from "./Badge";
 
 export function Footer() {
   const settings = getSettings();
+  const texts = getTexts();
 
   return (
     <footer className="bg-brand-black text-white">
@@ -14,7 +16,7 @@ export function Footer() {
           <div>
             <Image
               src="/images/assets/Logo couleur (2).png"
-              alt="Logo Sup'RNova"
+              alt={texts.home.brandAlt}
               width={120}
               height={120}
               className="mb-4 brightness-80"
@@ -23,19 +25,19 @@ export function Footer() {
               {settings.association}
             </h3>
             <p className="text-sm text-gray-300 mb-2">
-              Bureau des Étudiants de Sup de Co Rennes
+              {texts.footer.schoolLine}
             </p>
             <Badge variant="yellow" className="mt-3">
-              Association loi 1901
+              {texts.footer.associationTypeBadge}
             </Badge>
           </div>
 
           <div>
-            <h4 className="font-semibold font-spartan mb-4">Navigation</h4>
+            <h4 className="font-semibold font-spartan mb-4">{texts.footer.navigation}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/" className="text-gray-300 hover:text-brand-yellow transition-colors">
-                  Accueil
+                  {texts.footer.nav.home}
                 </Link>
               </li>
               <li>
@@ -43,7 +45,7 @@ export function Footer() {
                   href="/#evenements"
                   className="text-gray-300 hover:text-brand-yellow transition-colors"
                 >
-                  Événements
+                  {texts.footer.nav.events}
                 </Link>
               </li>
               <li>
@@ -51,7 +53,7 @@ export function Footer() {
                   href="/partenaires"
                   className="text-gray-300 hover:text-brand-yellow transition-colors"
                 >
-                  Partenaires
+                  {texts.footer.nav.partners}
                 </Link>
               </li>
               <li>
@@ -59,14 +61,14 @@ export function Footer() {
                   href="/#equipe"
                   className="text-gray-300 hover:text-brand-yellow transition-colors"
                 >
-                  Le BDE
+                  {texts.footer.nav.team}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold font-spartan mb-4">Contact</h4>
+            <h4 className="font-semibold font-spartan mb-4">{texts.footer.contact}</h4>
             <ul className="space-y-2 text-sm text-gray-300">
               <li>
                 <a
@@ -78,14 +80,14 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/#contact" className="hover:text-brand-yellow transition-colors">
-                  Contact
+                  {texts.footer.contact}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold font-spartan mb-4">Réseaux sociaux</h4>
+            <h4 className="font-semibold font-spartan mb-4">{texts.footer.social}</h4>
             <div className="flex space-x-4">
               {settings.instagram && (
                 <a
@@ -144,16 +146,16 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-700 py-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-          <p>© {new Date().getFullYear()} {settings.association}. Tous droits réservés.</p>
+          <p>{formatText(texts.footer.legal.copyright, { year: new Date().getFullYear(), association: settings.association })}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/mentions-legales" className="hover:text-brand-yellow transition-colors">
-              Mentions légales
+              {texts.footer.legal.mentions}
             </Link>
             <Link
               href="/politique-confidentialite"
               className="hover:text-brand-yellow transition-colors"
             >
-              Politique de confidentialité
+              {texts.footer.legal.privacy}
             </Link>
           </div>
         </div>

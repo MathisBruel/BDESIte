@@ -4,6 +4,7 @@ import { Badge } from "./Badge";
 import { Button } from "./Button";
 import type { Event } from "@/lib/schemas";
 import { formatDate, formatTime, formatDateTimeRange } from "@/lib/utils";
+import { getTexts } from "@/lib/data";
 
 interface EventCardProps {
   event: Event;
@@ -13,6 +14,7 @@ interface EventCardProps {
 export function EventCard({ event, compact = false }: EventCardProps) {
   const eventDate = new Date(event.date);
   const isPast = eventDate < new Date();
+  const texts = getTexts();
 
   return (
     <div
@@ -67,11 +69,16 @@ export function EventCard({ event, compact = false }: EventCardProps) {
 
         <div className="flex gap-2 mt-auto">
           <Button href={`/evenements/${event.slug}`} variant="outline" className="flex-1">
-            Voir détails
+            {texts.home.past.details}
           </Button>
           {event.ticketUrl && !isPast && (
             <Button href={event.ticketUrl} variant="primary" className="flex-1">
               Billetterie
+            </Button>
+          )}
+          {event.photosUrl && (
+            <Button href={event.photosUrl} variant="secondary" className="flex-1">
+              {texts.home.past.photos}
             </Button>
           )}
         </div>

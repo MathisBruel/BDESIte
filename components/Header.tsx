@@ -4,16 +4,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
+import { animateScrollToY } from "@/lib/utils";
 import { Container } from "./Container";
 import { Button } from "./Button";
+import { getTexts } from "@/lib/data";
 
+const texts = getTexts();
 const navigation = [
-  { name: "🏠 Accueil", href: "/", scroll: "top" },
-  { name: "🎊 Événements", href: "/#evenements", scroll: "evenements" },
-  { name: "🤝 Partenaires", href: "/partenaires" },
-  { name: "💎 Carte BDE", href: "/carte-bde" },
-  { name: "🌟 L'équipe", href: "/#equipe", scroll: "equipe" },
-  { name: "📬 Contact", href: "/#contact", scroll: "contact" },
+  { name: texts.header.nav.home, href: "/", scroll: "top" },
+  { name: texts.header.nav.events, href: "/#evenements", scroll: "evenements" },
+  { name: texts.header.nav.partners, href: "/partenaires" },
+  { name: texts.header.nav.card, href: "/carte-bde" },
+  { name: texts.header.nav.team, href: "/#equipe", scroll: "equipe" },
+  { name: texts.header.nav.contact, href: "/#contact", scroll: "contact" },
 ];
 
 export function Header() {
@@ -29,27 +32,27 @@ export function Header() {
       router.push(href);
       setTimeout(() => {
         if (scrollTo === "top") {
-          window.scrollTo({ top: 0, behavior: "smooth" });
+          void animateScrollToY(0, 600);
         } else {
           const element = document.getElementById(scrollTo);
           if (element) {
             const offset = 80;
             const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - offset;
-            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+            const target = elementPosition - offset;
+            void animateScrollToY(target, 600);
           }
         }
       }, 100);
     } else {
       if (scrollTo === "top") {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        void animateScrollToY(0, 600);
       } else {
         const element = document.getElementById(scrollTo);
         if (element) {
           const offset = 80;
           const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - offset;
-          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+          const target = elementPosition - offset;
+          void animateScrollToY(target, 600);
         }
       }
     }
@@ -65,13 +68,13 @@ export function Header() {
           >
             <Image
               src="/images/assets/Logo simple couleur.png"
-              alt="Logo Sup'RNova"
+              alt={texts.home.brandAlt}
               width={50}
               height={50}
               className="group-hover:scale-110 transition-transform"
             />
             <div className="text-2xl font-bold font-spartan text-brand-red group-hover:text-brand-yellow transition-colors">
-              Sup&apos;RNova
+              {texts.header.brand}
             </div>
           </button>
 
@@ -96,7 +99,7 @@ export function Header() {
               )
             ))}
             <Button variant="cta" href="/carte-bde" className="ml-4">
-              🛒 Acheter la carte
+              {texts.header.ctaBuyCard}
             </Button>
           </div>
 
@@ -105,7 +108,7 @@ export function Header() {
             className="lg:hidden rounded-md p-2 text-gray-700 hover:bg-gray-100"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <span className="sr-only">Menu</span>
+            <span className="sr-only">{texts.home.accessibility.menu}</span>
             <svg
               className="h-6 w-6"
               fill="none"

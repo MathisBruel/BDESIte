@@ -5,8 +5,9 @@
     "photo": "/images/team/mathis.png",
     "photoPosition": "top",
     "links": {
-      "instagram": "https://instagram.com/mathis_bruel",
-      "linkedin": "https://linkedin.com/in/mathis-bruel"
+      "linkedin": "https://www.linkedin.com/in/mathis-bruel/",
+      "instagram": "https://instagram.com/mathisbruel17",
+      "email": "mathis.bruel@suprennes.me"
     }
   },
   {
@@ -15,7 +16,8 @@
     "photo": "/images/team/solenn.png",
     "photoPosition": "top",
     "links": {
-      "instagram": "https://instagram.com/solenn_cln"
+      "linkedin": "https://www.linkedin.com/in/solenn-coulon-89408726b/",
+      "email": "solenn.coulon@suprennes.me"
     }
   },
   {
@@ -24,7 +26,9 @@
     "photo": "/images/team/lucien.png",
     "photoPosition": "top",
     "links": {
-      "instagram": "https://instagram.com/lucien_guibout"
+      "linkedin": "https://www.linkedin.com/in/lucien-guibout-44a551284/",
+      "instagram": "https://www.instagram.com/lucien.guibout/",
+      "email": "lucien.guibout@suprennes.me"
     }
   },
   {
@@ -33,7 +37,9 @@
     "photo": "/images/team/titouan.png",
     "photoPosition": "top",
     "links": {
-      "instagram": "https://instagram.com/titouan_lebrun"
+      "linkedin": "https://www.linkedin.com/in/titouan-le-brun-8ab329223/",
+      "instagram": "https://www.instagram.com/titouan.lebrn/",
+      "email": "titouan.lebrun@suprennes.me"
     }
   },
   {
@@ -42,7 +48,9 @@
     "photo": "/images/team/ivin.png",
     "photoPosition": "top",
     "links": {
-      "instagram": "https://instagram.com/ivin_hernio"
+      "linkedin": "https://www.linkedin.com/in/ivin-hernio-1b604b229/",
+      "instagram": "https://www.instagram.com/ivinhernio/",
+      "email": "ivin.hernio@suprennes.me"
     }
   },
   {
@@ -51,7 +59,8 @@
     "photo": "/images/team/coline.png",
     "photoPosition": "top",
     "links": {
-      "instagram": "https://instagram.com/coline_treille"
+      "linkedin": "https://www.linkedin.com/in/coline-treille-ab7836227/",
+      "email": "coline.treille@suprennes.me"
     }
   },
   {
@@ -60,7 +69,8 @@
     "photo": "/images/team/yoann.png",
     "photoPosition": "top",
     "links": {
-      "instagram": "https://instagram.com/yoann_renat"
+      "instagram": "https://instagram.com/_yoann_rnt_",
+      "email": "yoann.renat@suprennes.me"
     }
   }
 ]

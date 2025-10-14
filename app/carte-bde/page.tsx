@@ -25,6 +25,7 @@ export default function CardBDEPage() {
           description={`Accédez à des réductions exclusives chez plus de ${partnersCount} partenaires locaux.`}
           primaryCta={{ text: "Acheter ma carte", href: settings.shopUrl }}
           secondaryCta={{ text: "Voir les partenaires", href: "/partenaires" }}
+          variant="card"
         />
 
         <Section>

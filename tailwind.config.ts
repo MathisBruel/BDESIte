@@ -18,8 +18,8 @@ const config: Config = {
         },
       },
       backgroundImage: {
-        "grad-primary": "linear-gradient(135deg, #6b6969 0%, #ffffff 100%)",
-        "grad-secondary": "linear-gradient(90deg, #bd443d 0%, #f2d02b 100%)",
+        "grad-primary": "linear-gradient(90deg, #ffde59 0%, #ffffff 100%)",
+        "grad-secondary": "linear-gradient(90deg, #cc3533 0%, #ff92b9 33%, #ffe492 66%, #ffde59 100%)",
       },
       fontFamily: {
         spartan: ["var(--font-league-spartan)", "sans-serif"],

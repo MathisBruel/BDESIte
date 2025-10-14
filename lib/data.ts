@@ -2,8 +2,9 @@ import partnersData from "@/data/partners.json";
 import eventsData from "@/data/events.json";
 import teamData from "@/data/team.json";
 import settingsData from "@/data/settings.json";
-import { PartnerSchema, EventSchema, TeamMemberSchema, SettingsSchema } from "./schemas";
-import type { Partner, Event, TeamMember, Settings } from "./schemas";
+import { PartnerSchema, EventSchema, TeamMemberSchema, SettingsSchema, TextsSchema } from "./schemas";
+import type { Partner, Event, TeamMember, Settings, Texts } from "./schemas";
+import textsData from "@/data/texts.json";
 import { z } from "zod";
 
 function validateData<T>(data: unknown, schema: z.ZodSchema<T>): T[] | T {
@@ -58,5 +59,9 @@ export function getTeamMembers(): TeamMember[] {
 
 export function getSettings(): Settings {
   return validateData(settingsData, SettingsSchema) as Settings;
+}
+
+export function getTexts(): Texts {
+  return validateData(textsData, TextsSchema) as Texts;
 }
 

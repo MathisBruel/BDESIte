@@ -30,7 +30,7 @@ export function Button({
       "bg-brand-yellow text-brand-black hover:bg-opacity-90 focus:ring-brand-yellow shadow-md hover:shadow-lg",
     outline:
       "border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white focus:ring-brand-red",
-    cta: "bg-grad-secondary text-white font-chunk text-lg uppercase tracking-wide hover:scale-105 focus:ring-brand-yellow shadow-lg hover:shadow-xl",
+    cta: "bg-grad-secondary text-brand-black font-chunk text-lg uppercase tracking-wide hover:scale-105 focus:ring-brand-yellow shadow-lg hover:shadow-xl",
   };
 
   const classes = cn(baseStyles, variants[variant], className);
