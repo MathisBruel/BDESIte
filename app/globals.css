@@ -22,6 +22,15 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth;
+  }
+  
+  /* Hardware acceleration for better animation performance on Windows */
+  * {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 }
 
@@ -42,6 +51,14 @@
 
   .animate-spin-slow {
     animation: spin 8s linear infinite;
+    -webkit-animation: spin 8s linear infinite;
+    -moz-animation: spin 8s linear infinite;
+    /* Force hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    will-change: transform;
   }
 
   @keyframes spin {
@@ -53,8 +70,34 @@
     }
   }
 
+  @-webkit-keyframes spin {
+    from {
+      -webkit-transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+
+  @-moz-keyframes spin {
+    from {
+      -moz-transform: rotate(0deg);
+    }
+    to {
+      -moz-transform: rotate(360deg);
+    }
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
+    -webkit-animation: fadeIn 0.3s ease-in-out;
+    -moz-animation: fadeIn 0.3s ease-in-out;
+    /* Force hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    will-change: transform, opacity;
   }
 
   @keyframes fadeIn {
@@ -68,16 +111,64 @@
     }
   }
 
+  @-webkit-keyframes fadeIn {
+    from {
+      opacity: 0;
+      -webkit-transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      -webkit-transform: translateY(0);
+    }
+  }
+
+  @-moz-keyframes fadeIn {
+    from {
+      opacity: 0;
+      -moz-transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      -moz-transform: translateY(0);
+    }
+  }
+
   .delay-100 {
     animation-delay: 0.1s;
+    -webkit-animation-delay: 0.1s;
+    -moz-animation-delay: 0.1s;
   }
 
   .delay-200 {
     animation-delay: 0.2s;
+    -webkit-animation-delay: 0.2s;
+    -moz-animation-delay: 0.2s;
   }
 
   .delay-300 {
     animation-delay: 0.3s;
+    -webkit-animation-delay: 0.3s;
+    -moz-animation-delay: 0.3s;
+  }
+
+  /* Hardware acceleration utility classes */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .smooth-transition {
+    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    -webkit-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    -moz-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    -ms-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
   }
 }
 
