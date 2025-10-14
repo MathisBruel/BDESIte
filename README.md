@@ -310,6 +310,15 @@ Si vous voyez une erreur concernant `ChunkFive-Regular.woff2`, vous avez deux op
 
 Si le build échoue car des images sont manquantes, ajoutez des placeholders ou commentez temporairement les références dans les fichiers JSON.
 
+### Erreur Windows : Icon Generation (RÉSOLU)
+
+**Problème :** Sur Windows, le serveur de développement peut crasher avec l'erreur :
+```
+TypeError: Invalid URL - '.\\file:\\C:\\Users\\...\\noto-sans-v27-latin-regular.ttf'
+```
+
+**Solution :** Les fichiers `app/icon.tsx` et `app/apple-icon.tsx` incluent maintenant une gestion d'erreur robuste avec fallback automatique. Si la génération dynamique d'icônes échoue (notamment sur Windows à cause de problèmes de chemins de fichiers avec `@vercel/og`), une icône de secours simple sera générée automatiquement. Les icônes statiques sont également configurées dans les métadonnées comme solution de repli.
+
 ---
 
 **Développé avec ❤️ par le BDE Sup'RNova**
