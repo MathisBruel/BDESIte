@@ -21,6 +21,14 @@ export const defaultMetadata: Metadata = {
   authors: [{ name: "BDE Sup'RNova" }],
   creator: "BDE Sup'RNova",
   publisher: "BDE Sup'RNova",
+  icons: {
+    icon: [
+      { url: "/images/assets/Logo simple couleur.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/images/assets/Logo simple couleur.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",
