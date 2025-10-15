@@ -12,6 +12,7 @@ export function formatDate(date: string | Date): string {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "Europe/Paris",
   }).format(d);
 }
 
@@ -20,6 +21,7 @@ export function formatTime(date: string | Date): string {
   return new Intl.DateTimeFormat("fr-FR", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Europe/Paris",
   }).format(d);
 }
 
@@ -35,7 +37,13 @@ export function formatDateTimeRange(startDate: string | Date, endDate?: string |
   const start = typeof startDate === "string" ? new Date(startDate) : startDate;
   const end = typeof endDate === "string" ? new Date(endDate) : endDate;
 
-  const isSameDay = start.toDateString() === end.toDateString();
+  const sameDayFormatter = new Intl.DateTimeFormat("fr-FR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Europe/Paris",
+  });
+  const isSameDay = sameDayFormatter.format(start) === sameDayFormatter.format(end);
 
   if (isSameDay) {
     return `${formatDate(start)} de ${formatTime(start)} à ${formatTime(end)}`;

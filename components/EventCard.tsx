@@ -51,13 +51,18 @@ export function EventCard({ event, compact = false }: EventCardProps) {
         <div className="mb-3">
           <div className="text-sm font-semibold text-brand-red mb-1">
             {event.endDate ? (
-              <>
-                {new Date(event.date).toDateString() === new Date(event.endDate).toDateString() ? (
-                  `${formatDate(event.date)} • ${formatTime(event.date)} - ${formatTime(event.endDate)}`
-                ) : (
-                  `Du ${new Date(event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} au ${new Date(event.endDate).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}`
-                )}
-              </>
+              (() => {
+                const sameDayFormatter = new Intl.DateTimeFormat("fr-FR", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  timeZone: "Europe/Paris",
+                });
+                const isSameDay = sameDayFormatter.format(new Date(event.date)) === sameDayFormatter.format(new Date(event.endDate));
+                return isSameDay
+                  ? `${formatDate(event.date)} • ${formatTime(event.date)} - ${formatTime(event.endDate)}`
+                  : `Du ${new Date(event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", timeZone: "Europe/Paris" })} au ${new Date(event.endDate).toLocaleDateString("fr-FR", { day: "numeric", month: "short", timeZone: "Europe/Paris" })}`;
+              })()
             ) : (
               `${formatDate(event.date)} • ${formatTime(event.date)}`
             )}
