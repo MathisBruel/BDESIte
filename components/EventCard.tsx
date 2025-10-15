@@ -61,7 +61,7 @@ export function EventCard({ event, compact = false }: EventCardProps) {
                 const isSameDay = sameDayFormatter.format(new Date(event.date)) === sameDayFormatter.format(new Date(event.endDate));
                 return isSameDay
                   ? `${formatDate(event.date)} • ${formatTime(event.date)} - ${formatTime(event.endDate)}`
-                  : `Du ${new Date(event.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", timeZone: "Europe/Paris" })} au ${new Date(event.endDate).toLocaleDateString("fr-FR", { day: "numeric", month: "short", timeZone: "Europe/Paris" })}`;
+                  : `Du ${formatDate(event.date)} au ${formatDate(event.endDate)}`;
               })()
             ) : (
               `${formatDate(event.date)} • ${formatTime(event.date)}`
