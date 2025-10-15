@@ -21,130 +21,183 @@ export default function PrivacyPage() {
         <Section>
           <div className="max-w-4xl mx-auto prose prose-lg">
             <p className="lead">
-              Le BDE Sup&apos;RNova accorde une grande importance à la protection de vos données
-              personnelles. Cette politique vous informe sur la manière dont nous collectons,
-              utilisons et protégeons vos informations.
+              Le BDE Sup&apos;Rennes / Sup&apos;RNova accorde une grande importance à la protection de vos
+              données personnelles. Cette politique explique comment nous collectons, utilisons et
+              protégeons vos informations.
             </p>
+
+            <hr className="my-8" />
 
             <h2>1. Responsable du traitement</h2>
-            <p>
-              Le responsable du traitement des données est :
-              <br />
-              <strong>{settings.association}</strong>
-              <br />
-              Email : {settings.email}
-            </p>
+            <dl className="grid gap-3 sm:grid-cols-2">
+              <dt>Organisation</dt>
+              <dd><strong>Sup&apos;Rennes – Sup&apos;RNova</strong></dd>
+              <dt>Adresse</dt>
+              <dd>21 rue du Bignon, 35135 Chantepie, France</dd>
+              <dt>Contact RGPD</dt>
+              <dd><a href={`mailto:${settings.email}`}>{settings.email}</a></dd>
+            </dl>
 
-            <h2>2. Données collectées</h2>
-            <p>Nous sommes susceptibles de collecter les données suivantes :</p>
+            <hr className="my-8" />
+
+            <h2>2. Hébergement et stockage des données</h2>
             <ul>
-              <li>Nom et prénom</li>
-              <li>Adresse email</li>
-              <li>
-                Informations relatives à votre navigation sur le site (pages visitées, durée de
-                visite)
-              </li>
+              <li>Hébergeur : Mathis BRUEL (France)</li>
+              <li>Localisation des données : France</li>
+              <li>Plateformes utilisées : Google Workspace, Google Forms</li>
             </ul>
 
-            <h2>3. Finalités du traitement</h2>
-            <p>Les données collectées sont utilisées pour :</p>
-            <ul>
-              <li>Répondre à vos demandes via le formulaire de contact</li>
-              <li>Vous envoyer notre newsletter (avec votre consentement)</li>
-              <li>Gérer votre adhésion et votre carte BDE</li>
-              <li>Améliorer nos services et notre site web</li>
-            </ul>
+            <hr className="my-8" />
 
-            <h2>4. Base légale</h2>
-            <p>Le traitement de vos données personnelles repose sur :</p>
-            <ul>
-              <li>Votre consentement (newsletter, formulaires)</li>
-              <li>L&apos;exécution d&apos;un contrat (achat carte BDE)</li>
-              <li>Notre intérêt légitime à améliorer nos services</li>
-            </ul>
+            <h2>3. Données collectées</h2>
+            <p>Nous pouvons collecter les données suivantes :</p>
+            <div className="not-prose grid gap-6">
+              <div className="p-0">
+                <h3 className="mt-0">Identité et contact</h3>
+                <ul>
+                  <li>Nom, prénom, adresse, nationalité</li>
+                  <li>Adresse e-mail et numéro de téléphone</li>
+                  <li>Classe et statut d’étudiant</li>
+                </ul>
+              </div>
+              <div className="p-0">
+                <h3 className="mt-0">Images et consentements</h3>
+                <ul>
+                  <li>Consentement pour l’utilisation d’image</li>
+                  <li>Date et lieu de prise de vue</li>
+                </ul>
+              </div>
+              <div className="p-0">
+                <h3 className="mt-0">Formulaires</h3>
+                <ul>
+                  <li>Réponses (participation, boutique, événements…)</li>
+                  <li>Origine : site, présentiel, outils tiers (Google Forms, boutique)</li>
+                </ul>
+              </div>
+            </div>
+
+            <hr className="my-8" />
+
+            <h2>4. Finalités et bases légales</h2>
+            <dl>
+              <dt>Prise de contact</dt>
+              <dd>Consentement</dd>
+              <dt>Gestion de l’adhésion / boutique / billetterie</dt>
+              <dd>Exécution d’un contrat</dd>
+              <dt>Droit à l’image</dt>
+              <dd>Consentement explicite</dd>
+              <dt>Communication d’informations BDE</dt>
+              <dd>Intérêt légitime</dd>
+              <dt>Obligations comptables</dt>
+              <dd>Obligation légale</dd>
+              <dt>Sécurité / journalisation</dt>
+              <dd>Intérêt légitime</dd>
+            </dl>
+
+            <hr className="my-8" />
 
             <h2>5. Durée de conservation</h2>
-            <p>Vos données sont conservées :</p>
+            <table className="w-full border-separate border-spacing-y-1 md:border-spacing-y-2">
+              <thead>
+                <tr>
+                  <th className="text-left py-1 pr-4">Catégorie</th>
+                  <th className="text-left py-1">Durée</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="py-1 pr-4 align-top">Droit à l’image</td>
+                  <td className="py-1 align-top">Année scolaire + 1 an d’archive</td>
+                </tr>
+                <tr>
+                  <td className="py-1 pr-4 align-top">Données contractuelles</td>
+                  <td className="py-1 align-top">3 à 10 ans (obligations légales)</td>
+                </tr>
+                <tr>
+                  <td className="py-1 pr-4 align-top">Données de contact</td>
+                  <td className="py-1 align-top">2 ans après le dernier contact</td>
+                </tr>
+                <tr>
+                  <td className="py-1 pr-4 align-top">Logs techniques</td>
+                  <td className="py-1 align-top">6 à 12 mois</td>
+                </tr>
+                <tr>
+                  <td className="py-1 pr-4 align-top">Données scolaires</td>
+                  <td className="py-1 align-top">Année scolaire + 1 an</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <hr className="my-8" />
+
+            <h2>6. Destinataires des données</h2>
             <ul>
-              <li>Newsletter : jusqu&apos;à votre désinscription</li>
-              <li>Carte BDE : pendant la durée de validité + 1 an pour les obligations légales</li>
-              <li>Formulaires de contact : 3 ans maximum</li>
+              <li>Accès interne : Président, Vice-président, Trésorier, Vice-trésorier</li>
+              <li>Sous-traitants : Google Workspace (mail, forms), hébergeur</li>
+            </ul>
+            <p>Aucune donnée n’est transférée en dehors de l’Union européenne.</p>
+
+            <hr className="my-8" />
+
+            <h2>7. Cookies</h2>
+            <p>
+              Le site n’utilise que des cookies strictement nécessaires à son bon fonctionnement.
+              Aucune mesure d’audience ou traceur tiers n’est activé sans consentement.
+            </p>
+
+            <hr className="my-8" />
+
+            <h2>8. Droits des utilisateurs</h2>
+            <ul>
+              <li>Accès, rectification, suppression</li>
+              <li>Opposition, limitation, portabilité</li>
+              <li>Retrait du consentement</li>
+              <li>Directives post-mortem</li>
+            </ul>
+            <p>
+              Exercez vos droits à : <a href={`mailto:${settings.email}`}>{settings.email}</a> — délai
+              de réponse : 1 mois.
+            </p>
+
+            <hr className="my-8" />
+
+            <h2>9. Sécurité</h2>
+            <ul>
+              <li>Connexion HTTPS</li>
+              <li>Sauvegardes régulières</li>
+              <li>Contrôle d’accès strict</li>
+              <li>Journalisation et mises à jour régulières</li>
             </ul>
 
-            <h2>6. Vos droits</h2>
-            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+            <hr className="my-8" />
+
+            <h2>10. Données concernant les mineurs</h2>
             <ul>
-              <li>
-                <strong>Droit d&apos;accès :</strong> vous pouvez demander une copie de vos données
-              </li>
-              <li>
-                <strong>Droit de rectification :</strong> vous pouvez demander la correction de vos
-                données
-              </li>
-              <li>
-                <strong>Droit à l&apos;effacement :</strong> vous pouvez demander la suppression de
-                vos données
-              </li>
-              <li>
-                <strong>Droit d&apos;opposition :</strong> vous pouvez vous opposer au traitement
-                de vos données
-              </li>
-              <li>
-                <strong>Droit à la portabilité :</strong> vous pouvez récupérer vos données dans un
-                format structuré
-              </li>
-            </ul>
-            <p>
-              Pour exercer ces droits, contactez-nous à : {settings.email}
-              <br />
-              Nous nous engageons à répondre sous 1 mois maximum.
-            </p>
-
-            <h2>7. Sécurité des données</h2>
-            <p>
-              Nous mettons en œuvre toutes les mesures techniques et organisationnelles appropriées
-              pour protéger vos données contre la perte, l&apos;utilisation abusive, l&apos;accès
-              non autorisé, la divulgation, l&apos;altération ou la destruction.
-            </p>
-
-            <h2>8. Cookies</h2>
-            <p>
-              Ce site n&apos;utilise pas de cookies publicitaires ou de tracking. Seuls des cookies
-              techniques strictement nécessaires au fonctionnement du site peuvent être utilisés.
-            </p>
-
-            <h2>9. Partage des données</h2>
-            <p>
-              Vos données personnelles ne sont jamais vendues, louées ou échangées. Elles peuvent
-              être partagées uniquement avec :
-            </p>
-            <ul>
-              <li>Les prestataires techniques nécessaires au fonctionnement du site (hébergeur)</li>
-              <li>Les autorités légales sur réquisition judiciaire</li>
+              <li>Collecte possible dans le cadre d’événements</li>
+              <li>Consentement parental obligatoire pour l’utilisation d’images</li>
             </ul>
 
-            <h2>10. Modifications</h2>
+            <hr className="my-8" />
+
+            <h2>11. Délégué à la protection des données (DPO)</h2>
             <p>
-              Cette politique de confidentialité peut être modifiée à tout moment. La version en
-              vigueur est celle publiée sur cette page.
-            </p>
-            <p>
-              <em>Dernière mise à jour : {new Date().toLocaleDateString("fr-FR")}</em>
+              Référent RGPD : Mathis BRUEL — <a href={`mailto:${settings.email}`}>{settings.email}</a>
             </p>
 
-            <h2>11. Contact et réclamation</h2>
+            <h2>12. Contact et réclamation</h2>
             <p>
               Pour toute question relative à cette politique ou à vos données personnelles :
               <br />
-              Email : {settings.email}
+              Email : <a href={`mailto:${settings.email}`}>{settings.email}</a>
             </p>
             <p>
               Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une
-              réclamation auprès de la CNIL (Commission Nationale de l&apos;Informatique et des
-              Libertés) :{" "}
-              <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">
-                www.cnil.fr
-              </a>
+              réclamation auprès de la CNIL :
+              <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer"> www.cnil.fr</a>
+            </p>
+
+            <p>
+              <em>Dernière mise à jour : 15/10/2025</em>
             </p>
           </div>
         </Section>
