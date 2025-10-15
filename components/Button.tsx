@@ -5,6 +5,7 @@ interface ButtonProps {
   children: React.ReactNode;
   href?: string;
   variant?: "primary" | "secondary" | "outline" | "cta";
+  size?: "sm" | "md" | "lg";
   className?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
@@ -15,13 +16,20 @@ export function Button({
   children,
   href,
   variant = "primary",
+  size = "md",
   className,
   onClick,
   type = "button",
   disabled = false,
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+    "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+
+  const sizes = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-6 py-3",
+    lg: "px-8 py-4 text-lg",
+  } as const;
 
   const variants = {
     primary:
@@ -33,7 +41,7 @@ export function Button({
     cta: "bg-grad-secondary text-brand-black font-chunk text-lg uppercase tracking-wide hover:scale-105 focus:ring-brand-yellow shadow-lg hover:shadow-xl",
   };
 
-  const classes = cn(baseStyles, variants[variant], className);
+  const classes = cn(baseStyles, sizes[size], variants[variant], className);
 
   if (href) {
     return (

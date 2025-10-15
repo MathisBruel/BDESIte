@@ -108,9 +108,18 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
                 <h3 className="text-xl font-bold font-spartan text-brand-red mb-3">
                   📸 Galerie photos
                 </h3>
-                <Button href={event.photosUrl} variant="secondary">
-                  {texts.home.past.photos}
-                </Button>
+                <a
+                  href={event.photosUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={texts.home.past.photos}
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-brand-red hover:bg-brand-pale shadow"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z"/>
+                    <path d="M20 6h-2.586l-1.121-1.121A2 2 0 0015.172 4H8.828a2 2 0 00-1.414.586L6.293 6H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2zm0 12H4V8h3.172l1.414-1.414c.188-.188.442-.293.707-.293h6.414c.265 0 .52.105.707.293L16.828 8H20v10z"/>
+                  </svg>
+                </a>
               </div>
             )}
 
