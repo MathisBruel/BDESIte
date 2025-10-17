@@ -7,7 +7,7 @@ export const defaultMetadata: Metadata = {
     template: "%s | BDE Sup'RNova",
   },
   description:
-    "Le BDE Sup'RNova, association étudiante de Sup de Co Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
+    "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
   keywords: [
     "BDE",
     "Sup'RNova",
@@ -16,7 +16,7 @@ export const defaultMetadata: Metadata = {
     "événements",
     "partenaires",
     "carte BDE",
-    "Sup de Co",
+    "Sup de Vinci",
   ],
   authors: [{ name: "BDE Sup'RNova" }],
   creator: "BDE Sup'RNova",
@@ -27,7 +27,7 @@ export const defaultMetadata: Metadata = {
     siteName: "BDE Sup'RNova",
     title: "BDE Sup'RNova | Association étudiante Rennes",
     description:
-      "Le BDE Sup'RNova, association étudiante de Sup de Co Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
+      "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
     images: [
       {
         url: "/images/assets/Logo couleur.png",
@@ -41,7 +41,7 @@ export const defaultMetadata: Metadata = {
     card: "summary_large_image",
     title: "BDE Sup'RNova",
     description:
-      "Le BDE Sup'RNova, association étudiante de Sup de Co Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
+      "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
     images: ["/images/assets/Logo couleur.png"],
   },
   robots: {

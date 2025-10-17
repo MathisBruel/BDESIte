@@ -1,6 +1,6 @@
 # Site Web BDE Sup'RNova
 
-Site web officiel du Bureau des Étudiants Sup'RNova de Sup de Co Rennes, développé avec Next.js 14, TypeScript et TailwindCSS.
+Site web officiel du Bureau des Étudiants Sup'RNova de Sup de Vinci Rennes, développé avec Next.js 14, TypeScript et TailwindCSS.
 
 ## 🚀 Démarrage rapide
 
