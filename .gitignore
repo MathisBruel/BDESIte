@@ -34,3 +34,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Edwin specific irgnore files
+.prettierrc
+AGENTS.md
+/edwin
