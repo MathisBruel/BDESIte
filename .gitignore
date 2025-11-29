@@ -39,3 +39,9 @@ AGENTS.md
 .vscode/
 edwin/
 .prettierrc
+
+# local env files
+.env
+
+# agent artifacts
+.agent/

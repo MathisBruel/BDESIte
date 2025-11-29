@@ -9,25 +9,29 @@ import { Container } from "./Container";
 import { Button } from "./Button";
 import { getTexts } from "@/lib/data";
 
-const texts = getTexts();
-const navigation = [
-  { name: texts.header.nav.home, href: "/", scroll: "top" },
-  { name: texts.header.nav.events, href: "/#evenements", scroll: "evenements" },
-  { name: texts.header.nav.partners, href: "/partenaires" },
-  { name: texts.header.nav.card, href: "/carte-bde" },
-  { name: texts.header.nav.team, href: "/#equipe", scroll: "equipe" },
-  { name: texts.header.nav.contact, href: "/#contact", scroll: "contact" },
-];
+import { DEFAULT_TEXTS } from "@/lib/constants";
 
-export function Header() {
+// const texts = getTexts(); // Removed internal fetch
+// Navigation moved inside component to use props
+
+export function Header({ texts = DEFAULT_TEXTS }: { texts?: any }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
+  const navigation = [
+    { name: texts.header.nav.home, href: "/", scroll: "top" },
+    { name: texts.header.nav.events, href: "/#evenements", scroll: "evenements" },
+    { name: texts.header.nav.partners, href: "/partenaires" },
+    { name: texts.header.nav.card, href: "/carte-bde" },
+    { name: texts.header.nav.team, href: "/#equipe", scroll: "equipe" },
+    { name: texts.header.nav.contact, href: "/#contact", scroll: "contact" },
+  ];
+
   const handleScroll = (e: React.MouseEvent, scrollTo: string, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    
+
     if (pathname !== "/") {
       router.push(href);
       setTimeout(() => {

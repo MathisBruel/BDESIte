@@ -15,39 +15,42 @@ export const PartnerSchema = z.object({
     "autre",
   ]),
   city: z.string(),
-  logo: z.string().optional(),
+  logo: z.string().nullable().optional(),
   advantages: z.array(z.string()),
-  conditions: z.string().optional(),
-  website: z.string().url().optional(),
-  address: z.string().optional(),
+  conditions: z.string().nullable().optional(),
+  website: z.string().url().nullable().optional(),
+  address: z.string().nullable().optional(),
   active: z.boolean().default(true),
+  createdAt: z.date().or(z.string()).nullable().optional(),
+  updatedAt: z.date().or(z.string()).nullable().optional(),
 });
 
 export const EventSchema = z.object({
   slug: z.string(),
   title: z.string(),
   date: z.string(),
-  endDate: z.string().optional(),
+  endDate: z.string().nullable().optional(),
   place: z.string(),
-  cover: z.string().optional(),
+  cover: z.string().nullable().optional(),
   tags: z.array(z.string()),
   description: z.string(),
-  ticketUrl: z.string().url().optional(),
-  photosUrl: z.string().url().optional(),
+  ticketUrl: z.string().url().nullable().optional(),
+  photosUrl: z.string().url().nullable().optional(),
   published: z.boolean().default(true),
 });
 
 export const TeamMemberSchema = z.object({
   name: z.string(),
   role: z.string(),
-  photo: z.string().optional(),
-  photoPosition: z.enum(["top", "center", "bottom", "left", "right", "top-left", "top-right", "bottom-left", "bottom-right"]).optional().default("center"),
+  photo: z.string().nullable().optional(),
+  photoPosition: z.enum(["top", "center", "bottom", "left", "right", "top-left", "top-right", "bottom-left", "bottom-right"]).nullable().optional().default("center"),
   links: z
     .object({
-      instagram: z.string().optional(),
-      linkedin: z.string().optional(),
-      email: z.string().email().optional(),
+      instagram: z.string().nullable().optional(),
+      linkedin: z.string().nullable().optional(),
+      email: z.string().email().nullable().optional(),
     })
+    .nullable()
     .optional(),
 });
 
@@ -55,11 +58,11 @@ export const SettingsSchema = z.object({
   association: z.string(),
   year: z.string(),
   email: z.string().email(),
-  shopUrl: z.string().url(),
-  instagram: z.string().url().optional(),
-  discord: z.string().url().optional(),
-  facebook: z.string().url().optional(),
-  linkedin: z.string().url().optional(),
+  shopUrl: z.string().url().nullable().optional(),
+  instagram: z.string().url().nullable().optional(),
+  discord: z.string().url().nullable().optional(),
+  facebook: z.string().url().nullable().optional(),
+  linkedin: z.string().url().nullable().optional(),
 });
 
 export type Partner = z.infer<typeof PartnerSchema>;

@@ -1,67 +1,157 @@
-import partnersData from "@/data/partners.json";
-import eventsData from "@/data/events.json";
-import teamData from "@/data/team.json";
-import settingsData from "@/data/settings.json";
-import { PartnerSchema, EventSchema, TeamMemberSchema, SettingsSchema, TextsSchema } from "./schemas";
-import type { Partner, Event, TeamMember, Settings, Texts } from "./schemas";
-import textsData from "@/data/texts.json";
-import { z } from "zod";
+import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
+import { Partner } from './schemas'
 
-function validateData<T>(data: unknown, schema: z.ZodSchema<T>): T[] | T {
-  if (Array.isArray(data)) {
-    return data.map((item) => schema.parse(item));
+const globalForPrisma = global as unknown as {
+  prisma: PrismaClient
+  pool: Pool
+}
+
+// Create a connection pool
+const pool = globalForPrisma.pool || new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/bde_db',
+})
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.pool = pool
+}
+
+// Create the Prisma adapter
+const adapter = new PrismaPg(pool)
+
+// Initialize Prisma Client with the adapter
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    adapter,
+    log: ['query'],
+  })
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export async function getPartners() {
+  try {
+    return await prisma.partner.findMany({
+      where: { active: true },
+    })
+  } catch (error) {
+    console.error("Failed to fetch partners:", error);
+    return [];
   }
-  return schema.parse(data);
 }
 
-export function getPartners(): Partner[] {
-  return validateData(partnersData, PartnerSchema) as Partner[];
+export async function getEvents() {
+  try {
+    return await prisma.event.findMany({
+      where: { published: true },
+      orderBy: { date: 'asc' },
+    })
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+    return [];
+  }
 }
 
-export function getActivePartners(): Partner[] {
-  return getPartners().filter((p) => p.active);
+export async function getEventBySlug(slug: string) {
+  try {
+    return await prisma.event.findUnique({
+      where: { slug },
+    })
+  } catch (error) {
+    console.error(`Failed to fetch event with slug ${slug}:`, error);
+    return null;
+  }
 }
 
-export function getPartnersByCategory(category: string): Partner[] {
-  return getActivePartners().filter((p) => p.category === category);
+export async function getTeamMembers() {
+  try {
+    return await prisma.teamMember.findMany({
+      orderBy: { createdAt: 'asc' }, // Or any other order preference
+    })
+  } catch (error) {
+    console.error("Failed to fetch team members:", error);
+    return [];
+  }
 }
 
-export function getEvents(): Event[] {
-  return validateData(eventsData, EventSchema) as Event[];
+export async function getSettings() {
+  try {
+    const settings = await prisma.settings.findUnique({
+      where: { id: 1 },
+    });
+
+    if (!settings) {
+      throw new Error("Settings not found");
+    }
+    return settings;
+  } catch (error) {
+    console.warn("Failed to fetch settings, using defaults:", error);
+    return {
+      id: 1,
+      year: "2024-2025",
+      shopUrl: "#",
+      email: "contact@bde-sup-rnova.fr",
+      instagram: "https://instagram.com/bde_suprnova",
+      discord: "https://discord.gg/bde",
+      linkedin: "https://linkedin.com/company/bde-sup-rnova",
+      facebook: "https://facebook.com/bde-sup-rnova",
+      association: "BDE Sup'RNova",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
 }
 
-export function getPublishedEvents(): Event[] {
-  return getEvents()
-    .filter((e) => e.published)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+export async function getUpcomingEvents(limit?: number) {
+  try {
+    return await prisma.event.findMany({
+      where: {
+        published: true,
+        date: {
+          gte: new Date(),
+        },
+      },
+      orderBy: { date: 'asc' },
+      take: limit,
+    })
+  } catch (error) {
+    console.error("Failed to fetch upcoming events:", error);
+    return [];
+  }
 }
 
-export function getUpcomingEvents(limit?: number): Event[] {
-  const now = new Date();
-  const upcoming = getPublishedEvents().filter((e) => new Date(e.date) >= now);
-  return limit ? upcoming.slice(0, limit) : upcoming;
+export async function getPastEvents() {
+  try {
+    return await prisma.event.findMany({
+      where: {
+        published: true,
+        date: {
+          lt: new Date(),
+        },
+      },
+      orderBy: { date: 'desc' },
+    })
+  } catch (error) {
+    console.error("Failed to fetch past events:", error);
+    return [];
+  }
 }
 
-export function getPastEvents(): Event[] {
-  const now = new Date();
-  return getPublishedEvents()
-    .filter((e) => new Date(e.date) < now)
-    .reverse();
+export async function getActivePartners(): Promise<Partner[]> {
+  try {
+    const partners = await prisma.partner.findMany({
+      where: { active: true },
+    })
+    return partners as Partner[]
+  } catch (error) {
+    console.error("Failed to fetch active partners:", error);
+    return [];
+  }
 }
 
-export function getEventBySlug(slug: string): Event | undefined {
-  return getEvents().find((e) => e.slug === slug);
-}
+import { DEFAULT_TEXTS } from "./constants";
 
-export function getTeamMembers(): TeamMember[] {
-  return validateData(teamData, TeamMemberSchema) as TeamMember[];
+export async function getTexts() {
+  return DEFAULT_TEXTS;
 }
-
-export function getSettings(): Settings {
-  return validateData(settingsData, SettingsSchema) as Settings;
-}
-
-export function getTexts(): Texts {
-  return validateData(textsData, TextsSchema) as Texts;
-}
-

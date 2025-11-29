@@ -228,12 +228,6 @@ Utilisation dans Tailwind :
 
 ## 🚢 Déploiement
 
-### Vercel (recommandé)
-
-1. Créer un compte sur [vercel.com](https://vercel.com)
-2. Connecter votre dépôt Git
-3. Vercel détecte automatiquement Next.js et configure tout
-4. Chaque push sur `main` déclenche un déploiement
 
 ### Autres plateformes
 

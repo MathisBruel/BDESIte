@@ -11,9 +11,9 @@ export const metadata = {
     "Profitez d'avantages exclusifs toute l'année avec la carte BDE Sup'RNova 2025-2026.",
 };
 
-export default function CardBDEPage() {
-  const settings = getSettings();
-  const partnersCount = getActivePartners().length;
+export default async function CardBDEPage() {
+  const settings = await getSettings();
+  const partnersCount = (await getActivePartners()).length;
 
   return (
     <>
@@ -23,7 +23,7 @@ export default function CardBDEPage() {
           title={`Carte BDE ${settings.year}`}
           subtitle="Votre pass pour une année d'avantages"
           description={`Accédez à des réductions exclusives chez plus de ${partnersCount} partenaires locaux.`}
-          primaryCta={{ text: "Acheter ma carte", href: settings.shopUrl }}
+          primaryCta={{ text: "Acheter ma carte", href: settings.shopUrl || "#" }}
           secondaryCta={{ text: "Voir les partenaires", href: "/partenaires" }}
           variant="card"
         />

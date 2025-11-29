@@ -2,19 +2,20 @@ import { Hero } from "@/components/Hero";
 import { Section } from "@/components/Section";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getSettings } from "@/lib/data";
+import { getSettings, getTexts } from "@/lib/data";
 
 export const metadata = {
   title: "Politique de confidentialité | BDE Sup'RNova",
   description: "Politique de confidentialité et protection des données du BDE Sup'RNova.",
 };
 
-export default function PrivacyPage() {
-  const settings = getSettings();
+export default async function PrivacyPage() {
+  const settings = await getSettings();
+  const texts = await getTexts();
 
   return (
     <>
-      <Header />
+      <Header texts={texts} />
       <main>
         <Hero title="Politique de confidentialité" showCtas={false} />
 

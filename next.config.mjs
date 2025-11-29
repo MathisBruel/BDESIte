@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
+  experimental: {
+  },
   images: {
     domains: [],
     formats: ['image/avif', 'image/webp'],
@@ -16,4 +19,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

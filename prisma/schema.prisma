@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Partner {
+  id          String   @id
+  name        String
+  category    String
+  city        String
+  logo        String?
+  advantages  String[]
+  conditions  String?
+  website     String?
+  address     String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  slug        String   @id
+  title       String
+  date        DateTime
+  endDate     DateTime?
+  place       String
+  cover       String
+  tags        String[]
+  description String
+  ticketUrl   String?
+  published   Boolean  @default(false)
+  photosUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TeamMember {
+  id            String   @id @default(cuid())
+  name          String
+  role          String
+  photo         String
+  photoPosition String?
+  linkedin      String?
+  instagram     String?
+  email         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Settings {
+  id          Int      @id @default(1)
+  association String
+  year        String
+  email       String
+  shopUrl     String?
+  instagram   String?
+  discord     String?
+  facebook    String?
+  linkedin    String?
+  updatedAt   DateTime @updatedAt
+}

@@ -11,8 +11,8 @@ export const metadata = {
     "Découvrez tous les commerces et services partenaires qui vous offrent des réductions avec votre carte BDE Sup'RNova.",
 };
 
-export default function PartnersPage() {
-  const allPartners = getActivePartners();
+export default async function PartnersPage() {
+  const allPartners = await getActivePartners();
   const categories = Array.from(new Set(allPartners.map((p) => p.category)));
   const cities = Array.from(new Set(allPartners.map((p) => p.city))).sort();
 
