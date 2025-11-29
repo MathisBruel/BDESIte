@@ -8,6 +8,7 @@ Site web officiel du Bureau des Étudiants Sup'RNova de Sup de Vinci Rennes, dé
 
 - Node.js 18+ ou 20+
 - npm, yarn ou pnpm
+- 
 
 ### Installation
 
