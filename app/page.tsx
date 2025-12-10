@@ -10,6 +10,7 @@ import { Badge } from "@/components/Badge";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Container } from "@/components/Container";
+import { MerchSection } from "@/components/MerchSection";
 import { getUpcomingEvents, getPastEvents, getSettings, getTeamMembers, getActivePartners, getTexts } from "@/lib/data";
 import { animateScrollToY, formatText } from "@/lib/utils";
 
@@ -148,6 +149,8 @@ export default function HomePage() {
           </Container>
         </section>
 
+        <MerchSection />
+
         <Section id="presentation" className="bg-white">
           <motion.div
             className="max-w-4xl mx-auto"
@@ -273,8 +276,8 @@ export default function HomePage() {
                       {event.cover && (
                         <div className="relative w-full h-64 overflow-hidden">
                           <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all z-10"></div>
-                          <Image 
-                            src={event.cover} 
+                          <Image
+                            src={event.cover}
                             alt={event.title}
                             fill
                             className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110"
@@ -286,7 +289,7 @@ export default function HomePage() {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="p-6 relative">
                         {event.photosUrl && (
                           <a
@@ -297,8 +300,8 @@ export default function HomePage() {
                             className="absolute top-3 right-3 z-20 inline-flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 shadow"
                           >
                             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z"/>
-                              <path d="M20 6h-2.586l-1.121-1.121A2 2 0 0015.172 4H8.828a2 2 0 00-1.414.586L6.293 6H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2zm0 12H4V8h3.172l1.414-1.414c.188-.188.442-.293.707-.293h6.414c.265 0 .52.105.707.293L16.828 8H20v10z"/>
+                              <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z" />
+                              <path d="M20 6h-2.586l-1.121-1.121A2 2 0 0015.172 4H8.828a2 2 0 00-1.414.586L6.293 6H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2zm0 12H4V8h3.172l1.414-1.414c.188-.188.442-.293.707-.293h6.414c.265 0 .52.105.707.293L16.828 8H20v10z" />
                             </svg>
                           </a>
                         )}
@@ -315,7 +318,7 @@ export default function HomePage() {
                             })
                           )}
                         </div>
-                        
+
                         <h3 className="text-xl font-bold font-spartan text-gray-800 mb-3 group-hover:text-brand-red transition-colors">
                           {event.title}
                         </h3>

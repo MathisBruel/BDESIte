@@ -54,10 +54,23 @@
     "address": "BOULANGERIE ANGE, 171 Rue de Châteaugiron, 35000 Rennes",
     "website": "https://www.boulangerie-ange.fr/stores/boulangerie-ange-rennes-chateaugiron/?utm_source=google&utm_medium=organic&utm_campaign=mybusiness-website",
     "advantages": [
-      "-10% sur le montant total",
-      "Priorité sur les grosses réservations"
+      "-10% sur le montant total"
     ],
     "conditions": "Valable dans les 3 boutiques Ange de Rennes, toute l'année 2025-2026 sous présentation de la carte BDE",
+    "active": true
+  },
+  {
+    "id": "amour-de-pizza",
+    "name": "Amour de pizza",
+    "category": "alimentaire",
+    "city": "Chantepie",
+    "logo": "/images/partners/adp.jpg",
+    "address": "2 Rue du Noyer, 35000 Rennes",
+    "website": "https://www.amourdepizza.fr/",
+    "advantages": [
+      "-10% sur le montant total"
+    ],
+    "conditions": "Tarifs réservés aux porteurs de la carte BDE 2025-2026",
     "active": true
   }
 ]

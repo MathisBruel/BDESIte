@@ -27,7 +27,7 @@ export function Header() {
   const handleScroll = (e: React.MouseEvent, scrollTo: string, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    
+
     if (pathname !== "/") {
       router.push(href);
       setTimeout(() => {
@@ -98,8 +98,8 @@ export function Header() {
                 </Link>
               )
             ))}
-            <Button variant="cta" href="/carte-bde" className="ml-4">
-              {texts.header.ctaBuyCard}
+            <Button variant="cta" href="https://boutique.suprennes.me" className="ml-4">
+              Boutique
             </Button>
           </div>
 
@@ -151,8 +151,8 @@ export function Header() {
                 </Link>
               )
             ))}
-            <Button variant="cta" href="/carte-bde" className="w-full mt-4">
-              🛒 Acheter la carte
+            <Button variant="cta" href="https://boutique.suprennes.me" className="w-full mt-4">
+              🛒 Boutique
             </Button>
           </div>
         )}

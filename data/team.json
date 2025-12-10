@@ -69,9 +69,31 @@
     "photo": "/images/team/yoann.png",
     "photoPosition": "top",
     "links": {
+      "linkedin": "https://www.linkedin.com/in/yoann-renat-431273230/",
       "instagram": "https://instagram.com/_yoann_rnt_",
       "email": "yoann.renat@suprennes.me"
     }
+  },
+  {
+    "name": "Jonathan PRIOUX",
+    "role": "Photographe",
+    "photo": "/images/team/Jo.png",
+    "photoPosition": "top",
+    "links": {
+      "linkedin": "https://www.linkedin.com/in/jonathan-prioux-45b13a206/",
+      "instagram": "https://www.instagram.com/jonathanprioux/",
+      "email": "jonathan.prioux@suprennes.me"
+    }
+  },
+  {
+    "name": "Adam SICAUD",
+    "role": "Chargé Communication",
+    "photo": "/images/team/Adam.jpg",
+    "photoPosition": "center",
+    "links": {
+      "linkedin": "https://www.linkedin.com/in/adam-sicaud-1333bb38b/",
+      "instagram": "https://www.instagram.com/sic.adam/",
+      "email": "adam.sicaud@suprennes.me"
+    }
   }
 ]
-

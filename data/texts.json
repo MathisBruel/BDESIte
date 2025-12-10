@@ -1,6 +1,6 @@
 {
   "header": {
-    "brand": "Sup'RNova",
+    "brand": "SUP'RNOVA",
     "nav": {
       "home": "🏠 Accueil",
       "events": "🎊 Événements",
@@ -31,7 +31,7 @@
   },
   "home": {
     "badgeYearPrefix": "⚡ Année",
-    "title": "BDE Sup'RNova",
+    "title": "BDE SUP'RNOVA",
     "subtitle": "Ta vie étudiante à 100% ! 🚀",
     "description": "Soirées de folie 🎉 • {partnersCount}+ partenaires 🤝 • Événements inoubliables 🎊 • Une équipe au top 💪",
     "ctaViewEvents": "🔥 Voir les événements",
@@ -45,7 +45,7 @@
       "eventsText": "Des soirées, du sport, de la culture... Y'en a pour tous les goûts !",
       "engagementTitle": "Engagement",
       "engagementText": "Une équipe de passionnés à ton service toute l'année !",
-      "intro": "Le BDE Sup'RNova, c'est LE Bureau des Étudiants qui fait vibrer le campus de Sup de Vinci Rennes ! Notre mission ? Rendre ton année étudiante absolument INOUBLIABLE 🚀"
+      "intro": "Le BDE SUP'RNOVA, c'est LE Bureau des Étudiants qui fait vibrer le campus de Sup de Vinci Rennes ! Notre mission ? Rendre ton année étudiante absolument INOUBLIABLE 🚀"
     },
     "upcoming": {
       "title": "🎊 Événements à venir",
@@ -73,7 +73,7 @@
     },
     "team": {
       "title": "🌟 L'équipe du BDE",
-      "hero": "La team Sup'RNova {year} 🚀",
+      "hero": "La team SUP'RNOVA {year} 🚀",
       "heroSubtitle": "Ensemble pour faire vibrer le campus !",
       "meet": "Rencontrez les membres du bureau 👇"
     },
@@ -93,9 +93,9 @@
     "accessibility": {
       "menu": "Menu"
     },
-    "brandAlt": "Logo Sup'RNova",
-    "brandAltBde": "Logo BDE Sup'RNova",
-    "teamImageAlt": "L'équipe du BDE Sup'RNova"
+    "brandAlt": "Logo SUP'RNOVA",
+    "brandAltBde": "Logo BDE SUP'RNOVA",
+    "teamImageAlt": "L'équipe du BDE SUP'RNOVA"
   }
 }
 

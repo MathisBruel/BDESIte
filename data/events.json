@@ -6,10 +6,14 @@
     "endDate": "2025-10-10T01:00:00+02:00",
     "place": "Rue Saint-Michel, 35000 Rennes | MrZinc",
     "cover": "/images/events/soiree-inte.jpg",
-    "tags": ["soirée", "campus", "intégration"],
+    "tags": [
+      "soirée",
+      "campus",
+      "intégration"
+    ],
     "description": "La soirée incontournable de la rentrée ! Venez faire connaissance avec les nouveaux étudiants et profiter d'une ambiance de folie. Bar jusqu'à 01h, animations et surprises vous attendent ! Nous vous attendons avec impatience ! Les +1 sont autorisés !",
     "published": true,
-    "photosUrl": "https://drive.google.com/drive/u/5/folders/17f5qOYSQfhSdJbXxm6rYls4YZVf3ZFbk"
+    "photosUrl": "https://drive.google.com/drive/folders/17f5qOYSQfhSdJbXxm6rYls4YZVf3ZFbk"
   },
   {
     "slug": "futsal-orga-2025",
@@ -18,9 +22,122 @@
     "endDate": "2025-10-23T19:00:00+02:00",
     "place": "UrbanSoccer Rennes Vern, Le Bois de Soeuvres, Rue de Chantepie, 35770 Vern-sur-Seiche",
     "cover": "/images/events/terrain-indoor-de-foot.jpg",
-    "tags": ["sport", "futsal", "école", "BDE"],
+    "tags": [
+      "sport",
+      "futsal",
+      "école",
+      "BDE"
+    ],
     "description": "Viens participer à une session Futsal organisée par Léna (responsable événements de l'école) et relayée par le BDE avec tout notre soutien ! Rendez-vous à UrbanSoccer Rennes à Vern-sur-Seiche pour une soirée sportive et conviviale entre étudiant·e·s. Ouvert à tous les niveaux, inscription bientôt disponible.",
+    "published": true,
+    "photosUrl": "https://drive.google.com/drive/folders/1MM_8XzM8k2y6EvdE-s_mFRy9OB8VAUqB"
+  },
+  {
+    "slug": "halloween-deguise-2025",
+    "title": "Journée Halloween Déguisée",
+    "date": "2025-10-31T09:00:00+01:00",
+    "place": "Campus de l'école",
+    "cover": "/images/events/Halloween.jpg",
+    "tags": [
+      "campus",
+      "halloween",
+      "déguisement",
+      "pédagogie"
+    ],
+    "description": "À l'occasion d'Halloween, tous les étudiant·e·s étaient invité·e·s à venir déguisé·e·s pour célébrer l'événement ! Nous avons eu quelques participant·e·s et l'équipe pédagogique a également joué le jeu, ajoutant une touche de fantaisie à cette journée d'apprentissage.",
+    "published": true,
+    "photosUrl": "https://drive.google.com/drive/folders/1P9mnPmzjVTp-cKi_Vp6wcWKtZ9wijo7R?usp=sharing"
+  },
+  {
+    "slug": "sensibilisation-don-sang-moelle-osseuse-2025",
+    "title": "Sensibilisation Don du Sang et Moelle Osseuse",
+    "date": "2025-12-08T09:00:00+01:00",
+    "place": "Campus de l'école",
+    "cover": "/images/events/donsang.png",
+    "tags": [
+      "santé",
+      "EFS",
+      "moelle osseuse",
+      "sensibilisation",
+      "engagement"
+    ],
+    "description": "Journée de sensibilisation au don du sang en collaboration avec l'EFS (Établissement Français du Sang) avec la venue d'une intervenante. Cet événement est mené en parallèle du projet de Marie-Sidonie pour le don de moelle osseuse. Suite à l'intervention, des voitures seront organisées à la fin des cours pour vous emmener à l'EFS afin de participer à cette action citoyenne essentielle. Votre engagement est important à nos yeux !",
+    "published": false
+  },
+  {
+    "slug": "soiree-noel-2025",
+    "title": "Soirée Noël",
+    "date": "2025-12-11T21:00:00+01:00",
+    "cover": "/images/events/soiree-inte2.jpg",
+    "tags": [
+      "soirée",
+      "noël",
+      "convivialité",
+      "partenariat"
+    ],
+    "description": "La soirée de Noël est l'occasion parfaite de se retrouver entre étudiant·e·s pour célébrer la fin de l'année dans une ambiance festive et conviviale. Au programme : Loterie, concours de Noël, ...",
+    "published": true,
+    "place": "Rue Saint-Michel, 35000 Rennes | MrZinc"
+  },
+  {
+    "slug": "wed-avril-2025",
+    "title": "Week-end Étudiant (WED) 2025",
+    "date": "2025-04-10T18:00:00+02:00",
+    "endDate": "2025-04-12T14:00:00+02:00",
+    "place": "Domaine le 5B, Plélan-Le-Grand",
+    "cover": "/images/events/wed-cover.jpg",
+    "tags": [
+      "WED",
+      "intégration",
+      "week-end",
+      "BDE"
+    ],
+    "description": "L'organisation du WED avance ! Ce week-end se passera au domaine le 5B à Plélan-Le-Grand (20 - 30 min de Rennes). Au programme : Des animations tout au long du week-end, des soirées, des boissons comprises dans le prix du week-end (entre 100€ et 130€) et plein de surprises. Remplissez le formulaire pour nous aider à prévoir ce week-end magique !\nhttps://docs.google.com/forms/d/e/1FAIpQLSdRCzwAfpvy5fhHnakgnbnEi33tooFfIxuaaGKorV1bCBVWzQ",
     "published": true
-  }
+  },
+  {
+    "slug": "don-du-sang-novembre-2025",
+    "title": "Don du sang - Session Novembre",
+    "date": "2025-11-13T17:00:00+01:00",
+    "place": "EFS Rennes",
+    "cover": "/images/events/donsang-nov.jpg",
+    "tags": [
+      "santé",
+      "solidarité",
+      "BDE"
+    ],
+    "description": "Le BDE est passé à l'EFS. 6 personnes se sont mobilisées et ont effectué 6 dons du sang le 13 novembre. Merci à eux !",
+    "published": true
+  },
+  {
+    "slug": "don-sang-et-plasma-decembre-2025",
+    "title": "Don de Sang et Plasma",
+    "date": "2025-12-11T17:00:00+01:00",
+    "place": "EFS Rennes",
+    "cover": "/images/events/donsang.png",
+    "tags": [
+      "santé",
+      "plasma",
+      "solidarité",
+      "EFS"
+    ],
+    "description": "4 personnes de l'école ont fait un don à l'EFS : 2 dons de sang et 2 dons de plasma. Le don de plasma permet de prélever uniquement la partie liquide du sang qui contient des protéines vitales pour de nombreux malades (hémophiles, déficits immunitaires).",
+    "published": true
+  },
+  {
+  "slug": "futsal-decembre-2025",
+  "title": "Futsal UrbanSoccer - Session Décembre",
+  "date": "2025-12-09T18:00:00+01:00",
+  "endDate": "2025-12-09T19:00:00+01:00",
+  "place": "UrbanSoccer Rennes Vern, Le Bois de Soeuvres, Rue de Chantepie, 35770 Vern-sur-Seiche",
+  "cover": "/images/events/terrain-indoor-de-foot.jpg",
+  "tags": [
+    "sport",
+    "futsal",
+    "détente"
+  ],
+  "description": "Une nouvelle session de Futsal s'est déroulée le 9 décembre à l'UrbanSoccer. Un moment sportif idéal pour se retrouver et se défouler entre étudiant·e·s.",
+  "published": true,
+    "photosUrl": "https://drive.google.com/drive/folders/1wgcQfphOS0TVXSEosEBs9u--DQ2vEH3T?usp=sharing"
+}
 ]
-
