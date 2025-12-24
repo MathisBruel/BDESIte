@@ -13,6 +13,7 @@ const texts = getTexts();
 const navigation = [
   { name: texts.header.nav.home, href: "/", scroll: "top" },
   { name: texts.header.nav.events, href: "/#evenements", scroll: "evenements" },
+  { name: texts.header.nav.stock, href: "/confiserie" },
   { name: texts.header.nav.partners, href: "/partenaires" },
   { name: texts.header.nav.card, href: "/carte-bde" },
   { name: texts.header.nav.team, href: "/#equipe", scroll: "equipe" },

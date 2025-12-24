@@ -1,0 +1,10 @@
+{
+  "products": [
+    { "name": "Caprisun", "type": "boisson", "quantity": 10, "price": 0.70, "emoji": "🧃" },
+    { "name": "CocaCola Cherry", "type": "boisson", "quantity": 8, "price": 0.90, "emoji": "🍒" },
+    { "name": "M&M's", "type": "snack", "quantity": 5, "price": 0.80, "emoji": "🍫" },
+    { "name": "Crèpes Whaou", "type": "dessert", "quantity": 5, "price": 0.50, "emoji": "" },
+    { "name": "Monster White", "type": "boisson", "quantity": 6, "price": 1.90, "emoji": "❄️" },
+    { "name": "Monster Classic", "type": "boisson", "quantity": 4, "price": 1.80, "emoji": "⚡" }
+  ]
+}
