@@ -75,6 +75,7 @@ export const TextsSchema = z.object({
       home: z.string(),
       events: z.string(),
       partners: z.string(),
+      stock: z.string(),
       card: z.string(),
       team: z.string(),
       contact: z.string(),
