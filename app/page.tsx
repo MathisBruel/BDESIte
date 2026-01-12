@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Section } from "@/components/Section";
@@ -15,12 +17,18 @@ import { getUpcomingEvents, getPastEvents, getSettings, getTeamMembers, getActiv
 import { animateScrollToY, formatText } from "@/lib/utils";
 
 export default function HomePage() {
-  const upcomingEvents = getUpcomingEvents(6);
-  const pastEvents = getPastEvents().slice(0, 3);
+  const allUpcomingEvents = getUpcomingEvents();
+  const allPastEvents = getPastEvents();
   const settings = getSettings();
   const team = getTeamMembers();
   const partnersCount = getActivePartners().length;
   const texts = getTexts();
+
+  const [visibleUpcomingCount, setVisibleUpcomingCount] = useState(6);
+  const [visiblePastCount, setVisiblePastCount] = useState(3);
+
+  const upcomingEvents = allUpcomingEvents.slice(0, visibleUpcomingCount);
+  const pastEvents = allPastEvents.slice(0, visiblePastCount);
 
   return (
     <>
@@ -239,6 +247,18 @@ export default function HomePage() {
                   </motion.div>
                 ))}
               </div>
+
+              {allUpcomingEvents.length > visibleUpcomingCount && (
+                <div className="flex justify-center mt-12">
+                  <Button
+                    onClick={() => setVisibleUpcomingCount((prev) => prev + 3)}
+                    variant="outline"
+                    className="bg-transparent border-2 border-brand-red text-brand-red hover:bg-brand-red hover:text-white px-8 py-3 text-lg font-bold"
+                  >
+                    Voir plus
+                  </Button>
+                </div>
+              )}
             </motion.div>
           </Section>
         )}
@@ -352,6 +372,18 @@ export default function HomePage() {
                   </motion.div>
                 ))}
               </div>
+
+              {allPastEvents.length > visiblePastCount && (
+                <div className="flex justify-center mt-12">
+                  <Button
+                    onClick={() => setVisiblePastCount((prev) => prev + 3)}
+                    variant="outline"
+                    className="bg-transparent border-2 border-gray-400 text-gray-600 hover:bg-gray-600 hover:text-white px-8 py-3 text-lg font-bold"
+                  >
+                    Voir plus
+                  </Button>
+                </div>
+              )}
 
               <div className="text-center mt-12">
                 <p className="text-gray-600 text-lg">
