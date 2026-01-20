@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getImageUrl } from "./image-url";
 
 export const defaultMetadata: Metadata = {
   metadataBase: new URL("https://suprennes.me"),
@@ -30,7 +31,7 @@ export const defaultMetadata: Metadata = {
       "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
     images: [
       {
-        url: "/images/assets/Logo couleur.png",
+        url: getImageUrl("assets/Logo couleur.png"),
         width: 1200,
         height: 1200,
         alt: "Logo BDE Sup'RNova",
@@ -42,7 +43,7 @@ export const defaultMetadata: Metadata = {
     title: "BDE Sup'RNova",
     description:
       "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
-    images: ["/images/assets/Logo couleur.png"],
+    images: [getImageUrl("assets/Logo couleur.png")],
   },
   robots: {
     index: true,

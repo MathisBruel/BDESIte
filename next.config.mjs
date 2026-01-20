@@ -1,19 +1,40 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
+  experimental: {
+  },
   images: {
-    domains: [],
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '9000',
+        pathname: '/bde-images/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'minio',
+        port: '9000',
+        pathname: '/bde-images/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.suprennes.me',
+        pathname: '/**',
+      },
+    ],
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    minimumCacheTTL: 86400,
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    unoptimized: false,
   },
   compress: true,
   poweredByHeader: false,
 };
 
 export default nextConfig;
-

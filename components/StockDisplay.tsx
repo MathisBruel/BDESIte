@@ -1,129 +1,156 @@
-import { promises as fs } from 'fs';
-import path from 'path';
+import { getActiveProducts, Product } from "@/lib/data";
 import { Badge } from "@/components/Badge";
-
-interface Product {
-  name: string;
-  type: string;
-  quantity: number;
-  price: number;
-  emoji?: string;
-}
-
-interface StockData {
-  products: Product[];
-}
+import { getImageUrl } from "@/lib/image-url";
+import Image from "next/image";
 
 export default async function StockDisplay() {
-  const filePath = path.join(process.cwd(), 'data', 'stock.json');
-  let data: StockData = { products: [] };
+  const products = await getActiveProducts();
 
-  try {
-    const fileContents = await fs.readFile(filePath, 'utf8');
-    data = JSON.parse(fileContents);
-  } catch (error) {
-    console.error('Error reading stock data:', error);
+  if (products.length === 0) {
     return (
-      <div className="p-4 text-brand-red font-chunk text-center">
-        Erreur de chargement du stock.
+      <div className="text-center py-16">
+        <div className="text-6xl mb-4">📦</div>
+        <h3 className="text-2xl font-bold font-spartan text-gray-700 mb-2">
+          Aucun produit disponible
+        </h3>
+        <p className="text-gray-500">
+          Revenez bientôt pour découvrir nos produits !
+        </p>
       </div>
     );
   }
 
-  // Adaptive Grid Logic
-  const count = data.products.length;
-  let gridColsClass = "lg:grid-cols-4"; // Default max
-
-  // Logic: If divisible by 3 and NOT divisible by 4 (e.g. 6, 9), OR if less than or equal to 6, favor 3 cols.
-  // Exception: if count is 4, use 4 cols.
+  const count = products.length;
+  let gridColsClass = "lg:grid-cols-4";
+  
   if (count > 0) {
-      if (count <= 3) {
-          gridColsClass = "lg:grid-cols-3"; // or even fewer, but 3 is a good base
-      } else if (count === 4) {
-          gridColsClass = "lg:grid-cols-4";
-      } else if (count === 5 || count === 6) {
-          gridColsClass = "lg:grid-cols-3"; // 2 rows of 3
-      } else if (count % 3 === 0 && count % 4 !== 0) {
-          gridColsClass = "lg:grid-cols-3";
-      } else {
-          gridColsClass = "lg:grid-cols-4";
-      }
+    if (count <= 3) {
+      gridColsClass = "lg:grid-cols-3";
+    } else if (count === 4) {
+      gridColsClass = "lg:grid-cols-4";
+    } else if (count === 5 || count === 6) {
+      gridColsClass = "lg:grid-cols-3";
+    } else if (count % 3 === 0 && count % 4 !== 0) {
+      gridColsClass = "lg:grid-cols-3";
+    } else {
+      gridColsClass = "lg:grid-cols-4";
+    }
   }
 
   return (
     <div className="w-full max-w-7xl mx-auto">
-      <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridColsClass} gap-8`}>
-        {data.products.map((product, index) => {
-          const isOutOfStock = product.quantity === 0;
+      <div className={`grid grid-cols-1 sm:grid-cols-2 ${gridColsClass} gap-6`}>
+        {products.map((product, index) => (
+          <ProductCard key={product.id} product={product} index={index} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
-          // Emoji logic: Manual > Type-based Fallback
-          let displayEmoji = product.emoji;
-          if (!displayEmoji) {
-               displayEmoji = product.type === 'boisson' ? '🥤' : 
-                              product.type === 'snack' ? '🍫' : 
-                              product.type === 'dessert' ? '🥞' : '📦';
-          }
+function ProductCard({ product, index }: { product: Product; index: number }) {
+  const isOutOfStock = product.quantity === 0;
+  const isLowStock = product.quantity > 0 && product.quantity <= 3;
 
-          return (
-            <div 
-              key={`${product.name}-${index}`}
-              className={`
-                bg-white border text-center border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full group
-                ${isOutOfStock ? 'opacity-80' : 'hover:-translate-y-1'}
-              `}
-            >
-              <div className={`relative w-full h-32 flex items-center justify-center ${isOutOfStock ? 'bg-gray-100' : 'bg-brand-pale/30'}`}>
-                 <div className="text-6xl transform group-hover:scale-110 transition-transform duration-300">
-                    {displayEmoji}
-                 </div>
-                 
-                 {isOutOfStock && (
-                    <div className="absolute top-2 right-2">
-                        <Badge variant="red" className="animate-pulse">Rupture</Badge>
-                    </div>
-                 )}
-                 
-                 {!isOutOfStock && (
-                    <div className="absolute top-2 right-2">
-                        <div className="bg-brand-yellow text-brand-black font-bold px-3 py-1 rounded-full shadow-sm text-sm border-2 border-brand-black/10">
-                            {product.price.toFixed(2)}€
-                        </div>
-                    </div>
-                 )}
-              </div>
+  return (
+    <div
+      className={`
+        relative bg-white rounded-2xl overflow-hidden transition-all duration-300 group
+        ${isOutOfStock 
+          ? 'opacity-70 border-2 border-gray-200' 
+          : 'border-2 border-transparent hover:border-brand-yellow hover:shadow-xl hover:-translate-y-2'
+        }
+      `}
+      style={{
+        animationDelay: `${index * 50}ms`,
+      }}
+    >
+      <div className={`
+        relative w-full aspect-square overflow-hidden
+        ${isOutOfStock ? 'bg-gray-100' : 'bg-gradient-to-br from-brand-pale/50 to-brand-yellow/20'}
+      `}>
+        {product.image ? (
+          <Image
+            src={getImageUrl(product.image)}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className={`
+              object-contain p-4 transition-transform duration-500
+              ${isOutOfStock ? 'grayscale' : 'group-hover:scale-110'}
+            `}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-7xl opacity-50">
+              {product.type === 'boisson' ? '🥤' : 
+               product.type === 'snack' ? '🍫' : 
+               product.type === 'dessert' ? '🥞' : '📦'}
+            </span>
+          </div>
+        )}
 
-              <div className="p-6 flex flex-col flex-1">
-                <div className="mb-4">
-                     <Badge variant="yellow" className="mb-3 uppercase text-xs tracking-wider">
-                        {product.type}
-                     </Badge>
-                     <h3 className="text-xl font-bold font-spartan text-brand-black mb-1 group-hover:text-brand-red transition-colors">
-                        {product.name}
-                     </h3>
-                     {/* Price display for out of stock items */}
-                     {isOutOfStock && (
-                        <p className="text-gray-400 font-medium text-sm">
-                            {product.price.toFixed(2)}€
-                        </p>
-                     )}
-                </div>
+        {isOutOfStock && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <span className="bg-brand-red text-white font-bold px-6 py-2 rounded-full text-sm uppercase tracking-wide shadow-lg transform -rotate-12">
+              Rupture
+            </span>
+          </div>
+        )}
 
-                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-gray-500">
-                    En stock
-                  </span>
-                  
-                  <span className={`
-                    font-chunk text-2xl
-                    ${isOutOfStock ? 'text-brand-red' : 'text-brand-black'}
-                  `}>
-                    {product.quantity}
-                  </span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {isLowStock && !isOutOfStock && (
+          <div className="absolute top-3 left-3">
+            <span className="bg-orange-500 text-white font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide shadow-md animate-pulse">
+              Stock limité
+            </span>
+          </div>
+        )}
+
+        <div className="absolute top-3 right-3">
+          <div className={`
+            font-bold px-4 py-2 rounded-xl text-lg shadow-lg backdrop-blur-sm
+            ${isOutOfStock 
+              ? 'bg-gray-800/80 text-white' 
+              : 'bg-brand-yellow text-brand-black border-2 border-brand-black/10'
+            }
+          `}>
+            {product.price.toFixed(2)}€
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <Badge variant="yellow" className="text-xs uppercase tracking-wider font-bold">
+            {product.type}
+          </Badge>
+        </div>
+
+        <h3 className={`
+          text-xl font-bold font-spartan mb-4 leading-tight transition-colors
+          ${isOutOfStock ? 'text-gray-500' : 'text-brand-black group-hover:text-brand-red'}
+        `}>
+          {product.name}
+        </h3>
+
+        <div className="flex items-center justify-between pt-4 border-t-2 border-gray-100">
+          <span className="text-sm font-semibold text-gray-500">
+            Disponible
+          </span>
+          
+          <div className="flex items-center gap-2">
+            <div className={`
+              w-3 h-3 rounded-full
+              ${isOutOfStock ? 'bg-red-500' : isLowStock ? 'bg-orange-500' : 'bg-green-500'}
+            `} />
+            <span className={`
+              font-chunk text-2xl
+              ${isOutOfStock ? 'text-red-500' : isLowStock ? 'text-orange-500' : 'text-brand-black'}
+            `}>
+              {product.quantity}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

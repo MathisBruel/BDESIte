@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Section } from "./Section";
 import { Button } from "./Button";
 import { Badge } from "./Badge";
+import { getBlurPlaceholder } from "@/lib/blur-placeholders";
 
 export function MerchSection() {
     return (
@@ -49,7 +50,11 @@ export function MerchSection() {
                             src="/images/assets/Pull/Ink Blue.png"
                             alt="Pull BDE Sup'RNova"
                             fill
+                            sizes="(max-width: 768px) 100vw, 400px"
                             className="object-contain"
+                            loading="lazy"
+                            placeholder="blur"
+                            blurDataURL={getBlurPlaceholder("/images/assets/Pull/Ink Blue.png")}
                         />
                     </div>
                     <h3 className="text-xl font-bold font-spartan mb-1 text-gray-800">Le Pull BDE</h3>
@@ -75,7 +80,11 @@ export function MerchSection() {
                             src="/images/assets/Pull-et-cartes/Sky blue.png"
                             alt="Pack Pull + Carte BDE"
                             fill
+                            sizes="(max-width: 768px) 100vw, 400px"
                             className="object-contain"
+                            loading="lazy"
+                            placeholder="blur"
+                            blurDataURL={getBlurPlaceholder("/images/assets/Pull-et-cartes/Sky blue.png")}
                         />
                     </div>
                     <h3 className="text-xl font-bold font-spartan mb-1 text-gray-800">Pack Pull + Carte</h3>

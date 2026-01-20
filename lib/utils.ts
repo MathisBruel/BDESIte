@@ -5,7 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: string | Date): string {
+export function formatDate(date: string | Date | null | undefined): string {
+  if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
   return new Intl.DateTimeFormat("fr-FR", {
     weekday: "long",
@@ -16,7 +17,8 @@ export function formatDate(date: string | Date): string {
   }).format(d);
 }
 
-export function formatTime(date: string | Date): string {
+export function formatTime(date: string | Date | null | undefined): string {
+  if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
   return new Intl.DateTimeFormat("fr-FR", {
     hour: "2-digit",
@@ -29,7 +31,7 @@ export function formatDateTime(date: string | Date): string {
   return `${formatDate(date)} à ${formatTime(date)}`;
 }
 
-export function formatDateTimeRange(startDate: string | Date, endDate?: string | Date): string {
+export function formatDateTimeRange(startDate: string | Date, endDate?: string | Date | null): string {
   if (!endDate) {
     return formatDateTime(startDate);
   }

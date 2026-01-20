@@ -2,19 +2,20 @@ import { Hero } from "@/components/Hero";
 import { Section } from "@/components/Section";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getSettings } from "@/lib/data";
+import { getSettings, getTexts } from "@/lib/data";
 
 export const metadata = {
   title: "Mentions légales | BDE Sup'RNova",
   description: "Mentions légales du site du BDE Sup'RNova.",
 };
 
-export default function LegalPage() {
-  const settings = getSettings();
+export default async function LegalPage() {
+  const settings = await getSettings();
+  const texts = await getTexts();
 
   return (
     <>
-      <Header />
+      <Header texts={texts} />
       <main>
         <Hero title="Mentions légales" showCtas={false} />
 

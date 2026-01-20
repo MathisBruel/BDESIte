@@ -7,20 +7,22 @@ import { useState } from "react";
 import { animateScrollToY } from "@/lib/utils";
 import { Container } from "./Container";
 import { Button } from "./Button";
-import { getTexts } from "@/lib/data";
+import { Texts } from "@/lib/schemas";
 
-const texts = getTexts();
-const navigation = [
-  { name: texts.header.nav.home, href: "/", scroll: "top" },
-  { name: texts.header.nav.events, href: "/#evenements", scroll: "evenements" },
-  { name: texts.header.nav.stock, href: "/confiserie" },
-  { name: texts.header.nav.partners, href: "/partenaires" },
-  { name: texts.header.nav.card, href: "/carte-bde" },
-  { name: texts.header.nav.team, href: "/#equipe", scroll: "equipe" },
-  { name: texts.header.nav.contact, href: "/#contact", scroll: "contact" },
-];
+interface HeaderProps {
+  texts: Texts;
+}
 
-export function Header() {
+export function Header({ texts }: HeaderProps) {
+  const navigation = [
+    { name: texts.header.nav.home, href: "/", scroll: "top" },
+    { name: texts.header.nav.events, href: "/#evenements", scroll: "evenements" },
+    { name: texts.header.nav.stock, href: "/confiserie" },
+    { name: texts.header.nav.partners, href: "/partenaires" },
+    { name: texts.header.nav.card, href: "/carte-bde" },
+    { name: texts.header.nav.team, href: "/#equipe", scroll: "equipe" },
+    { name: texts.header.nav.contact, href: "/#contact", scroll: "contact" },
+  ];
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -73,6 +75,7 @@ export function Header() {
               width={50}
               height={50}
               className="group-hover:scale-110 transition-transform"
+              priority
             />
             <div className="text-2xl font-bold font-spartan text-brand-red group-hover:text-brand-yellow transition-colors">
               {texts.header.brand}

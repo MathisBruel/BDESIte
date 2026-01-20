@@ -5,9 +5,9 @@ import { getSettings, getTexts } from "@/lib/data";
 import { formatText } from "@/lib/utils";
 import { Badge } from "./Badge";
 
-export function Footer() {
-  const settings = getSettings();
-  const texts = getTexts();
+export async function Footer() {
+  const settings = await getSettings();
+  const texts = await getTexts();
 
   return (
     <footer className="bg-brand-black text-white">

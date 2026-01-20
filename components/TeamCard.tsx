@@ -1,5 +1,7 @@
 import Image from "next/image";
 import type { TeamMember } from "@/lib/schemas";
+import { migrateImagePath } from "@/lib/image-url";
+import { getBlurPlaceholder } from "@/lib/blur-placeholders";
 
 interface TeamCardProps {
   member: TeamMember;
@@ -25,10 +27,14 @@ export function TeamCard({ member }: TeamCardProps) {
       <div className="relative w-32 h-32 mx-auto mb-4">
         {member.photo ? (
           <Image
-            src={member.photo}
+            src={migrateImagePath(member.photo)}
             alt={member.name}
             fill
+            sizes="128px"
             className={`object-cover rounded-full ${positionClass}`}
+            loading="lazy"
+            placeholder={getBlurPlaceholder(member.photo) ? "blur" : "empty"}
+            blurDataURL={getBlurPlaceholder(member.photo)}
           />
         ) : (
           <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">

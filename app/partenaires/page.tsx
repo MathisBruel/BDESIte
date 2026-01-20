@@ -2,7 +2,7 @@ import { Hero } from "@/components/Hero";
 import { Section } from "@/components/Section";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getActivePartners } from "@/lib/data";
+import { getActivePartners, getTexts } from "@/lib/data";
 import { PartnersClient } from "./PartnersClient";
 
 export const metadata = {
@@ -11,14 +11,15 @@ export const metadata = {
     "Découvrez tous les commerces et services partenaires qui vous offrent des réductions avec votre carte BDE Sup'RNova.",
 };
 
-export default function PartnersPage() {
-  const allPartners = getActivePartners();
+export default async function PartnersPage() {
+  const allPartners = await getActivePartners();
+  const texts = await getTexts();
   const categories = Array.from(new Set(allPartners.map((p) => p.category)));
   const cities = Array.from(new Set(allPartners.map((p) => p.city))).sort();
 
   return (
     <>
-      <Header />
+      <Header texts={texts} />
       <main>
         <Hero
           title="Nos Partenaires"

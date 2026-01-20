@@ -1,67 +1,299 @@
-import partnersData from "@/data/partners.json";
-import eventsData from "@/data/events.json";
-import teamData from "@/data/team.json";
-import settingsData from "@/data/settings.json";
-import { PartnerSchema, EventSchema, TeamMemberSchema, SettingsSchema, TextsSchema } from "./schemas";
-import type { Partner, Event, TeamMember, Settings, Texts } from "./schemas";
-import textsData from "@/data/texts.json";
-import { z } from "zod";
 
-function validateData<T>(data: unknown, schema: z.ZodSchema<T>): T[] | T {
-  if (Array.isArray(data)) {
-    return data.map((item) => schema.parse(item));
+import { prisma } from "@/lib/prisma";
+import { unstable_noStore as noStore } from "next/cache";
+import { Partner, Texts, TeamMember } from './schemas';
+import { FALLBACK_TEXTS } from "./fallback-texts";
+
+export interface Product {
+  id: string;
+  name: string;
+  type: string;
+  quantity: number;
+  price: number;
+  image: string | null;
+  active: boolean;
+  order: number;
+}
+
+export async function getProducts(): Promise<Product[]> {
+  noStore();
+  try {
+    const products = await prisma.product.findMany({
+      orderBy: { order: 'asc' },
+    });
+    return products;
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return [];
   }
-  return schema.parse(data);
 }
 
-export function getPartners(): Partner[] {
-  return validateData(partnersData, PartnerSchema) as Partner[];
+export async function getActiveProducts(): Promise<Product[]> {
+  noStore();
+  try {
+    const products = await prisma.product.findMany({
+      where: { active: true },
+      orderBy: { order: 'asc' },
+    });
+    return products;
+  } catch (error) {
+    console.error("Failed to fetch active products:", error);
+    return [];
+  }
 }
 
-export function getActivePartners(): Partner[] {
-  return getPartners().filter((p) => p.active);
+export async function getProductById(id: string): Promise<Product | null> {
+  noStore();
+  try {
+    return await prisma.product.findUnique({
+      where: { id },
+    });
+  } catch (error) {
+    console.error(`Failed to fetch product with id ${id}:`, error);
+    return null;
+  }
 }
 
-export function getPartnersByCategory(category: string): Partner[] {
-  return getActivePartners().filter((p) => p.category === category);
+export async function getTeamMemberById(id: string) {
+  noStore();
+  try {
+    const member = await prisma.teamMember.findUnique({
+      where: { id },
+    });
+    if (!member) return null;
+    return {
+      ...member,
+      links: {
+        instagram: member.instagram,
+        linkedin: member.linkedin,
+        email: member.email,
+      },
+    };
+  } catch (error) {
+    console.error(`Failed to fetch team member with id ${id}:`, error);
+    return null;
+  }
 }
 
-export function getEvents(): Event[] {
-  return validateData(eventsData, EventSchema) as Event[];
+export async function getPartners() {
+  noStore();
+  try {
+    const partners = await prisma.partner.findMany({
+      // Return all partners for admin
+    })
+    console.log(`[getPartners] Fetched ${partners.length} partners`);
+    return partners;
+  } catch (error) {
+    console.error("Failed to fetch partners:", error);
+    return [];
+  }
 }
 
-export function getPublishedEvents(): Event[] {
-  return getEvents()
-    .filter((e) => e.published)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+export async function getEvents() {
+  noStore();
+  try {
+    const events = await prisma.event.findMany({
+      // Return all events for admin
+      orderBy: { date: 'asc' },
+    })
+    console.log(`[getEvents] Fetched ${events.length} events`);
+    return events;
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+    return [];
+  }
 }
 
-export function getUpcomingEvents(limit?: number): Event[] {
-  const now = new Date();
-  const upcoming = getPublishedEvents().filter((e) => new Date(e.date) >= now);
-  return limit ? upcoming.slice(0, limit) : upcoming;
+export async function getEventBySlug(slug: string) {
+  noStore();
+  try {
+    return await prisma.event.findUnique({
+      where: { slug },
+    })
+  } catch (error) {
+    console.error(`Failed to fetch event with slug ${slug}:`, error);
+    return null;
+  }
 }
 
-export function getPastEvents(): Event[] {
-  const now = new Date();
-  return getPublishedEvents()
-    .filter((e) => new Date(e.date) < now)
-    .reverse();
+export async function getTeamMembers() {
+  noStore();
+  try {
+    const members = await prisma.teamMember.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
+
+    return members.map((member: any) => ({
+      ...member,
+      links: {
+        instagram: member.instagram,
+        linkedin: member.linkedin,
+        email: member.email,
+      },
+    }));
+  } catch (error) {
+    console.error("Failed to fetch team members:", error);
+    return [];
+  }
 }
 
-export function getEventBySlug(slug: string): Event | undefined {
-  return getEvents().find((e) => e.slug === slug);
+export async function getSettings() {
+  noStore();
+  try {
+    const settings = await prisma.settings.findUnique({
+      where: { id: 1 },
+    });
+
+    if (!settings) {
+      throw new Error("Settings not found");
+    }
+    return settings;
+  } catch (error) {
+    console.warn("Failed to fetch settings, using defaults:", error);
+    return {
+      id: 1,
+      year: "2024-2025",
+      shopUrl: "#",
+      email: "contact@bde-sup-rnova.fr",
+      instagram: "https://instagram.com/bde_suprnova",
+      discord: "https://discord.gg/bde",
+      linkedin: "https://linkedin.com/company/bde-sup-rnova",
+      facebook: "https://facebook.com/bde-sup-rnova",
+      association: "BDE Sup'RNova",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  }
 }
 
-export function getTeamMembers(): TeamMember[] {
-  return validateData(teamData, TeamMemberSchema) as TeamMember[];
+export async function getUpcomingEvents(limit?: number) {
+  noStore();
+  try {
+    return await prisma.event.findMany({
+      where: {
+        published: true,
+        date: {
+          gte: new Date(),
+        },
+      },
+      orderBy: { date: 'asc' },
+      take: limit,
+    })
+  } catch (error) {
+    console.error("Failed to fetch upcoming events:", error);
+    return [];
+  }
 }
 
-export function getSettings(): Settings {
-  return validateData(settingsData, SettingsSchema) as Settings;
+export async function getPastEvents() {
+  noStore();
+  try {
+    return await prisma.event.findMany({
+      where: {
+        published: true,
+        date: {
+          lt: new Date(),
+        },
+      },
+      orderBy: { date: 'desc' },
+    })
+  } catch (error) {
+    console.error("Failed to fetch past events:", error);
+    return [];
+  }
 }
 
-export function getTexts(): Texts {
-  return validateData(textsData, TextsSchema) as Texts;
+export async function getActivePartners(): Promise<Partner[]> {
+  noStore();
+  try {
+    console.log("[getActivePartners] Querying database for active partners...");
+    const partners = await prisma.partner.findMany({
+      where: { active: true },
+    })
+    console.log(`[getActivePartners] Found ${partners.length} active partners`);
+    return partners as Partner[]
+  } catch (error) {
+    console.error("[getActivePartners] Failed to fetch active partners:", error);
+    return [];
+  }
 }
 
+function unflattenObject(data: { key: string; value: string }[]): any {
+  const result: any = {};
+  for (const item of data) {
+    const keys = item.key.split('.');
+    let current = result;
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      if (i === keys.length - 1) {
+        try {
+          current[key] = JSON.parse(item.value);
+        } catch {
+          current[key] = item.value;
+        }
+      } else {
+        current[key] = current[key] || {};
+        current = current[key];
+      }
+    }
+  }
+  return result;
+}
+
+function deepMerge(target: any, source: any): any {
+  const output = { ...target };
+  for (const key of Object.keys(source)) {
+    if (source[key] instanceof Object && !Array.isArray(source[key]) && key in target) {
+      output[key] = deepMerge(target[key], source[key]);
+    } else {
+      output[key] = source[key];
+    }
+  }
+  return output;
+}
+
+import { unstable_cache } from "next/cache";
+
+export const getTexts = unstable_cache(
+  async (): Promise<Texts> => {
+    const { FALLBACK_TEXTS } = await import("./fallback-texts");
+
+    try {
+      const content = await prisma.siteContent.findMany();
+
+      if (content.length === 0) {
+        console.warn("No texts found in database, using fallback texts");
+        return FALLBACK_TEXTS;
+      }
+
+      const dbTexts: any = {};
+
+      // Group by section
+      const bySection: Record<string, { key: string; value: string }[]> = {};
+      for (const item of content) {
+        if (!bySection[item.section]) {
+          bySection[item.section] = [];
+        }
+        bySection[item.section].push({ key: item.key, value: item.value });
+      }
+
+      // Unflatten each section
+      for (const [section, items] of Object.entries(bySection)) {
+        dbTexts[section] = unflattenObject(items);
+      }
+
+      // Merge database texts with fallback to ensure all keys exist
+      const mergedTexts = deepMerge(FALLBACK_TEXTS, dbTexts);
+      return mergedTexts as Texts;
+
+    } catch (error) {
+      console.error("Failed to fetch texts from DB, using fallback:", error);
+      return FALLBACK_TEXTS;
+    }
+  },
+  ["site-texts"],
+  {
+    revalidate: 3600, // Cache for 1 hour
+    tags: ["site-texts"],
+  }
+);

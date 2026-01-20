@@ -3,6 +3,8 @@ import { Badge } from "./Badge";
 import { Button } from "./Button";
 import type { Partner } from "@/lib/schemas";
 import { categoryLabels } from "@/lib/utils";
+import { migrateImagePath } from "@/lib/image-url";
+import { getBlurPlaceholder } from "@/lib/blur-placeholders";
 
 interface PartnerCardProps {
   partner: Partner;
@@ -25,10 +27,14 @@ export function PartnerCard({ partner }: PartnerCardProps) {
         {partner.logo && (
           <div className="relative w-16 h-16 ml-4 flex-shrink-0">
             <Image
-              src={partner.logo}
+              src={migrateImagePath(partner.logo)}
               alt={`Logo ${partner.name}`}
               fill
+              sizes="64px"
               className="object-contain"
+              loading="lazy"
+              placeholder={getBlurPlaceholder(partner.logo) ? "blur" : "empty"}
+              blurDataURL={getBlurPlaceholder(partner.logo)}
             />
           </div>
         )}

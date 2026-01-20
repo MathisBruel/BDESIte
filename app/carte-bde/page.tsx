@@ -3,7 +3,7 @@ import { Section } from "@/components/Section";
 import { Button } from "@/components/Button";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getSettings, getActivePartners } from "@/lib/data";
+import { getSettings, getActivePartners, getTexts } from "@/lib/data";
 
 export const metadata = {
   title: "Carte BDE | BDE Sup'RNova",
@@ -11,19 +11,20 @@ export const metadata = {
     "Profitez d'avantages exclusifs toute l'année avec la carte BDE Sup'RNova 2025-2026.",
 };
 
-export default function CardBDEPage() {
-  const settings = getSettings();
-  const partnersCount = getActivePartners().length;
+export default async function CardBDEPage() {
+  const settings = await getSettings();
+  const partnersCount = (await getActivePartners()).length;
+  const texts = await getTexts();
 
   return (
     <>
-      <Header />
+      <Header texts={texts} />
       <main>
         <Hero
           title={`Carte BDE ${settings.year}`}
           subtitle="Votre pass pour une année d'avantages"
           description={`Accédez à des réductions exclusives chez plus de ${partnersCount} partenaires locaux.`}
-          primaryCta={{ text: "Acheter ma carte", href: settings.shopUrl }}
+          primaryCta={{ text: "Acheter ma carte", href: settings.shopUrl ?? "#" }}
           secondaryCta={{ text: "Voir les partenaires", href: "/partenaires" }}
           variant="card"
         />
