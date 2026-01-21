@@ -18,8 +18,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const event = await getEventBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const event = await getEventBySlug(slug);
 
   if (!event) {
     return {
@@ -33,8 +34,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function EventDetailPage({ params }: { params: { slug: string } }) {
-  const event = await getEventBySlug(params.slug);
+export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const event = await getEventBySlug(slug);
   const texts = await getTexts();
 
   if (!event) {
