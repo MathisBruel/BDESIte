@@ -28,10 +28,9 @@ export function getImageUrl(path: string, useInternal = false): string {
 
 /**
  * Migrates an old image path to the new MinIO URL
- * Handles both relative paths and full URLs
- * Uses internal URL for server-side (Next.js optimization) and public URL for client-side
+ * Uses API endpoint so Next.js can access MinIO via internal Docker network
  * @param oldPath - Old image path
- * @returns MinIO URL or original URL if already a full URL
+ * @returns API endpoint URL or original URL if already a full URL
  */
 export function migrateImagePath(oldPath: string): string {
   // If it's already a full URL (http/https), return as-is
@@ -39,8 +38,9 @@ export function migrateImagePath(oldPath: string): string {
     return oldPath;
   }
   
-  // Use internal URL for server-side (Next.js image optimization)
-  // Use public URL for client-side
-  const isServer = typeof window === 'undefined';
-  return getImageUrl(oldPath, isServer);
+  // Remove /images/ prefix if present (for backward compatibility)
+  const cleanPath = oldPath.replace(/^\/images\//, '').replace(/^\//, '');
+  
+  // Use API endpoint so Next.js can access MinIO via internal Docker network
+  return `/api/images/${cleanPath}`;
 }
