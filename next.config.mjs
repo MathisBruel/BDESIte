@@ -20,7 +20,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '*.suprennes.me',
+        hostname: 'suprennes.me',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'suprennes.me',
         pathname: '/**',
       },
     ],
