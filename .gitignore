@@ -39,3 +39,6 @@ AGENTS.md
 .vscode/
 edwin/
 .prettierrc
+
+
+.env
