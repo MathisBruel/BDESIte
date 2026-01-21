@@ -6,17 +6,12 @@ import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getEventBySlug, getEvents, getTexts } from "@/lib/data";
+import { getEventBySlug, getTexts } from "@/lib/data";
 import { formatDateTime, formatDateTimeRange } from "@/lib/utils";
 import { Event } from "@/lib/schemas";
 import { migrateImagePath } from "@/lib/image-url";
 
-export async function generateStaticParams() {
-  const events = await getEvents();
-  return events.map((event: any) => ({
-    slug: event.slug,
-  }));
-}
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
