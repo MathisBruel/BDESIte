@@ -37,7 +37,6 @@ export function migrateImagePath(oldPath: string): string {
   if (oldPath.startsWith('http://') || oldPath.startsWith('https://')) {
     try {
       const url = new URL(oldPath);
-      // Extract path after /storage/bde-images/ or /bde-images/
       let imagePath = url.pathname;
       
       // Remove /storage prefix if present
@@ -47,11 +46,15 @@ export function migrateImagePath(oldPath: string): string {
       imagePath = imagePath.replace(/^\/bde-images\/?/, '');
       imagePath = imagePath.replace(/\/bde-images\/?/g, '/');
       
-      // Remove /images/ prefix if present
-      imagePath = imagePath.replace(/^\/images\//, '');
-      
-      // Remove leading slash
-      imagePath = imagePath.replace(/^\//, '');
+      // Ensure we have the images/ prefix (MinIO stores images with this prefix)
+      if (!imagePath.startsWith('/images/') && !imagePath.startsWith('images/')) {
+        // If path doesn't start with images/, add it
+        imagePath = imagePath.replace(/^\//, '');
+        imagePath = `images/${imagePath}`;
+      } else {
+        // Remove leading slash if present
+        imagePath = imagePath.replace(/^\//, '');
+      }
       
       // Use API endpoint
       return `/api/images/${imagePath}`;
@@ -64,14 +67,27 @@ export function migrateImagePath(oldPath: string): string {
       path = path.replace(/^\/storage\/bde-images\/?/, '');
       path = path.replace(/^\/bde-images\/?/, '');
       path = path.replace(/\/bde-images\/?/g, '/');
-      path = path.replace(/^\/images\//, '');
-      path = path.replace(/^\//, '');
+      
+      // Ensure we have the images/ prefix
+      if (!path.startsWith('/images/') && !path.startsWith('images/')) {
+        path = path.replace(/^\//, '');
+        path = `images/${path}`;
+      } else {
+        path = path.replace(/^\//, '');
+      }
+      
       return `/api/images/${path}`;
     }
   }
   
-  // Remove /images/ prefix if present (for backward compatibility)
-  const cleanPath = oldPath.replace(/^\/images\//, '').replace(/^\//, '');
+  // For relative paths, ensure they have the images/ prefix
+  let cleanPath = oldPath.replace(/^\//, '');
+  // Remove /images/ prefix if present (we'll add it back if needed)
+  const wasImagesPrefix = cleanPath.startsWith('images/');
+  cleanPath = cleanPath.replace(/^images\//, '');
+  
+  // Always add images/ prefix for MinIO paths
+  cleanPath = `images/${cleanPath}`;
   
   // Use API endpoint so Next.js can access MinIO via internal Docker network
   return `/api/images/${cleanPath}`;
