@@ -173,7 +173,6 @@ export function HomeClient({
                 </Container>
             </section>
 
-            <MerchSection />
 
             <Section id="presentation" className="bg-white">
                 <motion.div
