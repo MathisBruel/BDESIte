@@ -323,7 +323,8 @@ async function createAdminUser() {
     return;
   }
   
-  const bcrypt = await import('bcryptjs');
+  const bcryptModule = await import('bcryptjs');
+  const bcrypt = bcryptModule.default || bcryptModule;
   const hashedPassword = await bcrypt.hash(password, 12);
   
   await prisma.user.upsert({
