@@ -20,9 +20,11 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
       - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
       - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
       - NEXT_PUBLIC_MINIO_URL=${NEXT_PUBLIC_MINIO_URL}
     depends_on:
       - db
+      - minio
     networks:
       - bde-network
     extra_hosts:

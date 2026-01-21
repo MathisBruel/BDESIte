@@ -7,19 +7,21 @@ const prisma = new PrismaClient();
 
 const computeMinioConfig = () => {
   const endpointStr = process.env.MINIO_ENDPOINT || 'localhost';
+  const minioPort = parseInt(process.env.MINIO_PORT || '9000');
+  
   if (!endpointStr.includes('://') && !endpointStr.includes(':')) {
-    return { endPoint: endpointStr, port: 9002, useSSL: false };
+    return { endPoint: endpointStr, port: minioPort, useSSL: false };
   }
   try {
     const urlStr = endpointStr.startsWith('http') ? endpointStr : `http://${endpointStr}`;
     const url = new URL(urlStr);
     return {
       endPoint: url.hostname,
-      port: url.port ? parseInt(url.port) : 9002,
+      port: url.port ? parseInt(url.port) : minioPort,
       useSSL: url.protocol === 'https:',
     };
   } catch {
-    return { endPoint: 'localhost', port: 9002, useSSL: false };
+    return { endPoint: 'localhost', port: minioPort, useSSL: false };
   }
 };
 

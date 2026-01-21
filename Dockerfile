@@ -29,8 +29,8 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-# Install postgresql-client for database health checks
-RUN apk add --no-cache postgresql-client openssl
+# Install postgresql-client for database health checks and wget for MinIO health check
+RUN apk add --no-cache postgresql-client openssl wget
 
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
@@ -50,12 +50,13 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy Prisma files and data for seeding
+# Copy Prisma files and data for seeding/migration
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 COPY --from=builder --chown=nextjs:nodejs /app/lib ./lib
+COPY --from=builder --chown=nextjs:nodejs /app/data ./data
 
 # Copy entrypoint script (as root, before switching to nextjs user)
 COPY docker-entrypoint.sh /usr/local/bin/

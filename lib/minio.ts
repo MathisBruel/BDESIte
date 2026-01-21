@@ -2,24 +2,23 @@ import { Client } from 'minio';
 
 const computeConfig = () => {
   const endpointStr = process.env.MINIO_ENDPOINT || 'localhost';
+  const minioPort = parseInt(process.env.MINIO_PORT || '9000');
   
-  // If it's just a hostname like 'minio' or 'localhost'
   if (!endpointStr.includes('://') && !endpointStr.includes(':')) {
-    return { endPoint: endpointStr, port: 9000, useSSL: false };
+    return { endPoint: endpointStr, port: minioPort, useSSL: false };
   }
 
-  // If it has a protocol or port, parse it as a URL
   try {
     const urlStr = endpointStr.startsWith('http') ? endpointStr : `http://${endpointStr}`;
     const url = new URL(urlStr);
     return {
       endPoint: url.hostname,
-      port: url.port ? parseInt(url.port) : 9000,
+      port: url.port ? parseInt(url.port) : minioPort,
       useSSL: url.protocol === 'https:',
     };
   } catch (e) {
     console.warn('Failed to parse MINIO_ENDPOINT, falling back to defaults:', e);
-    return { endPoint: 'localhost', port: 9000, useSSL: false };
+    return { endPoint: 'localhost', port: minioPort, useSSL: false };
   }
 };
 
