@@ -35,7 +35,6 @@ const minioClient = new Client({
 });
 
 const BUCKET_NAME = process.env.MINIO_BUCKET_NAME || 'bde-images';
-const MINIO_PUBLIC_URL = process.env.NEXT_PUBLIC_MINIO_URL || `http://localhost:9002`;
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
@@ -87,7 +86,12 @@ async function uploadFileToMinio(localPath: string, minioPath: string): Promise<
     });
     
     console.log(`  📤 Uploadé: ${cleanPath}`);
-    return `${MINIO_PUBLIC_URL}/${BUCKET_NAME}/${cleanPath}`;
+    
+    // Return the path without 'images/' prefix for API endpoint
+    // MinIO stores as: images/events/photo.jpg
+    // API expects: /api/images/events/photo.jpg (it adds 'images/' prefix)
+    const apiPath = cleanPath.replace(/^images\//, '');
+    return apiPath;
   } catch (error) {
     console.error(`  ❌ Erreur upload ${localPath}:`, error);
     return localPath;
@@ -125,8 +129,8 @@ async function uploadAllImages() {
   const results: Map<string, string> = new Map();
   const entries = Array.from(uploadedPaths.entries());
   for (const [localPath, minioPath] of entries) {
-    const url = await uploadFileToMinio(localPath, minioPath);
-    results.set(localPath, url);
+    const apiPath = await uploadFileToMinio(localPath, minioPath);
+    results.set(localPath, apiPath);
   }
   
   console.log(`\n✅ ${results.size} images uploadées\n`);
@@ -184,13 +188,14 @@ async function migrateTeam(imageMap: Map<string, string>) {
   await prisma.teamMember.deleteMany({});
   
   for (const member of team) {
-    const photoUrl = imageMap.get(member.photo) || member.photo;
+    // Get the API path from the image map, or use the original path
+    const photoPath = imageMap.get(member.photo) || member.photo.replace(/^\/images\//, '');
     
     await prisma.teamMember.create({
       data: {
         name: member.name,
         role: member.role,
-        photo: photoUrl,
+        photo: photoPath,
         photoPosition: member.photoPosition || 'center',
         linkedin: member.links?.linkedin || null,
         instagram: member.links?.instagram || null,
@@ -213,7 +218,8 @@ async function migrateEvents(imageMap: Map<string, string>) {
   const events = JSON.parse(fs.readFileSync(eventsPath, 'utf-8'));
   
   for (const event of events) {
-    const coverUrl = event.cover ? (imageMap.get(event.cover) || event.cover) : null;
+    // Get the API path from the image map, or use the original path
+    const coverPath = event.cover ? (imageMap.get(event.cover) || event.cover.replace(/^\/images\//, '')) : null;
     
     await prisma.event.upsert({
       where: { slug: event.slug },
@@ -222,7 +228,7 @@ async function migrateEvents(imageMap: Map<string, string>) {
         date: new Date(event.date),
         endDate: event.endDate ? new Date(event.endDate) : null,
         place: event.place || '',
-        cover: coverUrl,
+        cover: coverPath,
         tags: event.tags || [],
         description: event.description,
         ticketUrl: event.ticketUrl || null,
@@ -235,7 +241,7 @@ async function migrateEvents(imageMap: Map<string, string>) {
         date: new Date(event.date),
         endDate: event.endDate ? new Date(event.endDate) : null,
         place: event.place || '',
-        cover: coverUrl,
+        cover: coverPath,
         tags: event.tags || [],
         description: event.description,
         ticketUrl: event.ticketUrl || null,
@@ -261,14 +267,15 @@ async function migratePartners(imageMap: Map<string, string>) {
   await prisma.partner.deleteMany({});
   
   for (const partner of partners) {
-    const logoUrl = partner.logo ? (imageMap.get(partner.logo) || partner.logo) : null;
+    // Get the API path from the image map, or use the original path
+    const logoPath = partner.logo ? (imageMap.get(partner.logo) || partner.logo.replace(/^\/images\//, '')) : null;
     
     await prisma.partner.create({
       data: {
         name: partner.name,
         category: partner.category,
         city: partner.city,
-        logo: logoUrl,
+        logo: logoPath,
         advantages: partner.advantages || [],
         conditions: partner.conditions || null,
         website: partner.website || null,
@@ -349,7 +356,6 @@ async function main() {
   console.log('📋 Configuration:');
   console.log(`   MinIO: ${config.endPoint}:${config.port}`);
   console.log(`   Bucket: ${BUCKET_NAME}`);
-  console.log(`   URL publique: ${MINIO_PUBLIC_URL}`);
   console.log('');
   
   try {

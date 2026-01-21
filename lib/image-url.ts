@@ -1,94 +1,69 @@
 /**
- * Base URL for MinIO bucket (public URL for client-side)
- * Uses NEXT_PUBLIC_ prefix to make it available on client-side
- */
-const MINIO_PUBLIC_URL = process.env.NEXT_PUBLIC_MINIO_URL || 'http://localhost:9002/bde-images';
-
-/**
- * Internal MinIO URL for server-side access (used by Next.js image optimization)
- */
-const MINIO_INTERNAL_URL = process.env.MINIO_INTERNAL_URL || 'http://minio:9000/bde-images';
-
-/**
- * Generates a full URL for an image stored in MinIO
- * @param path - Image path (e.g., 'assets/logo.png' or '/images/assets/logo.png')
- * @param useInternal - Whether to use internal URL (for server-side)
- * @returns Full URL to the image in MinIO
- */
-export function getImageUrl(path: string, useInternal = false): string {
-  // Remove /images/ prefix if present (for backward compatibility)
-  const cleanPath = path.replace(/^\/images\//, '');
-  
-  // Remove leading slash if present
-  const normalizedPath = cleanPath.replace(/^\//, '');
-  
-  const baseUrl = useInternal ? MINIO_INTERNAL_URL : MINIO_PUBLIC_URL;
-  return `${baseUrl}/${normalizedPath}`;
-}
-
-/**
- * Migrates an old image path to the new MinIO URL
- * Uses API endpoint so Next.js can access MinIO via internal Docker network
- * @param oldPath - Old image path
- * @returns API endpoint URL or original URL if already a full URL
+ * Migrates an old image path to the new API endpoint
+ * Handles various path formats and converts them to /api/images/...
+ * 
+ * Database stores paths like: "events/photo.jpg" or "team/mathis.png"
+ * API expects: /api/images/events/photo.jpg
+ * MinIO stores: images/events/photo.jpg (API adds 'images/' prefix)
+ * 
+ * @param oldPath - Old image path (can be relative path or full URL)
+ * @returns API endpoint URL
  */
 export function migrateImagePath(oldPath: string): string {
-  // If it's already a full URL, extract the path and convert to API endpoint
-  if (oldPath.startsWith('http://') || oldPath.startsWith('https://')) {
+  if (!oldPath) return '';
+  
+  let cleanPath = oldPath;
+  
+  // If it's already an API path, return as-is
+  if (cleanPath.startsWith('/api/images/')) {
+    return cleanPath;
+  }
+  
+  // If it's a full URL, extract the path
+  if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://')) {
     try {
-      const url = new URL(oldPath);
-      let imagePath = url.pathname;
-      
-      // Remove /storage prefix if present
-      imagePath = imagePath.replace(/^\/storage/, '');
-      
-      // Remove /bde-images prefix if present (can appear multiple times)
-      imagePath = imagePath.replace(/^\/bde-images\/?/, '');
-      imagePath = imagePath.replace(/\/bde-images\/?/g, '/');
-      
-      // Ensure we have the images/ prefix (MinIO stores images with this prefix)
-      if (!imagePath.startsWith('/images/') && !imagePath.startsWith('images/')) {
-        // If path doesn't start with images/, add it
-        imagePath = imagePath.replace(/^\//, '');
-        imagePath = `images/${imagePath}`;
-      } else {
-        // Remove leading slash if present
-        imagePath = imagePath.replace(/^\//, '');
-      }
-      
-      // Use API endpoint
-      return `/api/images/${imagePath}`;
+      const url = new URL(cleanPath);
+      cleanPath = url.pathname;
     } catch {
-      // If URL parsing fails, try to extract path manually
-      let path = oldPath;
-      // Remove protocol and domain
-      path = path.replace(/^https?:\/\/[^\/]+/, '');
-      // Remove /storage/bde-images/ or /bde-images/
-      path = path.replace(/^\/storage\/bde-images\/?/, '');
-      path = path.replace(/^\/bde-images\/?/, '');
-      path = path.replace(/\/bde-images\/?/g, '/');
-      
-      // Ensure we have the images/ prefix
-      if (!path.startsWith('/images/') && !path.startsWith('images/')) {
-        path = path.replace(/^\//, '');
-        path = `images/${path}`;
-      } else {
-        path = path.replace(/^\//, '');
-      }
-      
-      return `/api/images/${path}`;
+      // If URL parsing fails, continue with the path as-is
     }
   }
   
-  // For relative paths, ensure they have the images/ prefix
-  let cleanPath = oldPath.replace(/^\//, '');
-  // Remove /images/ prefix if present (we'll add it back if needed)
-  const wasImagesPrefix = cleanPath.startsWith('images/');
+  // Remove /api/images prefix if present
+  cleanPath = cleanPath.replace(/^\/api\/images\//, '');
+  
+  // Remove /storage prefix if present
+  cleanPath = cleanPath.replace(/^\/storage/, '');
+  
+  // Remove /bde-images prefix if present (can appear multiple times)
+  cleanPath = cleanPath.replace(/^\/bde-images\/?/, '');
+  cleanPath = cleanPath.replace(/\/bde-images\/?/g, '/');
+  
+  // Remove /images/ prefix if present (API endpoint will add it)
+  cleanPath = cleanPath.replace(/^\/images\//, '');
   cleanPath = cleanPath.replace(/^images\//, '');
   
-  // Always add images/ prefix for MinIO paths
-  cleanPath = `images/${cleanPath}`;
+  // Remove leading slash
+  cleanPath = cleanPath.replace(/^\//, '');
   
-  // Use API endpoint so Next.js can access MinIO via internal Docker network
+  // If path is empty or invalid, return as-is
+  if (!cleanPath) return oldPath;
+  
+  // Return API endpoint URL
+  return `/api/images/${cleanPath}`;
+}
+
+/**
+ * Generates a full URL for an image stored in MinIO (for uploads)
+ * @param path - Image path relative to the images folder
+ * @returns Full MinIO path for storage
+ */
+export function getImageUrl(path: string): string {
+  // Remove /images/ prefix if present
+  let cleanPath = path.replace(/^\/images\//, '').replace(/^images\//, '');
+  
+  // Remove leading slash if present
+  cleanPath = cleanPath.replace(/^\//, '');
+  
   return `/api/images/${cleanPath}`;
 }

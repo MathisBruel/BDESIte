@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { getEventBySlug, getEvents, getTexts } from "@/lib/data";
 import { formatDateTime, formatDateTimeRange } from "@/lib/utils";
 import { Event } from "@/lib/schemas";
+import { migrateImagePath } from "@/lib/image-url";
 
 export async function generateStaticParams() {
   const events = await getEvents();
@@ -49,7 +50,14 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
       <main>
         {event.cover && (
           <div className="relative w-full h-[400px]">
-            <Image src={event.cover} alt={event.title} fill className="object-cover" priority />
+            <Image 
+              src={migrateImagePath(event.cover)} 
+              alt={event.title} 
+              fill 
+              className="object-cover" 
+              priority 
+              unoptimized 
+            />
             <div className="absolute inset-0 bg-black/40"></div>
           </div>
         )}

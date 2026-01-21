@@ -6,7 +6,8 @@ export async function GET(
   { params }: { params: { path: string[] } }
 ) {
   try {
-    const imagePath = params.path.join('/');
+    const pathFromUrl = params.path.join('/');
+    const imagePath = `images/${pathFromUrl}`;
     
     const objectStream = await minioClient.getObject(BUCKET_NAME, imagePath);
     
