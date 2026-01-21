@@ -35,6 +35,7 @@ export function PartnerCard({ partner }: PartnerCardProps) {
               loading="lazy"
               placeholder={getBlurPlaceholder(partner.logo) ? "blur" : "empty"}
               blurDataURL={getBlurPlaceholder(partner.logo)}
+              unoptimized={migrateImagePath(partner.logo).startsWith('/api/images/')}
             />
           </div>
         )}

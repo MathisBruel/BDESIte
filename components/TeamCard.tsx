@@ -35,6 +35,7 @@ export function TeamCard({ member }: TeamCardProps) {
             loading="lazy"
             placeholder={getBlurPlaceholder(member.photo) ? "blur" : "empty"}
             blurDataURL={getBlurPlaceholder(member.photo)}
+            unoptimized={migrateImagePath(member.photo).startsWith('/api/images/')}
           />
         ) : (
           <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center text-4xl text-gray-400">
