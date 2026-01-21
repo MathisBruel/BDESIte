@@ -33,9 +33,41 @@ export function getImageUrl(path: string, useInternal = false): string {
  * @returns API endpoint URL or original URL if already a full URL
  */
 export function migrateImagePath(oldPath: string): string {
-  // If it's already a full URL (http/https), return as-is
+  // If it's already a full URL, extract the path and convert to API endpoint
   if (oldPath.startsWith('http://') || oldPath.startsWith('https://')) {
-    return oldPath;
+    try {
+      const url = new URL(oldPath);
+      // Extract path after /storage/bde-images/ or /bde-images/
+      let imagePath = url.pathname;
+      
+      // Remove /storage prefix if present
+      imagePath = imagePath.replace(/^\/storage/, '');
+      
+      // Remove /bde-images prefix if present (can appear multiple times)
+      imagePath = imagePath.replace(/^\/bde-images\/?/, '');
+      imagePath = imagePath.replace(/\/bde-images\/?/g, '/');
+      
+      // Remove /images/ prefix if present
+      imagePath = imagePath.replace(/^\/images\//, '');
+      
+      // Remove leading slash
+      imagePath = imagePath.replace(/^\//, '');
+      
+      // Use API endpoint
+      return `/api/images/${imagePath}`;
+    } catch {
+      // If URL parsing fails, try to extract path manually
+      let path = oldPath;
+      // Remove protocol and domain
+      path = path.replace(/^https?:\/\/[^\/]+/, '');
+      // Remove /storage/bde-images/ or /bde-images/
+      path = path.replace(/^\/storage\/bde-images\/?/, '');
+      path = path.replace(/^\/bde-images\/?/, '');
+      path = path.replace(/\/bde-images\/?/g, '/');
+      path = path.replace(/^\/images\//, '');
+      path = path.replace(/^\//, '');
+      return `/api/images/${path}`;
+    }
   }
   
   // Remove /images/ prefix if present (for backward compatibility)
