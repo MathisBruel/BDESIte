@@ -15,7 +15,7 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'minio',
-        port: '9002',
+        port: '9000',
         pathname: '/bde-images/**',
       },
       {
