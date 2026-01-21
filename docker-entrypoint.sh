@@ -15,15 +15,9 @@ echo "PostgreSQL is up - executing command"
 echo "Running Prisma db push..."
 npx prisma db push --accept-data-loss
 
-# Migrate images to MinIO
-echo "Migrating images to MinIO..."
-npm run migrate:images
-
-# Seed the database
-echo "Seeding database..."
-npm run seed
-echo "Seeding admin user..."
-npm run seed:admin
+# Migration complète (images + données)
+echo "Running full migration to production..."
+npm run migrate:prod
 
 # Start the application
 echo "Starting Next.js application..."

@@ -1,6 +1,6 @@
 # Site Web BDE Sup'RNova
 
-Site web officiel du Bureau des Étudiants Sup'RNova de Sup de Vinci Rennes, développé avec Next.js 14, TypeScript et TailwindCSS.
+Site web officiel du Bureau des Étudiants Sup'RNova de Sup de Vinci Rennes, développé avec Next.js 14, TypeScript, TailwindCSS, PostgreSQL et MinIO.
 
 ## 🚀 Démarrage rapide
 
@@ -8,6 +8,9 @@ Site web officiel du Bureau des Étudiants Sup'RNova de Sup de Vinci Rennes, dé
 
 - Node.js 18+ ou 20+
 - npm, yarn ou pnpm
+- Docker & Docker Compose (pour la production)
+- PostgreSQL (local ou Docker)
+- MinIO (optionnel, pour le stockage d'images)
 
 ### Installation
 
@@ -16,23 +19,57 @@ Site web officiel du Bureau des Étudiants Sup'RNova de Sup de Vinci Rennes, dé
 git clone [url-du-repo]
 cd BDESIte
 
-# Installer les dépendances (choisir l'un des trois)
-pnpm install
-# ou
+# Installer les dépendances
 npm install
-# ou
-yarn install
+
+# Copier le fichier d'environnement
+cp .env.example .env
+
+# Générer le client Prisma
+npx prisma generate
+
+# Appliquer les migrations
+npx prisma db push
+
+# Seeder la base de données (optionnel)
+npx tsx prisma/seed-settings.ts
+npx tsx prisma/seed-team.ts
+npx tsx prisma/seed-stock.ts
+npx tsx prisma/seed-events.ts
+npx tsx prisma/seed-partners.ts
+```
+
+### Variables d'environnement
+
+Créer un fichier `.env` avec :
+
+```env
+# Base de données
+DATABASE_URL="postgresql://user:password@localhost:5432/bdesite"
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=bdesite
+DB_HOST=localhost
+
+# Authentification
+AUTH_SECRET="votre-secret-auth-genere"
+AUTH_TRUST_HOST=true
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="motdepasse-admin"
+
+# MinIO (stockage images)
+MINIO_ROOT_USER=minioadmin
+MINIO_ROOT_PASSWORD=minioadmin
+MINIO_BUCKET_NAME=bdesite
+MINIO_ENDPOINT=localhost
+NEXT_PUBLIC_MINIO_URL=http://localhost:9002
 ```
 
 ### Développement
 
 ```bash
 # Lancer le serveur de développement
-pnpm dev
-# ou
 npm run dev
-# ou
-yarn dev
 ```
 
 Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur.
@@ -41,10 +78,68 @@ Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
 ```bash
 # Créer le build
-pnpm build
+npm run build
 
 # Lancer le serveur de production
-pnpm start
+npm start
+```
+
+## 🐳 Déploiement Docker
+
+### Configuration
+
+1. Créer un fichier `.env` sur le serveur avec toutes les variables d'environnement
+2. Lancer les conteneurs :
+
+```bash
+docker compose up -d --build
+```
+
+### Migration automatique
+
+Au premier démarrage, le conteneur exécute automatiquement :
+- Les migrations Prisma
+- L'upload des images vers MinIO
+- L'import des données JSON vers la base de données
+- La création de l'utilisateur admin
+
+### Migration manuelle
+
+Pour migrer manuellement les données depuis les fichiers JSON :
+
+```bash
+# Dans le conteneur
+docker compose exec app npm run migrate:prod
+
+# Ou localement
+npm run migrate:prod
+```
+
+### Services Docker
+
+| Service | Port | Description |
+|---------|------|-------------|
+| `app` | 3000 | Application Next.js |
+| `db` | 5433 | PostgreSQL |
+| `minio` | 9002 (API), 9001 (Console) | Stockage S3 |
+
+### Commandes utiles
+
+```bash
+# Voir les logs
+docker compose logs -f app
+
+# Redémarrer l'application
+docker compose restart app
+
+# Reconstruire après modifications
+docker compose up -d --build
+
+# Arrêter tous les services
+docker compose down
+
+# Supprimer les volumes (attention: perte de données)
+docker compose down -v
 ```
 
 ## 📁 Structure du projet
@@ -53,152 +148,140 @@ pnpm start
 BDESIte/
 ├── app/                          # Pages Next.js (App Router)
 │   ├── page.tsx                  # Page d'accueil
-│   ├── bde/                      # Page Le BDE
+│   ├── admin/                    # Interface d'administration
+│   │   ├── page.tsx              # Dashboard admin
+│   │   ├── stock/                # Gestion du stock confiserie
+│   │   ├── team/                 # Gestion de l'équipe
+│   │   ├── settings/             # Paramètres du site
+│   │   ├── events/               # Gestion des événements
+│   │   └── partners/             # Gestion des partenaires
+│   ├── confiserie/               # Page boutique confiserie
 │   ├── partenaires/              # Page Partenaires
 │   ├── evenements/               # Page Événements
 │   │   └── [slug]/               # Détail d'un événement
 │   ├── carte-bde/                # Page Carte BDE
-│   ├── contact/                  # Page Contact
-│   ├── mentions-legales/         # Mentions légales
-│   ├── politique-confidentialite/# Politique de confidentialité
-│   ├── layout.tsx                # Layout racine
-│   └── globals.css               # Styles globaux
-├── components/                   # Composants React réutilisables
+│   ├── login/                    # Page de connexion admin
+│   └── layout.tsx                # Layout racine
+├── components/                   # Composants React
+│   ├── admin/                    # Composants admin
+│   │   ├── ProductForm.tsx       # Formulaire produit
+│   │   ├── TeamMemberForm.tsx    # Formulaire membre équipe
+│   │   ├── SettingsForm.tsx      # Formulaire paramètres
+│   │   └── DeleteButton.tsx      # Bouton suppression
 │   ├── Header.tsx                # En-tête du site
 │   ├── Footer.tsx                # Pied de page
-│   ├── Hero.tsx                  # Bannière principale
-│   ├── Button.tsx                # Bouton
-│   ├── Badge.tsx                 # Badge
-│   ├── Container.tsx             # Conteneur
-│   ├── Section.tsx               # Section de page
-│   ├── PartnerCard.tsx           # Carte partenaire
+│   ├── StockDisplay.tsx          # Affichage stock confiserie
+│   ├── OptimizedImage.tsx        # Image avec blur placeholder
 │   ├── EventCard.tsx             # Carte événement
 │   ├── TeamCard.tsx              # Carte membre d'équipe
-│   ├── Filters.tsx               # Composant de filtres
-│   └── EmptyState.tsx            # État vide
+│   └── PartnerCard.tsx           # Carte partenaire
 ├── lib/                          # Bibliothèques et utilitaires
+│   ├── prisma.ts                 # Client Prisma
+│   ├── minio.ts                  # Client MinIO
 │   ├── data.ts                   # Fonctions de chargement des données
-│   ├── schemas.ts                # Schémas Zod pour validation
-│   ├── utils.ts                  # Fonctions utilitaires
-│   └── seo.ts                    # Configuration SEO
-├── data/                         # Données JSON (IMPORTANT !)
-│   ├── partners.json             # Liste des partenaires
-│   ├── events.json               # Liste des événements
-│   ├── team.json                 # Membres de l'équipe
-│   └── settings.json             # Paramètres généraux
+│   ├── actions-stock.ts          # Server actions stock
+│   ├── actions-team.ts           # Server actions équipe
+│   ├── actions-settings.ts       # Server actions paramètres
+│   ├── actions-events.ts         # Server actions événements
+│   ├── actions-partners.ts       # Server actions partenaires
+│   ├── blur-placeholders.ts      # Placeholders flou pour images
+│   └── image-url.ts              # Utilitaire URLs images
+├── prisma/                       # Configuration Prisma
+│   ├── schema.prisma             # Schéma de la base de données
+│   ├── seed-*.ts                 # Scripts de seeding
+│   └── migrations/               # Migrations SQL
+├── data/                         # Données JSON (fallback)
+│   ├── partners.json             # Partenaires (fallback)
+│   ├── events.json               # Événements (fallback)
+│   ├── team.json                 # Équipe (fallback)
+│   ├── stock.json                # Stock (fallback)
+│   └── settings.json             # Paramètres (fallback)
 ├── public/                       # Fichiers statiques
 │   ├── fonts/                    # Polices personnalisées
-│   └── images/                   # Images (logos, visuels)
-│       ├── partners/             # Logos des partenaires
-│       ├── events/               # Visuels des événements
-│       └── team/                 # Photos de l'équipe
-└── README.md                     # Ce fichier
+│   └── images/                   # Images locales
+├── scripts/                      # Scripts utilitaires
+│   ├── optimize-images.ts        # Optimisation images
+│   └── generate-blur-placeholders.ts # Génération blur
+├── docker-compose.yml            # Configuration Docker
+├── Dockerfile                    # Image Docker
+└── docker-entrypoint.sh          # Script d'entrée Docker
 ```
 
-## 📝 Modifier les données
+## 🔐 Interface d'administration
 
-Toutes les données du site sont stockées dans des fichiers JSON dans le dossier `/data`. Aucune base de données n'est nécessaire !
+Accéder à `/admin` et se connecter avec les identifiants définis dans `.env`.
 
-### Ajouter un partenaire
+### Fonctionnalités admin
 
-Éditer `/data/partners.json` :
+| Section | Description |
+|---------|-------------|
+| **Stock** | Gérer les produits de la confiserie (nom, prix, quantité, image) |
+| **Équipe** | Gérer les membres du BDE (photo, rôle, réseaux sociaux) |
+| **Événements** | Créer et modifier les événements |
+| **Partenaires** | Gérer les partenaires et leurs avantages |
+| **Paramètres** | Modifier les informations générales du site |
 
-```json
-{
-  "id": "identifiant-unique",
-  "name": "Nom du partenaire",
-  "category": "bar",
-  "city": "Rennes",
-  "logo": "/images/partners/logo.png",
-  "advantages": [
-    "-10% sur l'addition",
-    "Happy hour prolongé"
-  ],
-  "conditions": "Valable avec la carte BDE",
-  "website": "https://example.com",
-  "address": "12 Rue Exemple, 35000 Rennes",
-  "active": true
-}
+### Upload d'images
+
+Les images uploadées via l'admin sont stockées sur MinIO (S3-compatible). Assurez-vous que MinIO est configuré et accessible.
+
+## 🗄️ Base de données
+
+### Modèles Prisma
+
+- **Product** : Produits de la confiserie
+- **TeamMember** : Membres de l'équipe
+- **Event** : Événements
+- **Partner** : Partenaires
+- **Settings** : Paramètres du site
+- **User** : Utilisateurs admin
+
+### Commandes Prisma
+
+```bash
+# Générer le client
+npx prisma generate
+
+# Appliquer le schéma à la DB
+npx prisma db push
+
+# Ouvrir Prisma Studio
+npx prisma studio
+
+# Créer une migration
+npx prisma migrate dev --name nom_migration
+
+# Appliquer les migrations en prod
+npx prisma migrate deploy
 ```
 
-**Catégories disponibles :** `bar`, `restaurant`, `sport`, `culture`, `services`, `shopping`, `autre`
+## 🖼️ Optimisation des images
 
-### Ajouter un événement
+### Images optimisées automatiquement
 
-Éditer `/data/events.json` :
+- Conversion automatique en WebP/AVIF
+- Redimensionnement responsive
+- Placeholders flou pendant le chargement
+- Mise en cache agressive
 
-```json
-{
-  "slug": "mon-evenement-2025",
-  "title": "Mon Événement",
-  "date": "2025-12-31T20:00:00+01:00",
-  "place": "Lieu de l'événement",
-  "cover": "/images/events/mon-evenement.jpg",
-  "tags": ["soirée", "campus"],
-  "description": "Description détaillée de l'événement...",
-  "ticketUrl": "https://billetterie.example.com",
-  "published": true
-}
+### Scripts d'optimisation
+
+```bash
+# Optimiser toutes les images du dossier public
+npx tsx scripts/optimize-images.ts
+
+# Générer les placeholders flou
+npx tsx scripts/generate-blur-placeholders.ts
 ```
 
-**Important :** Le format de date doit être ISO 8601 avec timezone (ex: `2025-12-31T20:00:00+01:00`)
+### Recommandations
 
-### Ajouter un membre de l'équipe
-
-Éditer `/data/team.json` :
-
-```json
-{
-  "name": "Prénom NOM",
-  "role": "Poste",
-  "photo": "/images/team/prenom.jpg",
-  "links": {
-    "instagram": "https://instagram.com/username",
-    "linkedin": "https://linkedin.com/in/username",
-    "email": "prenom.nom@example.com"
-  }
-}
-```
-
-### Modifier les paramètres généraux
-
-Éditer `/data/settings.json` :
-
-```json
-{
-  "association": "BDE Sup'RNova",
-  "year": "2025-2026",
-  "email": "bureau@suprennes.me",
-  "shopUrl": "https://boutique.suprennes.me",
-  "instagram": "https://instagram.com/...",
-  "discord": "https://discord.gg/...",
-  "facebook": "https://facebook.com/...",
-  "linkedin": "https://linkedin.com/company/..."
-}
-```
-
-## 🖼️ Ajouter des images
-
-### Logos partenaires
-
-1. Placer le logo dans `/public/images/partners/`
-2. Format recommandé : PNG avec fond transparent
-3. Taille recommandée : 200x200px
-4. Référencer dans `partners.json` : `"logo": "/images/partners/nom-fichier.png"`
-
-### Visuels événements
-
-1. Placer l'image dans `/public/images/events/`
-2. Format recommandé : JPG ou PNG
-3. Ratio recommandé : 16:9 (ex: 1920x1080px)
-4. Référencer dans `events.json` : `"cover": "/images/events/nom-fichier.jpg"`
-
-### Photos équipe
-
-1. Placer la photo dans `/public/images/team/`
-2. Format recommandé : JPG
-3. Taille recommandée : 500x500px (carré)
-4. Référencer dans `team.json` : `"photo": "/images/team/prenom.jpg"`
+| Type | Format | Taille max | Ratio |
+|------|--------|------------|-------|
+| Événements | JPG/PNG | 500 Ko | 16:9 |
+| Équipe | JPG | 200 Ko | 1:1 |
+| Partenaires | PNG | 100 Ko | 1:1 |
+| Produits | PNG | 100 Ko | 1:1 |
 
 ## 🎨 Charte graphique
 
@@ -210,107 +293,93 @@ Toutes les données du site sont stockées dans des fichiers JSON dans le dossie
 - **Noir** : `#000000`
 - **Blanc** : `#ffffff`
 
-Utilisation dans Tailwind :
-```tsx
-<div className="bg-brand-red text-brand-white">...</div>
-```
-
-### Gradients
-
-- **Gradient principal** : `bg-grad-primary` (gris → blanc, 135°)
-- **Gradient secondaire** : `bg-grad-secondary` (rouge → jaune, 90°)
-
 ### Polices
 
 - **Titres** : League Spartan (`font-spartan`)
 - **Textes** : Merriweather (`font-merriweather`)
 - **CTA** : Chunk Five (`font-chunk`)
 
-## 🚢 Déploiement
-
-### Vercel (recommandé)
-
-1. Créer un compte sur [vercel.com](https://vercel.com)
-2. Connecter votre dépôt Git
-3. Vercel détecte automatiquement Next.js et configure tout
-4. Chaque push sur `main` déclenche un déploiement
-
-### Autres plateformes
-
-Le site peut être déployé sur n'importe quelle plateforme supportant Next.js :
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
-
-**Configuration requise :**
-- Build command : `npm run build`
-- Output directory : `.next`
-- Node version : 18+
-
-## 🔧 Commandes utiles
-
-```bash
-# Développement
-pnpm dev
-
-# Build de production
-pnpm build
-
-# Lancer la prod localement
-pnpm start
-
-# Linting
-pnpm lint
-
-# Formattage du code
-pnpm format
-```
-
 ## 📱 Fonctionnalités
 
+- ✅ Interface d'administration complète
+- ✅ Stockage d'images sur MinIO (S3)
+- ✅ Base de données PostgreSQL
+- ✅ Authentification sécurisée (NextAuth.js)
 - ✅ Design responsive (mobile-first)
-- ✅ Accessibilité (navigation clavier, ARIA)
+- ✅ Images optimisées avec blur placeholders
 - ✅ SEO optimisé (métadonnées, sitemap)
-- ✅ Performance optimisée (images, fonts)
 - ✅ Animations fluides (Framer Motion)
 - ✅ Validation des données (Zod)
-- ✅ Mode réduit pour animations (`prefers-reduced-motion`)
-- ✅ Pages 404 personnalisées
+- ✅ Déploiement Docker
 
 ## 🛠️ Technologies utilisées
 
 - **Framework** : Next.js 14 (App Router)
 - **Langage** : TypeScript
 - **Styles** : TailwindCSS
+- **Base de données** : PostgreSQL + Prisma
+- **Stockage** : MinIO (S3-compatible)
+- **Authentification** : NextAuth.js v5
 - **Animations** : Framer Motion
-- **Validation** : Zod
-- **Optimisation images** : next/image
-- **Fonts** : next/font (Google Fonts + local)
+- **Validation** : Zod + React Hook Form
+- **Optimisation images** : next/image + sharp
 
-## 📄 Licence
+## 🔧 Commandes utiles
 
-© 2025 BDE Sup'RNova. Tous droits réservés.
+```bash
+# Développement
+npm run dev
 
-## 🤝 Contribution
+# Build de production
+npm run build
 
-Pour toute question ou suggestion :
-- Email : bureau@suprennes.me
-- Instagram : [@bde_suprrnova](https://instagram.com/bde_suprrnova)
+# Lancer la prod localement
+npm start
 
-## 🐛 Problèmes connus
+# Linting
+npm run lint
 
-### Erreur : Font Chunk Five introuvable
+# Formattage du code
+npm run format
 
-Si vous voyez une erreur concernant `ChunkFive-Regular.woff2`, vous avez deux options :
-1. Ajouter la police dans `/public/fonts/`
-2. Ou supprimer la référence dans `app/layout.tsx` (les fallbacks Impact/Arial Black seront utilisés)
+# Prisma Studio
+npx prisma studio
+```
+
+## 🐛 Dépannage
+
+### Erreur Docker : sysctl permission denied
+
+```bash
+sudo sysctl -w net.ipv4.ip_unprivileged_port_start=0
+```
+
+### Erreur : Database connection failed
+
+Vérifier que PostgreSQL est accessible et que `DATABASE_URL` est correct.
+
+### Images non affichées depuis MinIO
+
+1. Vérifier que le bucket existe et est public
+2. Vérifier `NEXT_PUBLIC_MINIO_URL` dans `.env`
+3. Vérifier les règles CORS sur MinIO
 
 ### Build échoue avec les images
 
-Si le build échoue car des images sont manquantes, ajoutez des placeholders ou commentez temporairement les références dans les fichiers JSON.
+Lancer le script d'optimisation :
+```bash
+npx tsx scripts/optimize-images.ts
+```
+
+## 📄 Licence
+
+© 2025-2026 BDE Sup'RNova. Tous droits réservés.
+
+## 🤝 Contact
+
+- Email : bureau@suprennes.me
+- Instagram : [@bde_suprrnova](https://instagram.com/bde_suprrnova)
 
 ---
 
 **Développé avec ❤️ par le BDE Sup'RNova**
-
