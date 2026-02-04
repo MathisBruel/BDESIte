@@ -184,3 +184,9 @@ jobs:
             # Cleanup old images
             docker image prune -f
           EOF
+
+      - name: Stop VPN
+        if: always()
+        run: |
+          sudo ipsec down freebox || true
+          sudo ipsec stop || true
