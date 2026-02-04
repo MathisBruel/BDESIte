@@ -89,3 +89,92 @@ jobs:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Strongswan
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y strongswan libcharon-extra-plugins
+
+      - name: Configure and Connect VPN (IKEv2)
+        env:
+          VPN_SERVER: ${{ secrets.VPN_SERVER }}
+          VPN_USER: ${{ secrets.VPN_USER }}
+          VPN_PASSWORD: ${{ secrets.VPN_PASSWORD }}
+        run: |
+          # Create ipsec.secrets
+          echo "$VPN_USER : EAP \"$VPN_PASSWORD\"" > ipsec.secrets
+          sudo mv ipsec.secrets /etc/ipsec.secrets
+
+          # Create ipsec.conf
+          cat <<EOF > ipsec.conf
+          config setup
+              charondebug="ike 1, knl 1, cfg 0"
+              uniqueids=no
+
+          conn freebox
+              keyexchange=ikev2
+              dpdaction=clear
+              dpddelay=300s
+              eap_identity=$VPN_USER
+              leftauth=eap-mschapv2
+              left=%defaultroute
+              leftsourceip=%config
+              right=$VPN_SERVER
+              rightid=%any
+              rightauth=pubkey
+              rightsubnet=0.0.0.0/0
+              auto=add
+          EOF
+          sudo mv ipsec.conf /etc/ipsec.conf
+
+          # Restart strongswan and connect
+          sudo ipsec restart
+          sleep 5
+          sudo ipsec up freebox
+
+
+      - name: Deploy via SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          # Setup SSH
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # Add host key to known_hosts to avoid interaction
+          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+
+          # Copy files
+          # Note: The SSH user must have write permissions to /opt/suprennes
+          # You might need to run 'sudo mkdir -p /opt/suprennes && sudo chown -R $USER:$USER /opt/suprennes' on the server first.
+          ssh $SSH_USER@$SSH_HOST "mkdir -p /opt/suprennes"
+          scp docker-compose.prod.yml $SSH_USER@$SSH_HOST:/opt/suprennes/docker-compose.yml
+          
+          # Create .env file on server
+          echo "$ENV_FILE" | ssh $SSH_USER@$SSH_HOST "cat > /opt/suprennes/.env"
+
+          # Deploy
+          ssh $SSH_USER@$SSH_HOST << 'EOF'
+            cd /opt/suprennes
+            
+            # Pull new images
+            docker compose pull
+            
+            # Start/Restart services
+            docker compose up -d --remove-orphans
+            
+            # Cleanup old images
+            docker image prune -f
+          EOF
