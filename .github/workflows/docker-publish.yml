@@ -64,6 +64,10 @@ jobs:
         uses: docker/metadata-action@v5.0.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=branch
+            type=semver,pattern={{version}}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -154,6 +158,7 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           ENV_FILE: ${{ secrets.ENV_FILE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Pass token for docker login
         run: |
           # Setup SSH
           mkdir -p ~/.ssh
@@ -172,10 +177,13 @@ jobs:
           echo "$ENV_FILE" | ssh $SSH_USER@$SSH_HOST "cat > /opt/suprennes/.env"
 
           # Deploy
-          ssh $SSH_USER@$SSH_HOST << 'EOF'
+          ssh $SSH_USER@$SSH_HOST << EOF
             set -e  # Fail immediate if any command fails
             set -x  # Print commands
             
+            # Login to GHCR to pull private image
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
             cd /opt/suprennes
             
             echo "Current directory content:"
