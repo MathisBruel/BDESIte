@@ -30,16 +30,16 @@ export default async function AdminPartnersPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-4 font-semibold text-gray-900">Partenaire</th>
-                <th className="px-6 py-4 font-semibold text-gray-900">Catégorie & Lieu</th>
-                <th className="px-6 py-4 font-semibold text-gray-900">Statut</th>
-                <th className="px-6 py-4 font-semibold text-gray-900 text-right">Actions</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">Partenaire</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">Catégorie & Lieu</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">Statut</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {partners.map((partner: any) => (
                 <tr key={partner.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-4">
                       <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 p-2 border border-gray-100">
                         {partner.logo ? (
@@ -58,7 +58,7 @@ export default async function AdminPartnersPage() {
                       <div className="font-medium text-gray-900">{partner.name}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="space-y-1">
                       <div className="text-gray-700 font-medium">
                         {partner.category}
@@ -69,10 +69,10 @@ export default async function AdminPartnersPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={partner.active ? "active" : "inactive"} />
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right whitespace-nowrap">
                     <div className="flex items-center justify-end gap-2">
                       <Link
                         href={`/admin/partners/${partner.id}`}

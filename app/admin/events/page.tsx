@@ -31,16 +31,16 @@ export default async function AdminEventsPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-4 font-semibold text-gray-900">Événement</th>
-                <th className="px-6 py-4 font-semibold text-gray-900">Date & Lieu</th>
-                <th className="px-6 py-4 font-semibold text-gray-900">Statut</th>
-                <th className="px-6 py-4 font-semibold text-gray-900 text-right">Actions</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">Événement</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">Date & Lieu</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">Statut</th>
+                <th className="px-6 py-4 font-semibold text-gray-900 text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {events.map((event: any) => (
                 <tr key={event.slug} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-4">
                       <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                         {event.cover ? (
@@ -62,7 +62,7 @@ export default async function AdminEventsPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2 text-gray-700">
                         <Calendar className="w-4 h-4 text-gray-400" />
@@ -74,10 +74,10 @@ export default async function AdminEventsPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={event.published ? "published" : "draft"} />
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right whitespace-nowrap">
                     <div className="flex items-center justify-end gap-2">
                       <Link
                         href={`/admin/events/${event.slug}`}

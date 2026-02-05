@@ -12,7 +12,7 @@ export default async function AdminTeamPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 font-spartan">
             Gestion de l&apos;<span className="text-brand-red">Équipe</span>
@@ -20,7 +20,7 @@ export default async function AdminTeamPage() {
           <p className="text-gray-500 mt-1">Gérez les membres du BDE</p>
         </div>
         <Link href="/admin/team/new">
-          <Button className="bg-brand-red hover:bg-brand-red/90 text-white">
+          <Button className="bg-brand-red hover:bg-brand-red/90 text-white w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Nouveau membre
           </Button>
@@ -64,7 +64,7 @@ export default async function AdminTeamPage() {
                   {member.name}
                 </h3>
                 <p className="text-brand-red font-medium text-sm mb-4">{member.role}</p>
-                
+
                 <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
                   {member.links?.linkedin && (
                     <span className="bg-blue-50 text-blue-600 px-2 py-1 rounded">LinkedIn</span>
