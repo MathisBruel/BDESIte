@@ -18,8 +18,9 @@ const teamMemberSchema = z.object({
 async function uploadImage(file: File, folder: string): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  
-  await minioClient.putObject(BUCKET_NAME, filename, buffer, file.size, {
+  const minioPath = `images/${filename}`;
+
+  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
     "Content-Type": file.type,
   });
 
@@ -41,7 +42,7 @@ export async function createTeamMember(formData: FormData) {
   }
 
   const { name, role, photoPosition, linkedin, instagram, email } = validatedFields.data;
-  
+
   const photoFile = formData.get("photo") as File;
   let photoPath = "/images/team/default.png";
 
@@ -86,7 +87,7 @@ export async function updateTeamMember(id: string, formData: FormData) {
   }
 
   const { name, role, photoPosition, linkedin, instagram, email } = validatedFields.data;
-  
+
   const photoFile = formData.get("photo") as File;
   let photoPath = undefined;
 

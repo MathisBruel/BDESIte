@@ -18,8 +18,9 @@ const productSchema = z.object({
 async function uploadImage(file: File, folder: string): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  
-  await minioClient.putObject(BUCKET_NAME, filename, buffer, file.size, {
+  const minioPath = `images/${filename}`;
+
+  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
     "Content-Type": file.type,
   });
 
@@ -41,7 +42,7 @@ export async function createProduct(formData: FormData) {
   }
 
   const { name, type, price, quantity, active, order } = validatedFields.data;
-  
+
   const imageFile = formData.get("image") as File;
   let imagePath = null;
 
@@ -86,7 +87,7 @@ export async function updateProduct(id: string, formData: FormData) {
   }
 
   const { name, type, price, quantity, active, order } = validatedFields.data;
-  
+
   const imageFile = formData.get("image") as File;
   let imagePath = undefined;
 

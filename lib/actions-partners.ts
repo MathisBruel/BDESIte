@@ -22,8 +22,9 @@ const partnerSchema = z.object({
 async function uploadImage(file: File, folder: string): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  
-  await minioClient.putObject(BUCKET_NAME, filename, buffer, file.size, {
+  const minioPath = `images/${filename}`;
+
+  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
     "Content-Type": file.type,
   });
 
@@ -47,7 +48,7 @@ export async function createPartner(formData: FormData) {
   }
 
   const { name, category, city, website, address, conditions, active, advantages } = validatedFields.data;
-  
+
   const logoFile = formData.get("logo") as File;
   let logoPath = null;
 
@@ -56,7 +57,7 @@ export async function createPartner(formData: FormData) {
       logoPath = await uploadImage(logoFile, "partners");
     }
 
-    const advantagesList = advantages 
+    const advantagesList = advantages
       ? advantages.split("\n").map(s => s.trim()).filter(s => s.length > 0)
       : [];
 
@@ -100,7 +101,7 @@ export async function updatePartner(id: string, formData: FormData) {
   }
 
   const { name, category, city, website, address, conditions, active, advantages } = validatedFields.data;
-  
+
   const logoFile = formData.get("logo") as File;
   let logoPath = undefined;
 
@@ -109,7 +110,7 @@ export async function updatePartner(id: string, formData: FormData) {
       logoPath = await uploadImage(logoFile, "partners");
     }
 
-    const advantagesList = advantages 
+    const advantagesList = advantages
       ? advantages.split("\n").map(s => s.trim()).filter(s => s.length > 0)
       : [];
 

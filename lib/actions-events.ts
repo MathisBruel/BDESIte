@@ -21,8 +21,9 @@ const eventSchema = z.object({
 async function uploadImage(file: File, folder: string): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  
-  await minioClient.putObject(BUCKET_NAME, filename, buffer, file.size, {
+  const minioPath = `images/${filename}`;
+
+  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
     "Content-Type": file.type,
   });
 
@@ -45,7 +46,7 @@ export async function createEvent(formData: FormData) {
   }
 
   const { title, slug, date, place, description, ticketUrl, published } = validatedFields.data;
-  
+
   const coverFile = formData.get("cover") as File;
   let coverPath = undefined;
 
@@ -94,7 +95,7 @@ export async function updateEvent(slug: string, formData: FormData) {
   }
 
   const { title, slug: newSlug, date, place, description, ticketUrl, published } = validatedFields.data;
-  
+
   const coverFile = formData.get("cover") as File;
   let coverPath = undefined;
 
