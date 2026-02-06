@@ -293,7 +293,50 @@ export const getTexts = unstable_cache(
   },
   ["site-texts"],
   {
-    revalidate: 3600, // Cache for 1 hour
     tags: ["site-texts"],
   }
 );
+
+export async function getVisitStats() {
+  noStore();
+  try {
+    const now = new Date();
+    const firstDayThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastDayLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+    // @ts-ignore
+    const thisMonthVisits = await prisma.visit.count({
+      where: {
+        createdAt: {
+          gte: firstDayThisMonth,
+        },
+      },
+    });
+
+    // @ts-ignore
+    const lastMonthVisits = await prisma.visit.count({
+      where: {
+        createdAt: {
+          gte: firstDayLastMonth,
+          lte: lastDayLastMonth,
+        },
+      },
+    });
+
+    let trend = 0;
+    if (lastMonthVisits > 0) {
+      trend = ((thisMonthVisits - lastMonthVisits) / lastMonthVisits) * 100;
+    } else if (thisMonthVisits > 0) {
+      trend = 100;
+    }
+
+    return {
+      value: thisMonthVisits,
+      trend: Math.round(trend),
+    };
+  } catch (error) {
+    console.error("Failed to fetch visit stats:", error);
+    return { value: 0, trend: 0 };
+  }
+}

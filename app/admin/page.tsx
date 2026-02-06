@@ -1,4 +1,4 @@
-import { getEvents, getPartners } from "@/lib/data";
+import { getEvents, getPartners, getVisitStats } from "@/lib/data";
 import { Event, Partner } from "@/lib/schemas";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { Calendar, Users, Eye, TrendingUp } from "lucide-react";
@@ -7,6 +7,7 @@ import { formatDate } from "@/lib/format-date";
 export default async function AdminDashboard() {
   const events = await getEvents();
   const partners = await getPartners();
+  const visitStats = await getVisitStats();
 
   const activePartners = partners.filter((p: any) => p.active).length;
   const upcomingEvents = events.filter((e: any) => new Date(e.date) >= new Date()).length;
@@ -47,10 +48,10 @@ export default async function AdminDashboard() {
         />
         <StatsCard
           title="Vues du site"
-          value="1.2k"
+          value={visitStats.value}
           icon={Eye}
           description="Ce mois-ci"
-          trend={{ value: 12, label: "vs mois dernier", positive: true }}
+          trend={{ value: visitStats.trend, label: "vs mois dernier", positive: visitStats.trend >= 0 }}
           className="border-l-4 border-l-brand-red hover:shadow-md transition-shadow"
         />
       </div>

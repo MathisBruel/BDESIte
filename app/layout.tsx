@@ -3,6 +3,7 @@ import { League_Spartan, Merriweather } from "next/font/google";
 import "./globals.css";
 import { defaultMetadata } from "@/lib/seo";
 import SmoothScroll from "./SmoothScroll";
+import { VisitTracker } from "@/components/VisitTracker";
 
 const leagueSpartan = League_Spartan({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
       <body>
         <Toaster position="top-right" richColors />
         <SmoothScroll />
+        <VisitTracker />
         {children}
       </body>
     </html>
