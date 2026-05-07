@@ -18,6 +18,7 @@ export default async function EditEventPage({ params }: { params: { slug: string
     ...event,
     date: new Date(event.date).toISOString().split("T")[0],
     ticketUrl: event.ticketUrl || "",
+    photosUrl: event.photosUrl || "",
   };
 
   return (

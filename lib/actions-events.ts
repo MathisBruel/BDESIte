@@ -15,6 +15,7 @@ const eventSchema = z.object({
   place: z.string().min(3),
   description: z.string().min(10),
   ticketUrl: z.string().optional().or(z.literal("")),
+  photosUrl: z.string().optional().or(z.literal("")),
   published: z.string().optional(), // Checkbox sends "on" or undefined
 });
 
@@ -38,6 +39,7 @@ export async function createEvent(formData: FormData) {
     place: formData.get("place"),
     description: formData.get("description"),
     ticketUrl: formData.get("ticketUrl") || "",
+    photosUrl: formData.get("photosUrl") || "",
     published: formData.get("published"),
   });
 
@@ -45,7 +47,7 @@ export async function createEvent(formData: FormData) {
     return { error: "Champs invalides" };
   }
 
-  const { title, slug, date, place, description, ticketUrl, published } = validatedFields.data;
+  const { title, slug, date, place, description, ticketUrl, photosUrl, published } = validatedFields.data;
 
   const coverFile = formData.get("cover") as File;
   let coverPath = undefined;
@@ -65,6 +67,7 @@ export async function createEvent(formData: FormData) {
         place,
         description,
         ticketUrl: ticketUrl || null,
+        photosUrl: photosUrl || null,
         published: published === "on",
         cover: coverPath || null,
       },
@@ -87,6 +90,7 @@ export async function updateEvent(slug: string, formData: FormData) {
     place: formData.get("place"),
     description: formData.get("description"),
     ticketUrl: formData.get("ticketUrl") || "",
+    photosUrl: formData.get("photosUrl") || "",
     published: formData.get("published"),
   });
 
@@ -94,7 +98,7 @@ export async function updateEvent(slug: string, formData: FormData) {
     return { error: "Champs invalides" };
   }
 
-  const { title, slug: newSlug, date, place, description, ticketUrl, published } = validatedFields.data;
+  const { title, slug: newSlug, date, place, description, ticketUrl, photosUrl, published } = validatedFields.data;
 
   const coverFile = formData.get("cover") as File;
   let coverPath = undefined;
@@ -113,6 +117,7 @@ export async function updateEvent(slug: string, formData: FormData) {
         place,
         description,
         ticketUrl: ticketUrl || null,
+        photosUrl: photosUrl || null,
         published: published === "on",
         ...(coverPath && { cover: coverPath }),
       },

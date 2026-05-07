@@ -18,6 +18,7 @@ const eventSchema = z.object({
   place: z.string().min(3, "Le lieu est requis"),
   description: z.string().min(10, "La description doit être plus détaillée"),
   ticketUrl: z.string().url().optional().or(z.literal("")),
+  photosUrl: z.string().url().optional().or(z.literal("")),
   published: z.boolean().optional(),
 });
 
@@ -41,6 +42,7 @@ export function EventForm({ initialData }: EventFormProps) {
       place: "",
       description: "",
       ticketUrl: "",
+      photosUrl: "",
       published: false,
     },
   });
@@ -56,6 +58,7 @@ export function EventForm({ initialData }: EventFormProps) {
     formData.append("place", data.place);
     formData.append("description", data.description);
     if (data.ticketUrl) formData.append("ticketUrl", data.ticketUrl);
+    if (data.photosUrl) formData.append("photosUrl", data.photosUrl);
     if (data.published) formData.append("published", "on");
     
     if (selectedImage) {
@@ -206,6 +209,23 @@ export function EventForm({ initialData }: EventFormProps) {
                 </div>
                 {form.formState.errors.ticketUrl && (
                   <p className="text-red-500 text-xs mt-1">{form.formState.errors.ticketUrl.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lien Galerie Photos</label>
+                <div className="relative">
+                  <LinkIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                  <input
+                    {...form.register("photosUrl")}
+                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
+                      form.formState.errors.photosUrl ? "border-red-500" : ""
+                    }`}
+                    placeholder="https://photos.app.goo.gl/..."
+                  />
+                </div>
+                {form.formState.errors.photosUrl && (
+                  <p className="text-red-500 text-xs mt-1">{form.formState.errors.photosUrl.message}</p>
                 )}
               </div>
             </div>
