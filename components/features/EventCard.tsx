@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
+import { Camera } from "lucide-react";
 import type { Event } from "@/lib/schemas";
 import { formatDate, formatTime } from "@/lib/utils";
 import { getImageUrl } from "@/lib/image-url";
@@ -9,89 +9,143 @@ interface EventCardProps {
   event: Event;
   compact?: boolean;
   texts: any;
+  past?: boolean;
 }
 
-export function EventCard({ event, compact = false, texts }: EventCardProps) {
-  const eventDate = new Date(event.date);
-  const isPast = eventDate < new Date();
+export function EventCard({ event, compact = false, texts, past = false }: EventCardProps) {
+  const isPast = past || new Date(event.date) < new Date();
 
   return (
     <div
-      className={`bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full ${isPast ? "opacity-75" : ""
-        }`}
+      className={`group relative flex flex-col h-full overflow-hidden border transition-all duration-200 ${
+        isPast
+          ? "bg-brand-craie border-brand-noir/10 hover:border-brand-noir/30"
+          : "bg-brand-noir border-brand-noir hover:border-brand-rouge"
+      }`}
     >
+      {/* Cover */}
       {event.cover && (
-        <div className="relative w-full h-48">
-          <Image src={getImageUrl(event.cover)} alt={event.title} fill className="object-cover" />
+        <div className="relative w-full h-48 overflow-hidden shrink-0">
+          <Image
+            src={getImageUrl(event.cover)}
+            alt={event.title}
+            fill
+            className={`object-cover transition-all duration-500 group-hover:scale-105 ${
+              isPast ? "grayscale-[60%] group-hover:grayscale-0" : ""
+            }`}
+          />
+          {/* Stamp "TERMINÉ" pour événements passés */}
           {isPast && (
-            <div className="absolute top-2 right-2">
-              <Badge variant="default">Terminé</Badge>
+            <div className="absolute top-3 right-3 z-10">
+              <span className="stamp text-sm px-2 py-0.5 bg-white/90">
+                {texts.home.past.completed ?? "Terminé"}
+              </span>
             </div>
+          )}
+          {/* Lien photos */}
+          {event.photosUrl && (
+            <a
+              href={event.photosUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={texts.home.past.photos ?? "Voir les photos"}
+              className="absolute bottom-3 right-3 z-10 p-2 bg-white/90 text-brand-noir hover:bg-brand-or transition-colors"
+            >
+              <Camera className="h-4 w-4" />
+            </a>
           )}
         </div>
       )}
 
-      <div className="p-6 flex flex-col flex-1 relative">
-        {event.photosUrl && (
-          <a
-            href={event.photosUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={texts.home.past.photos}
-            className="absolute top-3 right-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 shadow"
-          >
-            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z" />
-              <path d="M20 6h-2.586l-1.121-1.121A2 2 0 0015.172 4H8.828a2 2 0 00-1.414.586L6.293 6H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2zm0 12H4V8h3.172l1.414-1.414c.188-.188.442-.293.707-.293h6.414c.265 0 .52.105.707.293L16.828 8H20v10z" />
-            </svg>
-          </a>
-        )}
+      <div className="p-5 flex flex-col flex-1">
+        {/* Date + lieu */}
         <div className="mb-3">
-          <div className="text-sm font-semibold text-brand-red mb-1">
+          <div className={`text-xs font-spartan font-bold uppercase tracking-wider mb-1 ${isPast ? "text-brand-noir/50" : "text-brand-rouge"}`}>
             {event.endDate ? (
               (() => {
-                const sameDayFormatter = new Intl.DateTimeFormat("fr-FR", {
+                const fmt = new Intl.DateTimeFormat("fr-FR", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                   timeZone: "Europe/Paris",
                 });
-                const isSameDay = sameDayFormatter.format(new Date(event.date)) === sameDayFormatter.format(new Date(event.endDate));
-                return isSameDay
-                  ? `${formatDate(event.date)} • ${formatTime(event.date)} - ${formatTime(event.endDate)}`
+                const sameDay =
+                  fmt.format(new Date(event.date)) ===
+                  fmt.format(new Date(event.endDate));
+                return sameDay
+                  ? `${formatDate(event.date)} · ${formatTime(event.date)} — ${formatTime(event.endDate)}`
                   : `Du ${formatDate(event.date)} au ${formatDate(event.endDate)}`;
               })()
             ) : (
-              `${formatDate(event.date)} • ${formatTime(event.date)}`
+              `${formatDate(event.date)} · ${formatTime(event.date)}`
             )}
           </div>
-          <div className="text-xs text-gray-600">{event.place}</div>
+          <div className={`text-xs font-lato ${isPast ? "text-brand-noir/40" : "text-white/45"}`}>
+            {event.place}
+          </div>
         </div>
 
-        <h3 className="text-xl font-bold font-spartan text-brand-black mb-3">{event.title}</h3>
+        {/* Titre */}
+        <h3
+          className={`font-spartan font-black text-lg leading-tight mb-3 transition-colors ${
+            isPast
+              ? "text-brand-noir group-hover:text-brand-rouge"
+              : "text-white group-hover:text-brand-or"
+          }`}
+        >
+          {event.title}
+        </h3>
 
+        {/* Tags */}
         {event.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-3">
+          <div className="flex flex-wrap gap-1.5 mb-3">
             {event.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="default">
+              <span
+                key={tag}
+                className={`text-xs font-lato px-2 py-0.5 ${
+                  isPast
+                    ? "bg-brand-noir/8 text-brand-noir/60"
+                    : "bg-white/10 text-white/60"
+                }`}
+              >
                 {tag}
-              </Badge>
+              </span>
             ))}
           </div>
         )}
 
+        {/* Description */}
         {!compact && (
-          <p className="text-sm text-gray-700 mb-4 flex-1 line-clamp-3">{event.description}</p>
+          <p
+            className={`text-sm font-lato mb-4 flex-1 line-clamp-3 leading-relaxed ${
+              isPast ? "text-brand-noir/55" : "text-white/55"
+            }`}
+          >
+            {event.description}
+          </p>
         )}
 
-        <div className="flex gap-2 mt-auto">
-          <Button href={`/evenements/${event.slug}`} variant="outline" className="flex-1">
-            {texts.home.past.details}
-          </Button>
+        {/* CTA */}
+        <div className="flex gap-2 mt-auto pt-2">
+          <Link
+            href={`/evenements/${event.slug}`}
+            className={`flex-1 text-center py-2.5 text-xs font-spartan font-bold uppercase tracking-wide transition-colors ${
+              isPast
+                ? "border border-brand-noir/20 text-brand-noir hover:bg-brand-noir hover:text-white"
+                : "border border-white/20 text-white hover:bg-brand-rouge hover:border-brand-rouge"
+            }`}
+          >
+            {texts.home.past.details ?? "Voir les détails"}
+          </Link>
           {event.ticketUrl && !isPast && (
-            <Button href={event.ticketUrl} variant="primary" className="flex-1">
+            <a
+              href={event.ticketUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 text-center py-2.5 text-xs font-spartan font-bold uppercase tracking-wide bg-brand-rouge text-white hover:bg-brand-or hover:text-brand-noir transition-colors"
+            >
               Billetterie
-            </Button>
+            </a>
           )}
         </div>
       </div>

@@ -1,86 +1,150 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, useMemo } from "react";
 import Image from "next/image";
-import { Section } from "@/components/ui/Section";
+import { Container } from "@/components/ui/Container";
 import { TeamCard } from "@/components/features/TeamCard";
 import { formatText } from "@/lib/utils";
 import { getImageUrl } from "@/lib/image-url";
 
-interface HomeTeamProps {
-    texts: any;
-    settings: any;
-    team: any[];
+interface YearTeam {
+  id: string;
+  label: string;
+  isCurrent: boolean;
+  teamBackgroundImage: string | null;
+  memberships: {
+    id: string;
+    role: string;
+    photo: string | null;
+    order: number;
+    teamMember: {
+      id: string;
+      name: string;
+      role: string;
+      photo: string;
+      photoPosition: string | null;
+      linkedin: string | null;
+      instagram: string | null;
+      email: string | null;
+    };
+  }[];
 }
 
-export function HomeTeam({ texts, settings, team }: HomeTeamProps) {
-    return (
-        <Section id="equipe" className="bg-white">
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-            >
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-4 text-brand-red">
-                        {texts.home.team.title}
-                    </h2>
-                    <div className="w-24 h-2 bg-grad-secondary mx-auto mb-6 rounded-full"></div>
-                    <p className="text-xl text-gray-700 font-medium max-w-2xl mx-auto">
-                        Des étudiants passionnés qui bossent dur pour vous faire kiffer votre année ! 💪
-                    </p>
-                </div>
+interface HomeTeamProps {
+  texts: any;
+  settings: any;
+  yearTeams: YearTeam[];
+  currentYearId: string | null;
+}
 
-                <motion.div
-                    className="mb-12 max-w-3xl mx-auto"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    viewport={{ once: true }}
-                >
-                    <div className="relative rounded-2xl overflow-hidden shadow-xl group">
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-red/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
-                        <Image
-                            src={getImageUrl("team/groupe.jpg")}
-                            alt={texts.home.teamImageAlt}
-                            width={900}
-                            height={600}
-                            className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                            priority
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-20">
-                            <p className="text-white text-xl md:text-2xl font-bold font-spartan text-center">
-                                {formatText(texts.home.team.hero, { year: settings.year })}
-                            </p>
-                            <p className="text-white/90 text-center mt-1 text-sm md:text-base">
-                                {texts.home.team.heroSubtitle}
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
+export function HomeTeam({ texts, settings, yearTeams, currentYearId }: HomeTeamProps) {
+  const defaultYearId = currentYearId || yearTeams[0]?.id || "";
+  const [activeYearId, setActiveYearId] = useState<string>(defaultYearId);
 
-                <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold font-spartan text-gray-800">
-                        {texts.home.team.meet}
-                    </h3>
-                </div>
+  const activeYear = useMemo(
+    () => yearTeams.find((y) => y.id === activeYearId) || yearTeams[0],
+    [yearTeams, activeYearId]
+  );
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {team.map((member, index) => (
-                        <motion.div
-                            key={member.name}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            viewport={{ once: true }}
-                            whileHover={{ scale: 1.05 }}
-                        >
-                            <TeamCard member={member} />
-                        </motion.div>
-                    ))}
+  const team = useMemo(() => {
+    if (!activeYear) return [];
+    return activeYear.memberships.map((m) => ({
+      ...m.teamMember,
+      role: m.role || m.teamMember.role,
+      photo: m.photo || m.teamMember.photo,
+      links: {
+        instagram: m.teamMember.instagram,
+        linkedin: m.teamMember.linkedin,
+        email: m.teamMember.email,
+      },
+    }));
+  }, [activeYear]);
+
+  const yearsWithMembers = yearTeams.filter((y) => y.memberships.length > 0);
+
+  if (yearTeams.length === 0) return null;
+
+  const bgImage = activeYear?.teamBackgroundImage || "team/groupe.jpg";
+
+  return (
+    <section id="equipe" className="bg-brand-craie">
+      <Container>
+        <div className="py-20">
+
+          {/* Header */}
+          <div className="mb-10">
+            <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-3">
+              {texts?.home?.team?.title ?? "L'équipe"}
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+              <h2 className="font-spartan font-black text-display-md text-brand-noir leading-none">
+                {formatText(texts?.home?.team?.hero ?? "Le BDE {year}", {
+                  year: activeYear?.label || settings?.year || "",
+                })}
+              </h2>
+
+              {/* Tabs années */}
+              {yearTeams.length > 1 && (
+                <div className="flex flex-wrap gap-2 shrink-0">
+                  {yearTeams.map((year) => (
+                    <button
+                      key={year.id}
+                      onClick={() => setActiveYearId(year.id)}
+                      className={`px-3 py-1 text-xs font-spartan font-bold uppercase tracking-widest border transition-colors ${
+                        activeYearId === year.id
+                          ? "bg-brand-noir text-white border-brand-noir"
+                          : "text-brand-noir/50 border-brand-noir/20 hover:border-brand-noir hover:text-brand-noir"
+                      }`}
+                    >
+                      {year.label}
+                      {year.isCurrent && <span className="ml-1 opacity-60">●</span>}
+                    </button>
+                  ))}
                 </div>
-            </motion.div>
-        </Section>
-    );
+              )}
+            </div>
+          </div>
+
+          {/* Photo de groupe / image de fond */}
+          <div className="relative w-full overflow-hidden mb-14" style={{ maxHeight: "420px" }}>
+            <Image
+              src={getImageUrl(bgImage)}
+              alt={`Équipe ${activeYear?.label ?? ""}`}
+              width={1200}
+              height={600}
+              className="w-full object-cover object-center"
+              style={{ maxHeight: "420px" }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-brand-craie to-transparent" />
+          </div>
+
+          {/* Sous-titre */}
+          <div className="mb-8">
+            <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-noir/35 mb-2">
+              {texts?.home?.team?.meet ?? "Rencontrez-les"}
+            </div>
+            {texts?.home?.team?.heroSubtitle && (
+              <p className="font-lato text-sm text-brand-noir/50 max-w-md">
+                {texts.home.team.heroSubtitle}
+              </p>
+            )}
+          </div>
+
+          {/* Grille membres */}
+          {team.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {team.map((member) => (
+                <TeamCard key={`${activeYearId}-${member.id}`} member={member as any} />
+              ))}
+            </div>
+          ) : (
+            <p className="font-lato text-sm text-brand-noir/40 text-center py-12">
+              Aucun membre pour cette année.
+            </p>
+          )}
+
+        </div>
+      </Container>
+    </section>
+  );
 }

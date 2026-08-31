@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { LayoutDashboard, Calendar, Users, LogOut, Package, Settings, UserCircle, Menu, X } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, LogOut, Package, Settings, UserCircle, Menu, X, CalendarRange } from "lucide-react";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/image-url";
 import { handleSignOut } from "@/lib/actions-auth";
@@ -20,6 +20,7 @@ export function AdminSidebar() {
     const links = [
         { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
         { href: "/admin/events", label: "Événements", icon: Calendar },
+        { href: "/admin/annees", label: "Années", icon: CalendarRange },
         { href: "/admin/partners", label: "Partenaires", icon: Users },
         { href: "/admin/stock", label: "Confiserie", icon: Package },
         { href: "/admin/team", label: "Équipe", icon: UserCircle },

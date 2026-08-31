@@ -10,27 +10,43 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          red: "#CC3533",
-          yellow: "#f8cf0e",
-          pale: "#ffe492",
-          black: "#000000",
+          rouge: "#ff0200",
+          or: "#ffc700",
+          noir: "#150000",
+          craie: "#f1f1f1",
+          blanc: "#ffffff",
+          // legacy aliases — retire progressivement
+          red: "#ff0200",
+          yellow: "#ffc700",
+          pale: "#ffc700",
+          black: "#150000",
           white: "#ffffff",
         },
       },
       backgroundImage: {
-        "grad-primary": "linear-gradient(90deg, #ffde59 0%, #ffffff 100%)",
-        "grad-secondary": "linear-gradient(90deg, #cc3533 0%, #ff92b9 33%, #ffe492 66%, #ffde59 100%)",
+        // Texture peinture/spray extraite de la charte : rouge → orange → or
+        "grad-spray": "linear-gradient(105deg, #ff0200 0%, #ff6b00 45%, #ffc700 100%)",
+        // Garde pour rétrocompat admin
+        "grad-primary": "linear-gradient(90deg, #ffc700 0%, #ffffff 100%)",
+        "grad-secondary": "linear-gradient(105deg, #ff0200 0%, #ff6b00 45%, #ffc700 100%)",
       },
       fontFamily: {
         spartan: ["var(--font-league-spartan)", "sans-serif"],
-        merriweather: ["var(--font-merriweather)", "serif"],
-        chunk: [
-          "var(--font-chunk-five)",
-          "Impact",
-          "Bebas Neue",
-          "Arial Black",
-          "sans-serif",
-        ],
+        lato: ["var(--font-lato)", "sans-serif"],
+        dancing: ["var(--font-dancing-script)", "cursive"],
+        // legacy — retire progressivement
+        merriweather: ["var(--font-lato)", "sans-serif"],
+        chunk: ["var(--font-league-spartan)", "Impact", "sans-serif"],
+      },
+      fontSize: {
+        "display-xl": ["5rem", { lineHeight: "0.9", letterSpacing: "-0.02em" }],
+        "display-lg": ["3.75rem", { lineHeight: "0.9", letterSpacing: "-0.02em" }],
+        "display-md": ["3rem", { lineHeight: "0.95", letterSpacing: "-0.01em" }],
+      },
+      boxShadow: {
+        // Ombre dure façon sticker (offset net, pas de blur)
+        sticker: "4px 5px 0px #150000",
+        "sticker-or": "4px 5px 0px #ffc700",
       },
     },
   },

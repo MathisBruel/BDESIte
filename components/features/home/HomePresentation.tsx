@@ -1,68 +1,82 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Section } from "@/components/ui/Section";
+import { Users, Calendar, Handshake } from "lucide-react";
+import { Container } from "@/components/ui/Container";
 
 interface HomePresentationProps {
-    texts: any;
+  texts: any;
+  membersCount?: number;
+  eventsCount?: number;
+  partnersCount?: number;
 }
 
-export function HomePresentation({ texts }: HomePresentationProps) {
-    return (
-        <Section id="presentation" className="bg-white">
-            <motion.div
-                className="max-w-4xl mx-auto"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-            >
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-6 text-brand-red">
-                        {texts.home.presentation.title}
-                    </h2>
-                    <div className="w-24 h-2 bg-grad-secondary mx-auto mb-8 rounded-full"></div>
+export function HomePresentation({
+  texts,
+  membersCount = 9,
+  eventsCount = 10,
+  partnersCount = 5,
+}: HomePresentationProps) {
+  const stats = [
+    { value: `${membersCount}`, label: "membres dans l'équipe", icon: Users },
+    { value: `${eventsCount}+`, label: "événements organisés", icon: Calendar },
+    { value: `${partnersCount}`, label: "partenaires locaux", icon: Handshake },
+  ];
+
+  const pillars = [
+    {
+      title: texts.home.presentation.convivialityTitle,
+      text: texts.home.presentation.convivialityText,
+    },
+    {
+      title: texts.home.presentation.eventsTitle,
+      text: texts.home.presentation.eventsText,
+    },
+    {
+      title: texts.home.presentation.engagementTitle,
+      text: texts.home.presentation.engagementText,
+    },
+  ];
+
+  return (
+    <section id="presentation" className="bg-brand-rouge">
+      <Container>
+        <div className="py-20">
+
+          {/* Blocs statistiques */}
+          <div className="grid grid-cols-3 gap-6 sm:gap-12 mb-16 pb-16 border-b border-white/15">
+            {stats.map(({ value, label, icon: Icon }) => (
+              <div key={label} className="text-center">
+                <div className="font-spartan font-black text-5xl sm:text-6xl md:text-7xl text-white leading-none mb-3">
+                  {value}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    <motion.div
-                        className="text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform"
-                        whileHover={{ y: -5 }}
-                    >
-                        <div className="text-6xl mb-4">🤝</div>
-                        <h3 className="text-2xl font-bold font-spartan mb-3 text-brand-red">{texts.home.presentation.convivialityTitle}</h3>
-                        <p className="text-gray-700">
-                            {texts.home.presentation.convivialityText}
-                        </p>
-                    </motion.div>
-
-                    <motion.div
-                        className="text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform"
-                        whileHover={{ y: -5 }}
-                    >
-                        <div className="text-6xl mb-4">🎉</div>
-                        <h3 className="text-2xl font-bold font-spartan mb-3 text-brand-red">{texts.home.presentation.eventsTitle}</h3>
-                        <p className="text-gray-700">
-                            {texts.home.presentation.eventsText}
-                        </p>
-                    </motion.div>
-
-                    <motion.div
-                        className="text-center p-6 bg-brand-pale/30 rounded-2xl hover:scale-105 transition-transform"
-                        whileHover={{ y: -5 }}
-                    >
-                        <div className="text-6xl mb-4">💪</div>
-                        <h3 className="text-2xl font-bold font-spartan mb-3 text-brand-red">{texts.home.presentation.engagementTitle}</h3>
-                        <p className="text-gray-700">
-                            {texts.home.presentation.engagementText}
-                        </p>
-                    </motion.div>
+                <div className="flex items-center justify-center gap-1.5 text-white/65 text-xs sm:text-sm font-lato">
+                  <Icon className="h-3.5 w-3.5 shrink-0" />
+                  <span>{label}</span>
                 </div>
+              </div>
+            ))}
+          </div>
 
-                <p className="text-xl text-center text-gray-700 leading-relaxed">
-                    {texts.home.presentation.intro}
+          {/* Piliers */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
+            {pillars.map(({ title, text }) => (
+              <div key={title}>
+                <h3 className="font-spartan font-black text-xl sm:text-2xl text-white mb-4 uppercase tracking-tight">
+                  {title}
+                </h3>
+                <div className="w-8 h-0.5 bg-brand-or mb-5" />
+                <p className="font-lato text-white/65 leading-relaxed text-sm sm:text-base">
+                  {text}
                 </p>
-            </motion.div>
-        </Section>
-    );
+              </div>
+            ))}
+          </div>
+
+          {/* Phrase intro */}
+          <p className="mt-16 font-lato text-lg sm:text-xl text-white/75 leading-relaxed text-center max-w-3xl mx-auto">
+            {texts.home.presentation.intro}
+          </p>
+
+        </div>
+      </Container>
+    </section>
+  );
 }

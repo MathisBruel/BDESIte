@@ -108,7 +108,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
               className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
                 form.formState.errors.association ? "border-red-500" : ""
               }`}
-              placeholder="Ex: BDE Sup'RNova"
+              placeholder="Ex: BDE SUP'RNOVA"
             />
             {form.formState.errors.association && (
               <p className="text-red-500 text-xs mt-1">{form.formState.errors.association.message}</p>

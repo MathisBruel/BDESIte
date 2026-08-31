@@ -11,7 +11,8 @@
     "seed": "tsx prisma/seed.ts",
     "seed:admin": "tsx prisma/seed-admin.ts",
     "migrate:images": "tsx scripts/migrate-images-to-minio.ts",
-    "migrate:prod": "tsx scripts/migrate-to-production.ts"
+    "migrate:prod": "tsx scripts/migrate-to-production.ts",
+    "backfill:years": "tsx scripts/backfill-academic-year.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

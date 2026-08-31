@@ -119,11 +119,30 @@ export async function getEventBySlug(slug: string) {
 export async function getTeamMembers() {
   noStore();
   try {
-    const members = await prisma.teamMember.findMany({
-      orderBy: { createdAt: 'asc' },
-    });
+    const currentYear = await prisma.academicYear.findFirst({ where: { isCurrent: true } });
 
-    return members.map((member: any) => ({
+    if (currentYear) {
+      const memberships = await prisma.teamMembership.findMany({
+        where: { academicYearId: currentYear.id },
+        orderBy: { order: "asc" },
+        include: { teamMember: true },
+      });
+
+      if (memberships.length > 0) {
+        return memberships.map((m) => ({
+          ...m.teamMember,
+          role: m.role || m.teamMember.role,
+          links: {
+            instagram: m.teamMember.instagram,
+            linkedin: m.teamMember.linkedin,
+            email: m.teamMember.email,
+          },
+        }));
+      }
+    }
+
+    const members = await prisma.teamMember.findMany({ orderBy: { createdAt: "asc" } });
+    return members.map((member) => ({
       ...member,
       links: {
         instagram: member.instagram,
@@ -159,7 +178,7 @@ export async function getSettings() {
       discord: "https://discord.gg/bde",
       linkedin: "https://linkedin.com/company/bde-sup-rnova",
       facebook: "https://facebook.com/bde-sup-rnova",
-      association: "BDE Sup'RNova",
+      association: "BDE SUP'RNOVA",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -338,5 +357,36 @@ export async function getVisitStats() {
   } catch (error) {
     console.error("Failed to fetch visit stats:", error);
     return { value: 0, trend: 0 };
+  }
+}
+
+export async function getAcademicYears() {
+  noStore();
+  try {
+    return await prisma.academicYear.findMany({
+      orderBy: { startDate: "desc" },
+      include: { _count: { select: { events: true, memberships: true } } },
+    });
+  } catch (error) {
+    console.error("Failed to fetch academic years:", error);
+    return [];
+  }
+}
+
+export async function getAcademicYearById(id: string) {
+  noStore();
+  try {
+    return await prisma.academicYear.findUnique({ where: { id } });
+  } catch {
+    return null;
+  }
+}
+
+export async function getCurrentAcademicYear() {
+  noStore();
+  try {
+    return await prisma.academicYear.findFirst({ where: { isCurrent: true } });
+  } catch {
+    return null;
   }
 }

@@ -4,11 +4,11 @@
 
 @layer base {
   * {
-    @apply border-brand-black;
+    @apply border-brand-noir;
   }
-  
+
   body {
-    @apply bg-white text-brand-black font-merriweather antialiased;
+    @apply bg-brand-craie text-brand-noir font-lato antialiased;
   }
 
   h1,
@@ -26,53 +26,101 @@
 }
 
 @layer utilities {
-  
-  .text-on-gradient {
-    @apply text-brand-black;
+  /* Sticker : ombre dure offset, rotation légère — traitement mascotte */
+  .sticker {
+    filter: drop-shadow(4px 5px 0px #150000);
+    transform: rotate(8deg);
+    display: inline-block;
   }
 
-  .bg-grad-primary, .bg-grad-secondary {
-    color: #000000;
+  .sticker-left {
+    filter: drop-shadow(-4px 5px 0px #150000);
+    transform: rotate(-6deg);
+    display: inline-block;
   }
 
+  /* Animation d'entrée orchestrée du sticker mascotte */
+  @keyframes sticker-in {
+    0% {
+      transform: rotate(-15deg) scale(0.6);
+      opacity: 0;
+    }
+    70% {
+      transform: rotate(10deg) scale(1.05);
+      opacity: 1;
+    }
+    85% {
+      transform: rotate(6deg) scale(0.98);
+    }
+    100% {
+      transform: rotate(8deg) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-sticker-in {
+    animation: sticker-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes sticker-in-left {
+    0% {
+      transform: rotate(15deg) scale(0.6);
+      opacity: 0;
+    }
+    70% {
+      transform: rotate(-8deg) scale(1.05);
+      opacity: 1;
+    }
+    85% {
+      transform: rotate(-4deg) scale(0.98);
+    }
+    100% {
+      transform: rotate(-6deg) scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-sticker-in-left {
+    animation: sticker-in-left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  /* Tampon "TERMINÉ" pour événements passés */
+  .stamp {
+    @apply font-dancing text-brand-rouge border-2 border-brand-rouge;
+    transform: rotate(-12deg);
+    display: inline-block;
+    padding: 2px 10px;
+    opacity: 0.85;
+  }
+
+  /* Respect prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-sticker-in,
+    .animate-sticker-in-left {
+      animation: none;
+    }
+    .sticker {
+      transform: rotate(8deg);
+    }
+    .sticker-left {
+      transform: rotate(-6deg);
+    }
+  }
+
+  /* Utilitaires delay */
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .delay-500 { animation-delay: 0.5s; }
+  .delay-700 { animation-delay: 0.7s; }
+
+  /* Spin lent (réutilisé dans admin) */
   .animate-spin-slow {
     animation: spin 8s linear infinite;
   }
 
   @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .delay-100 {
-    animation-delay: 0.1s;
-  }
-
-  .delay-200 {
-    animation-delay: 0.2s;
-  }
-
-  .delay-300 {
-    animation-delay: 0.3s;
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 }
-

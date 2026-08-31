@@ -48,7 +48,7 @@ export function MerchSection() {
                     <div className="relative h-48 w-full mb-4">
                         <Image
                             src="/images/assets/Pull/Ink Blue.png"
-                            alt="Pull BDE Sup'RNova"
+                            alt="Pull BDE SUP'RNOVA"
                             fill
                             sizes="(max-width: 768px) 100vw, 400px"
                             className="object-contain"
