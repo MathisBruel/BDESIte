@@ -1,4 +1,6 @@
-import { Users, Calendar, Handshake } from "lucide-react";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/Container";
 
 interface HomePresentationProps {
@@ -8,73 +10,89 @@ interface HomePresentationProps {
   partnersCount?: number;
 }
 
-export function HomePresentation({
-  texts,
-  membersCount = 9,
-  eventsCount = 10,
-  partnersCount = 5,
-}: HomePresentationProps) {
-  const stats = [
-    { value: `${membersCount}`, label: "membres dans l'équipe", icon: Users },
-    { value: `${eventsCount}+`, label: "événements organisés", icon: Calendar },
-    { value: `${partnersCount}`, label: "partenaires locaux", icon: Handshake },
-  ];
+export function HomePresentation({ texts }: HomePresentationProps) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   const pillars = [
     {
+      num: "01",
       title: texts.home.presentation.convivialityTitle,
       text: texts.home.presentation.convivialityText,
     },
     {
+      num: "02",
       title: texts.home.presentation.eventsTitle,
       text: texts.home.presentation.eventsText,
     },
     {
+      num: "03",
       title: texts.home.presentation.engagementTitle,
       text: texts.home.presentation.engagementText,
     },
   ];
 
   return (
-    <section id="presentation" className="bg-brand-rouge">
+    <section id="presentation" className="bg-brand-noir overflow-hidden">
       <Container>
-        <div className="py-20">
+        <div ref={ref} className="py-12 divide-y divide-white/6">
+          {pillars.map(({ num, title, text }, i) => (
+            <div
+              key={num}
+              className="relative overflow-hidden grid grid-cols-[2.5rem_1fr] sm:grid-cols-[2.5rem_1fr_auto] items-start gap-x-8 sm:gap-x-12 py-10 pl-5 border-l-2 border-brand-rouge transition-all duration-700 ease-out"
+              style={{
+                transitionDelay: `${i * 150}ms`,
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(24px)",
+              }}
+            >
+              {/* Numéro en or — font mono pour largeur uniforme */}
+              <span
+                className="text-brand-or tracking-widest mt-2 shrink-0"
+                style={{ fontFamily: "ui-monospace, monospace", fontWeight: 700, fontSize: "0.7rem", width: "2.5rem", display: "block" }}
+              >
+                {num}
+              </span>
 
-          {/* Blocs statistiques */}
-          <div className="grid grid-cols-3 gap-6 sm:gap-12 mb-16 pb-16 border-b border-white/15">
-            {stats.map(({ value, label, icon: Icon }) => (
-              <div key={label} className="text-center">
-                <div className="font-spartan font-black text-5xl sm:text-6xl md:text-7xl text-white leading-none mb-3">
-                  {value}
-                </div>
-                <div className="flex items-center justify-center gap-1.5 text-white/65 text-xs sm:text-sm font-lato">
-                  <Icon className="h-3.5 w-3.5 shrink-0" />
-                  <span>{label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Piliers */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
-            {pillars.map(({ title, text }) => (
-              <div key={title}>
-                <h3 className="font-spartan font-black text-xl sm:text-2xl text-white mb-4 uppercase tracking-tight">
+              {/* Mot-clé rouge vif sur noir */}
+              <div>
+                <h3
+                  className="font-spartan font-black uppercase text-brand-rouge leading-[0.85] mb-3"
+                  style={{ fontSize: "clamp(2rem, 6vw, 4rem)" }}
+                >
                   {title}
                 </h3>
-                <div className="w-8 h-0.5 bg-brand-or mb-5" />
-                <p className="font-lato text-white/65 leading-relaxed text-sm sm:text-base">
+                <p className="sm:hidden font-lato text-sm text-white/45 leading-relaxed max-w-sm">
                   {text}
                 </p>
               </div>
-            ))}
-          </div>
 
-          {/* Phrase intro */}
-          <p className="mt-16 font-lato text-lg sm:text-xl text-white/75 leading-relaxed text-center max-w-3xl mx-auto">
-            {texts.home.presentation.intro}
-          </p>
+              {/* Desktop : description à droite */}
+              <p className="hidden sm:block font-lato text-sm text-white/45 leading-relaxed max-w-xs self-end pb-1">
+                {text}
+              </p>
 
+              {/* Ghost number fond */}
+              <span
+                aria-hidden
+                className="absolute right-0 top-1/2 -translate-y-1/2 font-spartan font-black text-brand-rouge/5 select-none pointer-events-none leading-none"
+                style={{ fontSize: "clamp(6rem, 16vw, 13rem)" }}
+              >
+                {num}
+              </span>
+            </div>
+          ))}
         </div>
       </Container>
     </section>

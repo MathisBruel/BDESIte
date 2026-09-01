@@ -58,8 +58,8 @@ export function Header({ texts }: HeaderProps) {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-brand-noir/98 shadow-lg" : "bg-brand-noir"
+      className={`sticky top-0 z-50 bg-brand-noir transition-all duration-300 ${
+        scrolled ? "shadow-lg" : ""
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -70,7 +70,7 @@ export function Header({ texts }: HeaderProps) {
             className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-or"
           >
             <Image
-              src="/images/assets/Logo simple couleur.png"
+              src="/images/assets/Logo couleur blanc.png"
               alt={texts.home.brandAlt}
               width={36}
               height={36}

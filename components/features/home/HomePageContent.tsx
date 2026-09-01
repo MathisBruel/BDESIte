@@ -21,6 +21,7 @@ interface HomePageContentProps {
   settings: any;
   partnersCount: number;
   texts: any;
+  heroPhotos?: { path: string; position: string }[];
 }
 
 export function HomePageContent({
@@ -31,6 +32,7 @@ export function HomePageContent({
   settings,
   partnersCount,
   texts,
+  heroPhotos = [],
 }: HomePageContentProps) {
   const totalMembers = yearTeams.find((y) => y.id === currentYearId)?.memberships.length
     ?? yearTeams[0]?.memberships.length
@@ -38,7 +40,7 @@ export function HomePageContent({
 
   return (
     <main>
-      <HomeHero texts={texts} settings={settings} partnersCount={partnersCount} />
+      <HomeHero texts={texts} settings={settings} partnersCount={partnersCount} heroPhotos={heroPhotos} />
       <HomePresentation
         texts={texts}
         membersCount={totalMembers}

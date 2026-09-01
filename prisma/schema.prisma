@@ -108,6 +108,16 @@ model SiteContent {
   @@unique([section, key])
 }
 
+model HeroPhoto {
+  id        String   @id @default(cuid())
+  path      String
+  position  String   @default("center")
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
