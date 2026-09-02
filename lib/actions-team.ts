@@ -29,7 +29,8 @@ async function syncMemberships(
   memberId: string,
   yearIds: string[],
   baseRole: string,
-  yearPhotos: Record<string, string> = {}
+  yearPhotos: Record<string, string> = {},
+  yearRoles: Record<string, string> = {}
 ) {
   await prisma.teamMembership.deleteMany({ where: { teamMemberId: memberId } });
 
@@ -39,7 +40,7 @@ async function syncMemberships(
       data: {
         teamMemberId: memberId,
         academicYearId: yearId,
-        role: baseRole,
+        role: yearRoles[yearId] || baseRole,
         photo: yearPhotos[yearId] || null,
         order: i,
       },
@@ -83,13 +84,16 @@ export async function createTeamMember(formData: FormData) {
 
     if (yearIds.length > 0) {
       const yearPhotos: Record<string, string> = {};
+      const yearRoles: Record<string, string> = {};
       for (const yearId of yearIds) {
         const yPhotoFile = formData.get(`yearPhoto_${yearId}`) as File;
         if (yPhotoFile && yPhotoFile.size > 0) {
           yearPhotos[yearId] = await uploadImage(yPhotoFile, "team");
         }
+        const yRole = formData.get(`yearRole_${yearId}`) as string | null;
+        if (yRole && yRole.trim()) yearRoles[yearId] = yRole.trim();
       }
-      await syncMemberships(member.id, yearIds, role, yearPhotos);
+      await syncMemberships(member.id, yearIds, role, yearPhotos, yearRoles);
     }
   } catch (error) {
     console.error("Error creating team member:", error);
@@ -137,13 +141,16 @@ export async function updateTeamMember(id: string, formData: FormData) {
     });
 
     const yearPhotos: Record<string, string> = {};
+    const yearRoles: Record<string, string> = {};
     for (const yearId of yearIds) {
       const yPhotoFile = formData.get(`yearPhoto_${yearId}`) as File;
       if (yPhotoFile && yPhotoFile.size > 0) {
         yearPhotos[yearId] = await uploadImage(yPhotoFile, "team");
       }
+      const yRole = formData.get(`yearRole_${yearId}`) as string | null;
+      if (yRole && yRole.trim()) yearRoles[yearId] = yRole.trim();
     }
-    await syncMemberships(id, yearIds, role, yearPhotos);
+    await syncMemberships(id, yearIds, role, yearPhotos, yearRoles);
   } catch (error) {
     console.error("Error updating team member:", error);
     return { error: "Erreur lors de la modification du membre" };

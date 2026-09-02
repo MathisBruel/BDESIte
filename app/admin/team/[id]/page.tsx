@@ -20,8 +20,10 @@ export default async function EditTeamMemberPage({
   const yearOptions = years.map((y) => ({ id: y.id, label: y.label, isCurrent: y.isCurrent }));
   const memberYearIds = memberships.map((m) => m.academicYearId);
   const memberYearPhotos: Record<string, string> = {};
+  const memberYearRoles: Record<string, string> = {};
   for (const m of memberships) {
     if (m.photo) memberYearPhotos[m.academicYearId] = m.photo;
+    if (m.role) memberYearRoles[m.academicYearId] = m.role;
   }
 
   return (
@@ -33,7 +35,7 @@ export default async function EditTeamMemberPage({
         <p className="text-gray-500 mt-1">Modifiez les informations du membre</p>
       </div>
       <TeamMemberForm
-        member={{ ...member, memberYearIds, memberYearPhotos }}
+        member={{ ...member, memberYearIds, memberYearPhotos, memberYearRoles }}
         academicYears={yearOptions}
       />
     </div>

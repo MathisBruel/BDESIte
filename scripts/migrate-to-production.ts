@@ -332,12 +332,6 @@ async function migrateStock() {
 async function migrateAcademicYears() {
   console.log('🎓 Migration des années académiques...');
 
-  const existing = await prisma.academicYear.count();
-  if (existing > 0) {
-    console.log('  ℹ️  Années déjà présentes, skip');
-    return;
-  }
-
   const teamPath = path.join(DATA_DIR, 'team.json');
   if (!fs.existsSync(teamPath)) {
     console.log('  ⚠️  team.json non trouvé');
@@ -345,16 +339,32 @@ async function migrateAcademicYears() {
   }
   const team = JSON.parse(fs.readFileSync(teamPath, 'utf-8'));
 
-  const year = await prisma.academicYear.create({
-    data: {
-      label: '2025-2026',
-      slug: '2025-2026',
-      startDate: new Date('2025-09-01'),
-      endDate: new Date('2026-08-31'),
-      isCurrent: false,
-      teamBackgroundImage: 'team/groupe.jpg',
-    },
+  let year = await prisma.academicYear.findUnique({ where: { slug: '2025-2026' } });
+
+  if (!year) {
+    year = await prisma.academicYear.create({
+      data: {
+        label: '2025-2026',
+        slug: '2025-2026',
+        startDate: new Date('2025-09-01'),
+        endDate: new Date('2026-08-31'),
+        isCurrent: false,
+        teamBackgroundImage: 'team/groupe.jpg',
+      },
+    });
+    console.log('  ✅ Année 2025-2026 créée');
+  } else {
+    console.log('  ℹ️  Année 2025-2026 déjà présente');
+  }
+
+  const existingMemberships = await prisma.teamMembership.count({
+    where: { academicYearId: year.id },
   });
+
+  if (existingMemberships > 0) {
+    console.log(`  ℹ️  ${existingMemberships} memberships déjà présents pour 2025-2026, skip`);
+    return;
+  }
 
   const members = await prisma.teamMember.findMany({});
   const memberMap = new Map(members.map((m) => [m.name, m]));
@@ -362,7 +372,10 @@ async function migrateAcademicYears() {
   let order = 0;
   for (const t of team) {
     const member = memberMap.get(t.name);
-    if (!member) continue;
+    if (!member) {
+      console.log(`  ⚠️  Membre non trouvé en DB: ${t.name}`);
+      continue;
+    }
     await prisma.teamMembership.create({
       data: {
         academicYearId: year.id,
@@ -373,7 +386,7 @@ async function migrateAcademicYears() {
     });
   }
 
-  console.log(`  ✅ Année 2025-2026 créée avec ${order} membres`);
+  console.log(`  ✅ ${order} memberships créés pour 2025-2026`);
 }
 
 async function createAdminUser() {

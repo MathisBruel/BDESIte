@@ -37,7 +37,8 @@ interface TeamMember {
   photoPosition?: string | null;
   links?: { linkedin?: string | null; instagram?: string | null; email?: string | null } | null;
   memberYearIds?: string[];
-  memberYearPhotos?: Record<string, string>; // yearId → existing photo path
+  memberYearPhotos?: Record<string, string>;
+  memberYearRoles?: Record<string, string>;
 }
 
 interface TeamMemberFormProps {
@@ -129,6 +130,9 @@ export function TeamMemberForm({ member, academicYears = [] }: TeamMemberFormPro
     member?.memberYearIds ?? academicYears.filter((y) => y.isCurrent).map((y) => y.id)
   );
   const [yearPhotos, setYearPhotos] = useState<Record<string, File | null>>({});
+  const [yearRoles, setYearRoles] = useState<Record<string, string>>(
+    member?.memberYearRoles ?? {}
+  );
 
   const form = useForm<TeamMemberFormValues>({
     resolver: zodResolver(teamMemberSchema),
@@ -175,10 +179,15 @@ export function TeamMemberForm({ member, academicYears = [] }: TeamMemberFormPro
     selectedYears.forEach((id) => formData.append("yearIds[]", id));
     if (selectedImage) formData.append("photo", selectedImage);
 
-    // Append per-year photos
     for (const [yearId, file] of Object.entries(yearPhotos)) {
       if (file && selectedYears.includes(yearId)) {
         formData.append(`yearPhoto_${yearId}`, file);
+      }
+    }
+
+    for (const [yearId, role] of Object.entries(yearRoles)) {
+      if (role.trim() && selectedYears.includes(yearId)) {
+        formData.append(`yearRole_${yearId}`, role.trim());
       }
     }
 
@@ -267,7 +276,7 @@ export function TeamMemberForm({ member, academicYears = [] }: TeamMemberFormPro
             <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-1">Années académiques</h3>
               <p className="text-sm text-gray-500 mb-4">
-                Cochez les années + ajoutez une photo spécifique si différente de la photo principale.
+                Cochez les années, personnalisez le rôle et la photo si différents.
               </p>
               <div className="space-y-4">
                 {academicYears.map((year) => (
@@ -288,12 +297,32 @@ export function TeamMemberForm({ member, academicYears = [] }: TeamMemberFormPro
                     </label>
 
                     {selectedYears.includes(year.id) && (
-                      <YearPhotoInput
-                        yearId={year.id}
-                        yearLabel={year.label}
-                        existingPhoto={member?.memberYearPhotos?.[year.id]}
-                        onFileChange={handleYearPhoto}
-                      />
+                      <div className="mt-3 ml-7 space-y-3">
+                        {/* Rôle spécifique à l'année */}
+                        <div>
+                          <label className="block text-xs text-gray-500 mb-1">
+                            Rôle pour cette année
+                            <span className="ml-1 text-gray-400">(laissez vide = rôle principal)</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={yearRoles[year.id] ?? ""}
+                            onChange={(e) =>
+                              setYearRoles((prev) => ({ ...prev, [year.id]: e.target.value }))
+                            }
+                            placeholder={form.watch("role") || "Rôle par défaut"}
+                            className="w-full rounded border border-gray-200 text-sm p-2 focus:border-brand-red focus:outline-none focus:ring-1 focus:ring-brand-red"
+                          />
+                        </div>
+
+                        {/* Photo spécifique */}
+                        <YearPhotoInput
+                          yearId={year.id}
+                          yearLabel={year.label}
+                          existingPhoto={member?.memberYearPhotos?.[year.id]}
+                          onFileChange={handleYearPhoto}
+                        />
+                      </div>
                     )}
                   </div>
                 ))}
