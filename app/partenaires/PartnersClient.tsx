@@ -49,7 +49,7 @@ export function PartnersClient({ partners, categories, cities }: PartnersClientP
 
           {/* Grille */}
           {filteredPartners.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-noir/8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filteredPartners.map((partner: Partner) => (
                 <PartnerCard key={partner.id} partner={partner} />
               ))}

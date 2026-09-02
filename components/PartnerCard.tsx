@@ -11,20 +11,17 @@ interface PartnerCardProps {
 
 export function PartnerCard({ partner }: PartnerCardProps) {
   return (
-    <div className="group bg-white flex flex-col h-full hover:outline hover:outline-1 hover:outline-brand-rouge transition-all">
+    <div className="group bg-white border border-brand-noir/10 hover:border-brand-rouge hover:shadow-lg transition-all duration-200 flex flex-col h-full">
 
-      {/* Bandeau catégorie + logo */}
-      <div className="flex items-center justify-between gap-4 px-5 py-3 bg-brand-craie border-b border-brand-noir/8">
-        <span className="font-spartan font-black text-xs uppercase tracking-widest text-brand-noir/40">
-          {categoryLabels[partner.category] || partner.category}
-        </span>
-        {partner.logo && (
-          <div className="relative w-8 h-8 shrink-0">
+      {/* Logo */}
+      <div className="flex items-center justify-center h-28 bg-brand-craie border-b border-brand-noir/8 px-6 shrink-0">
+        {partner.logo ? (
+          <div className="relative w-20 h-14">
             <Image
               src={migrateImagePath(partner.logo)}
               alt={`Logo ${partner.name}`}
               fill
-              sizes="32px"
+              sizes="80px"
               className="object-contain"
               loading="lazy"
               placeholder={getBlurPlaceholder(partner.logo) ? "blur" : "empty"}
@@ -32,21 +29,31 @@ export function PartnerCard({ partner }: PartnerCardProps) {
               unoptimized={migrateImagePath(partner.logo).startsWith("/api/images/")}
             />
           </div>
+        ) : (
+          <span className="font-spartan font-black text-4xl text-brand-noir/10">
+            {partner.name[0]}
+          </span>
         )}
+      </div>
+
+      {/* Catégorie + ville */}
+      <div className="flex items-center justify-between gap-3 px-5 py-2.5 border-b border-brand-noir/8">
+        <span className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge">
+          {categoryLabels[partner.category] || partner.category}
+        </span>
+        <div className="flex items-center gap-1 shrink-0">
+          <MapPin className="h-3 w-3 text-brand-noir/25" />
+          <span className="font-lato text-xs text-brand-noir/40">{partner.city}</span>
+        </div>
       </div>
 
       {/* Contenu */}
       <div className="flex-1 p-5">
-        <div className="flex items-start gap-1.5 mb-3">
-          <MapPin className="h-3.5 w-3.5 text-brand-noir/30 shrink-0 mt-0.5" />
-          <span className="font-lato text-xs text-brand-noir/40">{partner.city}</span>
-        </div>
-
-        <h3 className="font-spartan font-black text-xl text-brand-noir leading-tight mb-4 group-hover:text-brand-rouge transition-colors">
+        <h3 className="font-spartan font-black text-xl text-brand-noir group-hover:text-brand-rouge transition-colors leading-tight mb-4">
           {partner.name}
         </h3>
 
-        <ul className="space-y-1.5">
+        <ul className="space-y-2">
           {partner.advantages.map((advantage, index) => (
             <li key={index} className="flex items-start gap-2 font-lato text-sm text-brand-noir/65">
               <span className="text-brand-rouge shrink-0 font-bold leading-snug">—</span>
@@ -56,19 +63,19 @@ export function PartnerCard({ partner }: PartnerCardProps) {
         </ul>
 
         {partner.conditions && (
-          <p className="font-lato text-xs text-brand-noir/35 italic mt-3">{partner.conditions}</p>
+          <p className="font-lato text-xs text-brand-noir/35 italic mt-4">{partner.conditions}</p>
         )}
       </div>
 
-      {/* Actions */}
+      {/* Liens */}
       {(partner.website || partner.address) && (
-        <div className="flex border-t border-brand-noir/8">
+        <div className="flex border-t border-brand-noir/8 shrink-0">
           {partner.website && (
             <a
               href={partner.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 py-3 font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/50 hover:text-brand-rouge hover:bg-brand-craie transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 py-3 font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/45 hover:text-brand-rouge hover:bg-brand-craie transition-colors"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               Site web
@@ -80,7 +87,7 @@ export function PartnerCard({ partner }: PartnerCardProps) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Voir sur la carte"
-              className={`flex items-center justify-center gap-2 px-4 py-3 font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/50 hover:text-brand-rouge hover:bg-brand-craie transition-colors ${partner.website ? "border-l border-brand-noir/8" : "flex-1"}`}
+              className={`flex items-center justify-center gap-2 px-4 py-3 font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/45 hover:text-brand-rouge hover:bg-brand-craie transition-colors ${partner.website ? "border-l border-brand-noir/8" : "flex-1"}`}
             >
               <MapPin className="h-3.5 w-3.5" />
               {!partner.website && "Localisation"}

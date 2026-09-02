@@ -164,3 +164,19 @@ export async function deleteTeamMember(id: string) {
   revalidatePath("/admin/team");
   revalidatePath("/");
 }
+
+export async function reorderTeamMemberships(
+  yearId: string,
+  orderedMemberIds: string[]
+) {
+  await Promise.all(
+    orderedMemberIds.map((memberId, index) =>
+      prisma.teamMembership.updateMany({
+        where: { academicYearId: yearId, teamMemberId: memberId },
+        data: { order: index },
+      })
+    )
+  );
+  revalidatePath("/admin/team");
+  revalidatePath("/");
+}
