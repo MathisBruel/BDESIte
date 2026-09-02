@@ -139,27 +139,23 @@ async function uploadAllImages() {
 
 async function migrateSettings() {
   console.log('⚙️  Migration des paramètres...');
+
+  const existing = await prisma.settings.count();
+  if (existing > 0) {
+    console.log('  ℹ️  Paramètres déjà présents, skip');
+    return;
+  }
+
   const settingsPath = path.join(DATA_DIR, 'settings.json');
   if (!fs.existsSync(settingsPath)) {
     console.log('  ⚠️  settings.json non trouvé');
     return;
   }
-  
+
   const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
-  
-  await prisma.settings.upsert({
-    where: { id: 1 },
-    update: {
-      association: settings.association,
-      year: settings.year,
-      email: settings.email,
-      shopUrl: settings.shopUrl || null,
-      instagram: settings.instagram || null,
-      discord: settings.discord || null,
-      facebook: settings.facebook || null,
-      linkedin: settings.linkedin || null,
-    },
-    create: {
+
+  await prisma.settings.create({
+    data: {
       id: 1,
       association: settings.association,
       year: settings.year,
@@ -171,26 +167,30 @@ async function migrateSettings() {
       linkedin: settings.linkedin || null,
     },
   });
-  
+
   console.log('  ✅ Paramètres migrés');
 }
 
 async function migrateTeam(imageMap: Map<string, string>) {
   console.log('👥 Migration de l\'équipe...');
+
+  const existing = await prisma.teamMember.count();
+  if (existing > 0) {
+    console.log('  ℹ️  Membres déjà présents, skip');
+    return;
+  }
+
   const teamPath = path.join(DATA_DIR, 'team.json');
   if (!fs.existsSync(teamPath)) {
     console.log('  ⚠️  team.json non trouvé');
     return;
   }
-  
+
   const team = JSON.parse(fs.readFileSync(teamPath, 'utf-8'));
-  
-  await prisma.teamMember.deleteMany({});
-  
+
   for (const member of team) {
-    // Get the API path from the image map, or use the original path
     const photoPath = imageMap.get(member.photo) || member.photo.replace(/^\/images\//, '');
-    
+
     await prisma.teamMember.create({
       data: {
         name: member.name,
@@ -203,7 +203,7 @@ async function migrateTeam(imageMap: Map<string, string>) {
       },
     });
   }
-  
+
   console.log(`  ✅ ${team.length} membres migrés`);
 }
 
@@ -256,16 +256,21 @@ async function migrateEvents(imageMap: Map<string, string>) {
 
 async function migratePartners(imageMap: Map<string, string>) {
   console.log('🤝 Migration des partenaires...');
+
+  const existing = await prisma.partner.count();
+  if (existing > 0) {
+    console.log('  ℹ️  Partenaires déjà présents, skip');
+    return;
+  }
+
   const partnersPath = path.join(DATA_DIR, 'partners.json');
   if (!fs.existsSync(partnersPath)) {
     console.log('  ⚠️  partners.json non trouvé');
     return;
   }
-  
+
   const partners = JSON.parse(fs.readFileSync(partnersPath, 'utf-8'));
-  
-  await prisma.partner.deleteMany({});
-  
+
   for (const partner of partners) {
     // Get the API path from the image map, or use the original path
     const logoPath = partner.logo ? (imageMap.get(partner.logo) || partner.logo.replace(/^\/images\//, '')) : null;
@@ -290,17 +295,22 @@ async function migratePartners(imageMap: Map<string, string>) {
 
 async function migrateStock() {
   console.log('🍬 Migration du stock...');
+
+  const existing = await prisma.product.count();
+  if (existing > 0) {
+    console.log('  ℹ️  Produits déjà présents, skip');
+    return;
+  }
+
   const stockPath = path.join(DATA_DIR, 'stock.json');
   if (!fs.existsSync(stockPath)) {
     console.log('  ⚠️  stock.json non trouvé');
     return;
   }
-  
+
   const stockData = JSON.parse(fs.readFileSync(stockPath, 'utf-8'));
   const products = stockData.products || stockData;
-  
-  await prisma.product.deleteMany({});
-  
+
   let order = 0;
   for (const product of products) {
     await prisma.product.create({
