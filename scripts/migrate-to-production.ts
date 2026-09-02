@@ -319,6 +319,55 @@ async function migrateStock() {
   console.log(`  ✅ ${products.length} produits migrés`);
 }
 
+async function migrateAcademicYears() {
+  console.log('🎓 Migration des années académiques...');
+
+  // Vérifie si des années existent déjà pour ne pas dupliquer
+  const existing = await prisma.academicYear.count();
+  if (existing > 0) {
+    console.log('  ℹ️  Années déjà présentes, skip');
+    return;
+  }
+
+  const teamPath = path.join(DATA_DIR, 'team.json');
+  if (!fs.existsSync(teamPath)) {
+    console.log('  ⚠️  team.json non trouvé');
+    return;
+  }
+  const team = JSON.parse(fs.readFileSync(teamPath, 'utf-8'));
+
+  // Crée l'année 2025-2026 (ancienne promo)
+  const year2526 = await prisma.academicYear.create({
+    data: {
+      label: '2025-2026',
+      startDate: new Date('2025-09-01'),
+      endDate: new Date('2026-08-31'),
+      isCurrent: false,
+      teamBackgroundImage: 'team/groupe.jpg',
+    },
+  });
+
+  // Récupère tous les membres dans l'ordre de team.json
+  const members = await prisma.teamMember.findMany({});
+  const memberMap = new Map(members.map((m) => [m.name, m]));
+
+  let order = 0;
+  for (const t of team) {
+    const member = memberMap.get(t.name);
+    if (!member) continue;
+    await prisma.teamMembership.create({
+      data: {
+        academicYearId: year2526.id,
+        teamMemberId: member.id,
+        role: t.role,
+        order: order++,
+      },
+    });
+  }
+
+  console.log(`  ✅ Année 2025-2026 créée avec ${order} membres`);
+}
+
 async function createAdminUser() {
   console.log('👤 Création de l\'utilisateur admin...');
   
@@ -365,6 +414,7 @@ async function main() {
     
     await migrateSettings();
     await migrateTeam(imageMap);
+    await migrateAcademicYears();
     await migrateEvents(imageMap);
     await migratePartners(imageMap);
     await migrateStock();
@@ -375,17 +425,20 @@ async function main() {
     console.log('╚════════════════════════════════════════════════════════╝\n');
     
     console.log('📊 Résumé:');
-    const [settings, team, events, partners, products, users] = await Promise.all([
+    const [settings, team, years, memberships, events, partners, products, users] = await Promise.all([
       prisma.settings.count(),
       prisma.teamMember.count(),
+      prisma.academicYear.count(),
+      prisma.teamMembership.count(),
       prisma.event.count(),
       prisma.partner.count(),
       prisma.product.count(),
       prisma.user.count(),
     ]);
-    
+
     console.log(`   • Paramètres: ${settings}`);
     console.log(`   • Membres équipe: ${team}`);
+    console.log(`   • Années académiques: ${years} (${memberships} membres/année)`);
     console.log(`   • Événements: ${events}`);
     console.log(`   • Partenaires: ${partners}`);
     console.log(`   • Produits: ${products}`);
