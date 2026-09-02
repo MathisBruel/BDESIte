@@ -423,17 +423,20 @@ async function main() {
     console.log('╚════════════════════════════════════════════════════════╝\n');
     
     console.log('📊 Résumé:');
-    const [settings, team, events, partners, products, users] = await Promise.all([
+    const [settings, team, years, memberships, events, partners, products, users] = await Promise.all([
       prisma.settings.count(),
       prisma.teamMember.count(),
+      prisma.academicYear.count(),
+      prisma.teamMembership.count(),
       prisma.event.count(),
       prisma.partner.count(),
       prisma.product.count(),
       prisma.user.count(),
     ]);
-    
+
     console.log(`   • Paramètres: ${settings}`);
     console.log(`   • Membres équipe: ${team}`);
+    console.log(`   • Années académiques: ${years} (${memberships} membres/année)`);
     console.log(`   • Événements: ${events}`);
     console.log(`   • Partenaires: ${partners}`);
     console.log(`   • Produits: ${products}`);
