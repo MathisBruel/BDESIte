@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createEvent, updateEvent } from "@/lib/actions-events";
 import { ImageUpload } from "@/components/ui/ImageUpload";
@@ -15,21 +14,29 @@ const eventSchema = z.object({
   title: z.string().min(3, "Le titre doit contenir au moins 3 caractères"),
   slug: z.string().min(3, "Le slug est requis"),
   date: z.string(),
+  endDate: z.string().optional().or(z.literal("")),
   place: z.string().min(3, "Le lieu est requis"),
   description: z.string().min(10, "La description doit être plus détaillée"),
   ticketUrl: z.string().url().optional().or(z.literal("")),
   photosUrl: z.string().url().optional().or(z.literal("")),
+  academicYearId: z.string().optional().or(z.literal("")),
   published: z.boolean().optional(),
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
 
-interface EventFormProps {
-  initialData?: any;
+interface AcademicYearOption {
+  id: string;
+  label: string;
+  isCurrent: boolean;
 }
 
-export function EventForm({ initialData }: EventFormProps) {
-  const router = useRouter();
+interface EventFormProps {
+  initialData?: any;
+  academicYears?: AcademicYearOption[];
+}
+
+export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
@@ -39,10 +46,12 @@ export function EventForm({ initialData }: EventFormProps) {
       title: "",
       slug: "",
       date: new Date().toISOString().split("T")[0],
+      endDate: "",
       place: "",
       description: "",
       ticketUrl: "",
       photosUrl: "",
+      academicYearId: academicYears.find((y) => y.isCurrent)?.id ?? "",
       published: false,
     },
   });
@@ -55,12 +64,14 @@ export function EventForm({ initialData }: EventFormProps) {
     formData.append("title", data.title);
     formData.append("slug", data.slug);
     formData.append("date", data.date);
+    if (data.endDate) formData.append("endDate", data.endDate);
     formData.append("place", data.place);
     formData.append("description", data.description);
     if (data.ticketUrl) formData.append("ticketUrl", data.ticketUrl);
     if (data.photosUrl) formData.append("photosUrl", data.photosUrl);
+    if (data.academicYearId) formData.append("academicYearId", data.academicYearId);
     if (data.published) formData.append("published", "on");
-    
+
     if (selectedImage) {
       formData.append("cover", selectedImage);
     }
@@ -77,15 +88,11 @@ export function EventForm({ initialData }: EventFormProps) {
         toast.error(result.error, { id: toastId });
         setLoading(false);
       } else {
-        // Success is handled by redirect in server action, but we can show a toast before redirecting
-        // Note: The redirect might happen fast, so this toast might be brief or missed. 
-        // Ideally, we'd redirect and then show toast, but server actions redirect immediately.
-        // We'll rely on the fact that if no error, it worked.
-        toast.success("Événement enregistré avec succès !", { id: toastId });
+        toast.success("Événement enregistré !", { id: toastId });
       }
     } catch (e) {
       console.error(e);
-      toast.error("Une erreur inattendue est survenue.", { id: toastId });
+      toast.error("Erreur inattendue.", { id: toastId });
       setLoading(false);
     }
   };
@@ -93,14 +100,14 @@ export function EventForm({ initialData }: EventFormProps) {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Main Info */}
+        {/* Colonne principale */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Type className="w-5 h-5 text-gray-500" />
               Informations générales
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -108,9 +115,7 @@ export function EventForm({ initialData }: EventFormProps) {
                 </label>
                 <input
                   {...form.register("title")}
-                  className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
-                    form.formState.errors.title ? "border-red-500" : ""
-                  }`}
+                  className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${form.formState.errors.title ? "border-red-500" : ""}`}
                   placeholder="Soirée d'intégration"
                 />
                 {form.formState.errors.title && (
@@ -124,28 +129,57 @@ export function EventForm({ initialData }: EventFormProps) {
                 </label>
                 <input
                   {...form.register("slug")}
-                  className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
-                    form.formState.errors.slug ? "border-red-500" : ""
-                  }`}
-                  placeholder="soiree-integration-2024"
+                  className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border font-mono ${form.formState.errors.slug ? "border-red-500" : ""}`}
+                  placeholder="soiree-integration-2025"
                 />
                 {form.formState.errors.slug && (
                   <p className="text-red-500 text-xs mt-1">{form.formState.errors.slug.message}</p>
                 )}
               </div>
 
+              {academicYears.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Année académique
+                  </label>
+                  <select
+                    {...form.register("academicYearId")}
+                    className="w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
+                  >
+                    <option value="">— Non assigné —</option>
+                    {academicYears.map((year) => (
+                      <option key={year.id} value={year.id}>
+                        {year.label}{year.isCurrent ? " (en cours)" : ""}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date <span className="text-red-500">*</span>
+                  Date début <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                   <input
                     type="date"
                     {...form.register("date")}
-                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
-                      form.formState.errors.date ? "border-red-500" : ""
-                    }`}
+                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${form.formState.errors.date ? "border-red-500" : ""}`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Date fin <span className="text-gray-400 font-normal">(optionnel)</span>
+                </label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                  <input
+                    type="date"
+                    {...form.register("endDate")}
+                    className="w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
                   />
                 </div>
               </div>
@@ -158,9 +192,7 @@ export function EventForm({ initialData }: EventFormProps) {
                   <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                   <input
                     {...form.register("place")}
-                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
-                      form.formState.errors.place ? "border-red-500" : ""
-                    }`}
+                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${form.formState.errors.place ? "border-red-500" : ""}`}
                     placeholder="Campus de Rennes"
                   />
                 </div>
@@ -176,7 +208,7 @@ export function EventForm({ initialData }: EventFormProps) {
               <FileText className="w-5 h-5 text-gray-500" />
               Détails
             </h3>
-            
+
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -185,9 +217,7 @@ export function EventForm({ initialData }: EventFormProps) {
                 <textarea
                   {...form.register("description")}
                   rows={6}
-                  className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-3 border ${
-                    form.formState.errors.description ? "border-red-500" : ""
-                  }`}
+                  className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-3 border ${form.formState.errors.description ? "border-red-500" : ""}`}
                   placeholder="Description détaillée de l'événement..."
                 />
                 {form.formState.errors.description && (
@@ -196,14 +226,12 @@ export function EventForm({ initialData }: EventFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Lien Billetterie</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lien billetterie</label>
                 <div className="relative">
                   <LinkIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                   <input
                     {...form.register("ticketUrl")}
-                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
-                      form.formState.errors.ticketUrl ? "border-red-500" : ""
-                    }`}
+                    className="w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
                     placeholder="https://billetterie..."
                   />
                 </div>
@@ -213,14 +241,12 @@ export function EventForm({ initialData }: EventFormProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Lien Galerie Photos</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lien galerie photos</label>
                 <div className="relative">
                   <LinkIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                   <input
                     {...form.register("photosUrl")}
-                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${
-                      form.formState.errors.photosUrl ? "border-red-500" : ""
-                    }`}
+                    className="w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
                     placeholder="https://photos.app.goo.gl/..."
                   />
                 </div>
@@ -232,7 +258,7 @@ export function EventForm({ initialData }: EventFormProps) {
           </div>
         </div>
 
-        {/* Right Column: Media & Status */}
+        {/* Colonne droite */}
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Média</h3>
@@ -245,7 +271,7 @@ export function EventForm({ initialData }: EventFormProps) {
 
           <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Publication</h3>
-            
+
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
               <div className="flex items-center">
                 <input

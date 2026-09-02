@@ -1,30 +1,21 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Hero } from "@/components/Hero";
-import { Section } from "@/components/Section";
-import { Badge } from "@/components/Badge";
-import { Button } from "@/components/Button";
+import Link from "next/link";
+import { Calendar, MapPin, ArrowLeft, Camera, Ticket } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { getEventBySlug, getTexts } from "@/lib/data";
-import { formatDateTime, formatDateTimeRange } from "@/lib/utils";
-import { Event } from "@/lib/schemas";
-import { migrateImagePath } from "@/lib/image-url";
+import { formatDate, formatTime, formatDateTimeRange } from "@/lib/utils";
+import { getImageUrl } from "@/lib/image-url";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const event = await getEventBySlug(slug);
-
-  if (!event) {
-    return {
-      title: "Événement introuvable",
-    };
-  }
-
+  if (!event) return { title: "Événement introuvable" };
   return {
-    title: `${event.title} | BDE Sup'RNova`,
+    title: `${event.title} | BDE SUP'RNOVA`,
     description: event.description,
   };
 }
@@ -34,111 +25,176 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
   const event = await getEventBySlug(slug);
   const texts = await getTexts();
 
-  if (!event) {
-    notFound();
-  }
+  if (!event) notFound();
 
-  const eventDate = new Date(event.date);
-  const isPast = eventDate < new Date();
+  const isPast = new Date(event.date) < new Date();
 
   return (
     <>
       <Header texts={texts} />
       <main>
-        {event.cover && (
-          <div className="relative w-full h-[400px]">
-            <Image 
-              src={migrateImagePath(event.cover)} 
-              alt={event.title} 
-              fill 
-              className="object-cover" 
-              priority 
-              unoptimized 
+        {/* Hero cover */}
+        {event.cover ? (
+          <div className="relative w-full h-[50vh] min-h-[320px] max-h-[520px] bg-brand-noir overflow-hidden">
+            <Image
+              src={getImageUrl(event.cover)}
+              alt={event.title}
+              fill
+              className="object-cover opacity-70"
+              priority
+              unoptimized={getImageUrl(event.cover).startsWith("/api/images/")}
             />
-            <div className="absolute inset-0 bg-black/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-noir via-brand-noir/40 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+              <Link
+                href="/#evenements"
+                className="inline-flex items-center gap-2 font-spartan font-bold text-xs uppercase tracking-widest text-white/50 hover:text-white transition-colors mb-6"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Événements
+              </Link>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {event.tags.map((tag: string) => (
+                  <span
+                    key={tag}
+                    className="font-spartan font-bold text-xs uppercase tracking-widest px-3 py-1 bg-white/10 text-white border border-white/15"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                {isPast && (
+                  <span className="stamp text-xs px-2 py-0.5 bg-white/90">
+                    {texts.home.past.completed ?? "Terminé"}
+                  </span>
+                )}
+              </div>
+              <h1 className="font-spartan font-black text-3xl sm:text-5xl text-white leading-tight max-w-3xl">
+                {event.title}
+              </h1>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-brand-noir py-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Link
+                href="/#evenements"
+                className="inline-flex items-center gap-2 font-spartan font-bold text-xs uppercase tracking-widest text-white/50 hover:text-white transition-colors mb-6"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Événements
+              </Link>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {event.tags.map((tag: string) => (
+                  <span
+                    key={tag}
+                    className="font-spartan font-bold text-xs uppercase tracking-widest px-3 py-1 bg-white/10 text-white border border-white/15"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                {isPast && (
+                  <span className="stamp text-xs px-2 py-0.5 bg-white/90">
+                    {texts.home.past.completed ?? "Terminé"}
+                  </span>
+                )}
+              </div>
+              <h1 className="font-spartan font-black text-3xl sm:text-5xl text-white leading-tight max-w-3xl">
+                {event.title}
+              </h1>
+            </div>
           </div>
         )}
 
-        <Section className="-mt-20 relative z-10">
-          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 max-w-4xl mx-auto">
-            <div className="flex flex-wrap gap-2 mb-4">
-              {event.tags.map((tag: string) => (
-                <Badge key={tag} variant="yellow">
-                  {tag}
-                </Badge>
-              ))}
-              {isPast && <Badge variant="default">Terminé</Badge>}
-            </div>
+        {/* Contenu */}
+        <div className="bg-brand-craie">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-            <h1 className="text-4xl md:text-5xl font-bold font-spartan mb-6">{event.title}</h1>
+              {/* Corps principal */}
+              <div className="lg:col-span-2">
+                <h2 className="font-spartan font-black text-xs uppercase tracking-widest text-brand-noir/40 mb-4">
+                  Description
+                </h2>
+                <p className="font-lato text-brand-noir/75 leading-relaxed text-base whitespace-pre-line">
+                  {event.description}
+                </p>
+              </div>
 
-            <div className="flex flex-col sm:flex-row gap-6 mb-8 text-gray-700">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">📅</span>
-                <div>
-                  <div className="font-semibold">Date</div>
-                  <div>{formatDateTimeRange(event.date, event.endDate)}</div>
+              {/* Sidebar */}
+              <aside className="space-y-6">
+
+                {/* Infos */}
+                <div className="bg-white p-6 border border-brand-noir/8">
+                  <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-noir/35 mb-5">
+                    Informations
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex gap-3">
+                      <Calendar className="h-4 w-4 text-brand-rouge shrink-0 mt-0.5" />
+                      <div>
+                        <div className="font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/40 mb-0.5">
+                          Date
+                        </div>
+                        <div className="font-lato text-sm text-brand-noir">
+                          {formatDateTimeRange(event.date, event.endDate)}
+                        </div>
+                      </div>
+                    </div>
+                    {event.place && (
+                      <div className="flex gap-3">
+                        <MapPin className="h-4 w-4 text-brand-rouge shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/40 mb-0.5">
+                            Lieu
+                          </div>
+                          <div className="font-lato text-sm text-brand-noir">{event.place}</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">📍</span>
-                <div>
-                  <div className="font-semibold">Lieu</div>
-                  <div>{event.place}</div>
-                </div>
-              </div>
-            </div>
 
-            <div className="prose prose-lg max-w-none mb-8">
-              <h2 className="text-2xl font-bold font-spartan mb-4">Description</h2>
-              <p className="text-gray-700 whitespace-pre-line">{event.description}</p>
-            </div>
+                {/* Billetterie */}
+                {event.ticketUrl && !isPast && (
+                  <a
+                    href={event.ticketUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between w-full px-6 py-4 bg-brand-rouge text-white font-spartan font-bold text-xs uppercase tracking-widest hover:bg-brand-or hover:text-brand-noir transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-or"
+                  >
+                    <span>Réserver ma place</span>
+                    <Ticket className="h-4 w-4" />
+                  </a>
+                )}
 
-            {event.ticketUrl && !isPast && (
-              <div className="bg-grad-secondary p-6 rounded-xl text-center">
-                <h3 className="text-2xl font-bold font-spartan text-white mb-4">
-                  Réservez votre place !
-                </h3>
-                <Button
-                  href={event.ticketUrl}
-                  variant="cta"
-                  className="bg-white text-brand-red hover:bg-white/90"
+                {/* Photos */}
+                {event.photosUrl && (
+                  <a
+                    href={event.photosUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between w-full px-6 py-4 bg-brand-noir text-white font-spartan font-bold text-xs uppercase tracking-widest hover:bg-brand-or hover:text-brand-noir transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-or"
+                  >
+                    <span>{texts.home.past.photos ?? "Voir les photos"}</span>
+                    <Camera className="h-4 w-4" />
+                  </a>
+                )}
+
+                {/* Retour */}
+                <Link
+                  href="/#evenements"
+                  className="flex items-center gap-2 font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/45 hover:text-brand-rouge transition-colors"
                 >
-                  Accéder à la billetterie
-                </Button>
-              </div>
-            )}
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  Tous les événements
+                </Link>
 
-            {event.photosUrl && (
-              <div className="mt-6 bg-brand-pale/40 p-6 rounded-xl text-center">
-                <h3 className="text-xl font-bold font-spartan text-brand-red mb-3">
-                  📸 Galerie photos
-                </h3>
-                <a
-                  href={event.photosUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={texts.home.past.photos}
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white text-brand-red hover:bg-brand-pale shadow"
-                >
-                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z" />
-                    <path d="M20 6h-2.586l-1.121-1.121A2 2 0 0015.172 4H8.828a2 2 0 00-1.414.586L6.293 6H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2zm0 12H4V8h3.172l1.414-1.414c.188-.188.442-.293.707-.293h6.414c.265 0 .52.105.707.293L16.828 8H20v10z" />
-                  </svg>
-                </a>
-              </div>
-            )}
-
-            <div className="mt-8 text-center">
-              <Button href="/#evenements" variant="outline">
-                ← Retour aux événements
-              </Button>
+              </aside>
             </div>
           </div>
-        </Section>
+        </div>
       </main>
       <Footer />
     </>
   );
 }
-

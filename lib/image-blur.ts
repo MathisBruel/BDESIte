@@ -1,0 +1,8 @@
+export const BLUR_DARK =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxyZWN0IGZpbGw9IiMxNTAwMDAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48L3N2Zz4=";
+
+export const BLUR_CRAIE =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxyZWN0IGZpbGw9IiNmMWYxZjEiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48L3N2Zz4=";
+
+export const BLUR_GRAY =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxyZWN0IGZpbGw9IiNkMWQ1ZGIiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz48L3N2Zz4=";

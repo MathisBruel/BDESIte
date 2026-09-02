@@ -4,14 +4,14 @@ import { getImageUrl } from "./image-url";
 export const defaultMetadata: Metadata = {
   metadataBase: new URL("https://suprennes.me"),
   title: {
-    default: "BDE Sup'RNova | Association étudiante Rennes",
-    template: "%s | BDE Sup'RNova",
+    default: "BDE SUP'RNOVA | Association étudiante Rennes",
+    template: "%s | BDE SUP'RNOVA",
   },
   description:
-    "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
+    "Le BDE SUP'RNOVA, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
   keywords: [
     "BDE",
-    "Sup'RNova",
+    "SUP'RNOVA",
     "Rennes",
     "association étudiante",
     "événements",
@@ -19,30 +19,30 @@ export const defaultMetadata: Metadata = {
     "carte BDE",
     "Sup de Vinci",
   ],
-  authors: [{ name: "BDE Sup'RNova" }],
-  creator: "BDE Sup'RNova",
-  publisher: "BDE Sup'RNova",
+  authors: [{ name: "BDE SUP'RNOVA" }],
+  creator: "BDE SUP'RNOVA",
+  publisher: "BDE SUP'RNOVA",
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    siteName: "BDE Sup'RNova",
-    title: "BDE Sup'RNova | Association étudiante Rennes",
+    siteName: "BDE SUP'RNOVA",
+    title: "BDE SUP'RNOVA | Association étudiante Rennes",
     description:
-      "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
+      "Le BDE SUP'RNOVA, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
     images: [
       {
         url: getImageUrl("assets/Logo couleur.png"),
         width: 1200,
         height: 1200,
-        alt: "Logo BDE Sup'RNova",
+        alt: "Logo BDE SUP'RNOVA",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BDE Sup'RNova",
+    title: "BDE SUP'RNOVA",
     description:
-      "Le BDE Sup'RNova, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
+      "Le BDE SUP'RNOVA, association étudiante de Sup de Vinci Rennes. Événements, partenaires, avantages carte BDE 2025-2026.",
     images: [getImageUrl("assets/Logo couleur.png")],
   },
   robots: {

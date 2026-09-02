@@ -7,7 +7,7 @@ import { Texts } from "./schemas";
  */
 export const FALLBACK_TEXTS: Texts = {
   header: {
-    brand: "Sup'RNova",
+    brand: "SUP'RNOVA",
     nav: {
       home: "Accueil",
       events: "Événements",
@@ -39,7 +39,7 @@ export const FALLBACK_TEXTS: Texts = {
   },
   home: {
     badgeYearPrefix: "Année",
-    title: "BDE Sup'RNova",
+    title: "BDE SUP'RNOVA",
     subtitle: "Ta vie étudiante à 100% !",
     description: "Soirées • Partenaires • Événements • Équipe",
     ctaViewEvents: "Voir les événements",
@@ -53,7 +53,7 @@ export const FALLBACK_TEXTS: Texts = {
       eventsText: "Des soirées, du sport, de la culture...",
       engagementTitle: "Engagement",
       engagementText: "Une équipe de passionnés à ton service !",
-      intro: "Le BDE Sup'RNova, c'est LE Bureau des Étudiants qui fait vibrer le campus !"
+      intro: "Le BDE SUP'RNOVA, c'est LE Bureau des Étudiants qui fait vibrer le campus !"
     },
     upcoming: {
       title: "Événements à venir",
@@ -81,7 +81,7 @@ export const FALLBACK_TEXTS: Texts = {
     },
     team: {
       title: "L'équipe du BDE",
-      hero: "La team Sup'RNova {year}",
+      hero: "La team SUP'RNOVA {year}",
       heroSubtitle: "Ensemble pour faire vibrer le campus !",
       meet: "Rencontrez les membres du bureau"
     },
@@ -101,8 +101,8 @@ export const FALLBACK_TEXTS: Texts = {
     accessibility: {
       menu: "Menu"
     },
-    brandAlt: "Logo Sup'RNova",
-    brandAltBde: "Logo BDE Sup'RNova",
-    teamImageAlt: "L'équipe du BDE Sup'RNova"
+    brandAlt: "Logo SUP'RNOVA",
+    brandAltBde: "Logo BDE SUP'RNOVA",
+    teamImageAlt: "L'équipe du BDE SUP'RNOVA"
   }
 };

@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { Badge } from "./Badge";
-import { Button } from "./Button";
+import { MapPin, ExternalLink } from "lucide-react";
 import type { Partner } from "@/lib/schemas";
 import { categoryLabels } from "@/lib/utils";
 import { migrateImagePath } from "@/lib/image-url";
@@ -12,78 +11,83 @@ interface PartnerCardProps {
 
 export function PartnerCard({ partner }: PartnerCardProps) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col h-full">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
-          <h3 className="text-xl font-bold font-spartan text-brand-black mb-1">
-            {partner.name}
-          </h3>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span>{partner.city}</span>
-            <span>•</span>
-            <span>{categoryLabels[partner.category] || partner.category}</span>
-          </div>
-        </div>
+    <div className="group bg-white flex flex-col h-full hover:outline hover:outline-1 hover:outline-brand-rouge transition-all">
+
+      {/* Bandeau catégorie + logo */}
+      <div className="flex items-center justify-between gap-4 px-5 py-3 bg-brand-craie border-b border-brand-noir/8">
+        <span className="font-spartan font-black text-xs uppercase tracking-widest text-brand-noir/40">
+          {categoryLabels[partner.category] || partner.category}
+        </span>
         {partner.logo && (
-          <div className="relative w-16 h-16 ml-4 flex-shrink-0">
+          <div className="relative w-8 h-8 shrink-0">
             <Image
               src={migrateImagePath(partner.logo)}
               alt={`Logo ${partner.name}`}
               fill
-              sizes="64px"
+              sizes="32px"
               className="object-contain"
               loading="lazy"
               placeholder={getBlurPlaceholder(partner.logo) ? "blur" : "empty"}
               blurDataURL={getBlurPlaceholder(partner.logo)}
-              unoptimized={migrateImagePath(partner.logo).startsWith('/api/images/')}
+              unoptimized={migrateImagePath(partner.logo).startsWith("/api/images/")}
             />
           </div>
         )}
       </div>
 
-      <Badge variant="red" className="w-fit mb-4">
-        Carte BDE requise
-      </Badge>
+      {/* Contenu */}
+      <div className="flex-1 p-5">
+        <div className="flex items-start gap-1.5 mb-3">
+          <MapPin className="h-3.5 w-3.5 text-brand-noir/30 shrink-0 mt-0.5" />
+          <span className="font-lato text-xs text-brand-noir/40">{partner.city}</span>
+        </div>
 
-      <div className="flex-1">
-        <h4 className="font-semibold text-sm mb-2">Avantages :</h4>
-        <ul className="space-y-1 mb-4">
+        <h3 className="font-spartan font-black text-xl text-brand-noir leading-tight mb-4 group-hover:text-brand-rouge transition-colors">
+          {partner.name}
+        </h3>
+
+        <ul className="space-y-1.5">
           {partner.advantages.map((advantage, index) => (
-            <li key={index} className="text-sm text-gray-700 flex items-start">
-              <span className="text-brand-red mr-2 flex-shrink-0">•</span>
+            <li key={index} className="flex items-start gap-2 font-lato text-sm text-brand-noir/65">
+              <span className="text-brand-rouge shrink-0 font-bold leading-snug">—</span>
               <span>{advantage}</span>
             </li>
           ))}
         </ul>
 
         {partner.conditions && (
-          <p className="text-xs text-gray-500 italic mb-4">{partner.conditions}</p>
+          <p className="font-lato text-xs text-brand-noir/35 italic mt-3">{partner.conditions}</p>
         )}
       </div>
 
-      <div className="flex gap-2 mt-4">
-        {partner.website && (
-          <Button
-            href={partner.website}
-            variant="primary"
-            className="flex-1 text-sm"
-          >
-            Voir le site
-          </Button>
-        )}
-        {partner.address && (
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(partner.address)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            aria-label="Voir sur la carte"
-          >
-            📍
-          </a>
-        )}
-      </div>
+      {/* Actions */}
+      {(partner.website || partner.address) && (
+        <div className="flex border-t border-brand-noir/8">
+          {partner.website && (
+            <a
+              href={partner.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 py-3 font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/50 hover:text-brand-rouge hover:bg-brand-craie transition-colors"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              Site web
+            </a>
+          )}
+          {partner.address && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(partner.address)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Voir sur la carte"
+              className={`flex items-center justify-center gap-2 px-4 py-3 font-spartan font-bold text-xs uppercase tracking-widest text-brand-noir/50 hover:text-brand-rouge hover:bg-brand-craie transition-colors ${partner.website ? "border-l border-brand-noir/8" : "flex-1"}`}
+            >
+              <MapPin className="h-3.5 w-3.5" />
+              {!partner.website && "Localisation"}
+            </a>
+          )}
+        </div>
+      )}
     </div>
   );
 }
-

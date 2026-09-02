@@ -1,4 +1,5 @@
-import { getTeamMemberById } from "@/lib/data";
+import { getTeamMemberById, getAcademicYears } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
 import { TeamMemberForm } from "@/components/admin/TeamMemberForm";
 import { notFound } from "next/navigation";
 
@@ -8,10 +9,19 @@ export default async function EditTeamMemberPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const member = await getTeamMemberById(id);
+  const [member, years, memberships] = await Promise.all([
+    getTeamMemberById(id),
+    getAcademicYears(),
+    prisma.teamMembership.findMany({ where: { teamMemberId: id } }),
+  ]);
 
-  if (!member) {
-    notFound();
+  if (!member) notFound();
+
+  const yearOptions = years.map((y) => ({ id: y.id, label: y.label, isCurrent: y.isCurrent }));
+  const memberYearIds = memberships.map((m) => m.academicYearId);
+  const memberYearPhotos: Record<string, string> = {};
+  for (const m of memberships) {
+    if (m.photo) memberYearPhotos[m.academicYearId] = m.photo;
   }
 
   return (
@@ -22,10 +32,10 @@ export default async function EditTeamMemberPage({
         </h1>
         <p className="text-gray-500 mt-1">Modifiez les informations du membre</p>
       </div>
-
-      <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <TeamMemberForm member={member} />
-      </div>
+      <TeamMemberForm
+        member={{ ...member, memberYearIds, memberYearPhotos }}
+        academicYears={yearOptions}
+      />
     </div>
   );
 }

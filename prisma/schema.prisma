@@ -24,33 +24,64 @@ model Partner {
   updatedAt  DateTime @updatedAt
 }
 
+model AcademicYear {
+  id                  String           @id @default(cuid())
+  label               String           // "2025-2026"
+  slug                String           @unique // "2025-2026"
+  startDate           DateTime
+  endDate             DateTime
+  isCurrent           Boolean          @default(false)
+  teamBackgroundImage String?          // image de fond section équipe
+  events              Event[]
+  memberships         TeamMembership[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+}
+
 model Event {
-  slug        String    @id
-  title       String
-  date        DateTime
-  endDate     DateTime?
-  place       String
-  cover       String?
-  tags        String[]
-  description String
-  ticketUrl   String?
-  published   Boolean   @default(false)
-  photosUrl   String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  slug           String        @id
+  title          String
+  date           DateTime
+  endDate        DateTime?
+  place          String
+  cover          String?
+  tags           String[]
+  description    String
+  ticketUrl      String?
+  published      Boolean       @default(false)
+  photosUrl      String?
+  academicYear   AcademicYear? @relation(fields: [academicYearId], references: [id])
+  academicYearId String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 }
 
 model TeamMember {
-  id            String   @id @default(cuid())
+  id            String           @id @default(cuid())
   name          String
-  role          String
+  role          String           // rôle courant (legacy) — porté par TeamMembership pour les années
   photo         String
   photoPosition String?
   linkedin      String?
   instagram     String?
   email         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  memberships   TeamMembership[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model TeamMembership {
+  id             String       @id @default(cuid())
+  teamMember     TeamMember   @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  teamMemberId   String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  academicYearId String
+  role           String
+  photo          String?      // photo spécifique à cette année (override TeamMember.photo)
+  order          Int          @default(0)
+  createdAt      DateTime     @default(now())
+
+  @@unique([teamMemberId, academicYearId])
 }
 
 model Settings {
@@ -75,6 +106,16 @@ model SiteContent {
   updatedAt DateTime @updatedAt
 
   @@unique([section, key])
+}
+
+model HeroPhoto {
+  id        String   @id @default(cuid())
+  path      String
+  position  String   @default("center")
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {

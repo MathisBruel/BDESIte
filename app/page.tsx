@@ -1,35 +1,48 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { HomeClient } from "@/components/HomeClient";
-import { getUpcomingEvents, getPastEvents, getSettings, getTeamMembers, getActivePartners, getTexts } from "@/lib/data";
-
-// This is correct because getTeamMembers now returns objects compatible with the UI expectations
-// and getTexts returns the Texts object.
+import { HomePageContent } from "@/components/features/home/HomePageContent";
+import { getSettings, getActivePartners, getTexts } from "@/lib/data";
+import { getHeroPhotos } from "@/lib/actions-hero";
+import { prisma } from "@/lib/prisma";
 
 export default async function HomePage() {
-  const allUpcomingEvents = await getUpcomingEvents();
-  const allPastEvents = await getPastEvents();
-  const settings = await getSettings();
-  const team = await getTeamMembers();
-  const partnersCount = (await getActivePartners()).length;
-  const texts = await getTexts();
+  const [allEvents, yearTeams, settings, partnersCount, texts, heroPhotoRecords] = await Promise.all([
+    prisma.event.findMany({
+      where: { published: true },
+      orderBy: { date: "desc" },
+    }),
+    prisma.academicYear.findMany({
+      orderBy: { startDate: "desc" },
+      include: {
+        memberships: {
+          orderBy: { order: "asc" },
+          include: { teamMember: true },
+        },
+      },
+    }),
+    getSettings(),
+    getActivePartners().then((p) => p.length),
+    getTexts(),
+    getHeroPhotos(),
+  ]);
 
-  // Pre-slice for initial render (SSR optimization, though HomeClient re-slices)
-  const upcomingEvents = allUpcomingEvents.slice(0, 6);
-  const pastEvents = allPastEvents.slice(0, 3);
+  const heroPhotos = heroPhotoRecords.filter((p) => p.active).map((p) => ({ path: p.path, position: p.position }));
+
+  const currentYear = yearTeams.find((y) => y.isCurrent) ?? null;
+  const years = yearTeams.map(({ id, label, isCurrent }) => ({ id, label, isCurrent }));
 
   return (
     <>
       <Header texts={texts} />
-      <HomeClient
-        allUpcomingEvents={allUpcomingEvents as any}
-        upcomingEvents={upcomingEvents as any}
-        allPastEvents={allPastEvents as any}
-        pastEvents={pastEvents as any}
+      <HomePageContent
+        allEvents={allEvents as any[]}
+        years={years}
+        yearTeams={yearTeams as any}
+        currentYearId={currentYear?.id ?? null}
         settings={settings}
-        team={team as any}
         partnersCount={partnersCount}
         texts={texts}
+        heroPhotos={heroPhotos}
       />
       <Footer />
     </>

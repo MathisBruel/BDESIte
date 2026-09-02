@@ -42,3 +42,8 @@ edwin/
 
 
 .env
+
+# Windows reserved device name artifact
+nul
+backup_*.sql
+volumes/

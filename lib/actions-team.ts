@@ -19,12 +19,32 @@ async function uploadImage(file: File, folder: string): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
   const minioPath = `images/${filename}`;
-
   await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
     "Content-Type": file.type,
   });
-
   return filename;
+}
+
+async function syncMemberships(
+  memberId: string,
+  yearIds: string[],
+  baseRole: string,
+  yearPhotos: Record<string, string> = {}
+) {
+  await prisma.teamMembership.deleteMany({ where: { teamMemberId: memberId } });
+
+  for (let i = 0; i < yearIds.length; i++) {
+    const yearId = yearIds[i];
+    await prisma.teamMembership.create({
+      data: {
+        teamMemberId: memberId,
+        academicYearId: yearId,
+        role: baseRole,
+        photo: yearPhotos[yearId] || null,
+        order: i,
+      },
+    });
+  }
 }
 
 export async function createTeamMember(formData: FormData) {
@@ -37,12 +57,10 @@ export async function createTeamMember(formData: FormData) {
     email: formData.get("email") || "",
   });
 
-  if (!validatedFields.success) {
-    return { error: "Champs invalides" };
-  }
+  if (!validatedFields.success) return { error: "Champs invalides" };
 
   const { name, role, photoPosition, linkedin, instagram, email } = validatedFields.data;
-
+  const yearIds = formData.getAll("yearIds[]").map(String).filter(Boolean);
   const photoFile = formData.get("photo") as File;
   let photoPath = "/images/team/default.png";
 
@@ -51,7 +69,7 @@ export async function createTeamMember(formData: FormData) {
       photoPath = await uploadImage(photoFile, "team");
     }
 
-    await prisma.teamMember.create({
+    const member = await prisma.teamMember.create({
       data: {
         name,
         role,
@@ -62,6 +80,17 @@ export async function createTeamMember(formData: FormData) {
         email: email || null,
       },
     });
+
+    if (yearIds.length > 0) {
+      const yearPhotos: Record<string, string> = {};
+      for (const yearId of yearIds) {
+        const yPhotoFile = formData.get(`yearPhoto_${yearId}`) as File;
+        if (yPhotoFile && yPhotoFile.size > 0) {
+          yearPhotos[yearId] = await uploadImage(yPhotoFile, "team");
+        }
+      }
+      await syncMemberships(member.id, yearIds, role, yearPhotos);
+    }
   } catch (error) {
     console.error("Error creating team member:", error);
     return { error: "Erreur lors de la création du membre" };
@@ -82,12 +111,10 @@ export async function updateTeamMember(id: string, formData: FormData) {
     email: formData.get("email") || "",
   });
 
-  if (!validatedFields.success) {
-    return { error: "Champs invalides" };
-  }
+  if (!validatedFields.success) return { error: "Champs invalides" };
 
   const { name, role, photoPosition, linkedin, instagram, email } = validatedFields.data;
-
+  const yearIds = formData.getAll("yearIds[]").map(String).filter(Boolean);
   const photoFile = formData.get("photo") as File;
   let photoPath = undefined;
 
@@ -108,6 +135,15 @@ export async function updateTeamMember(id: string, formData: FormData) {
         ...(photoPath && { photo: photoPath }),
       },
     });
+
+    const yearPhotos: Record<string, string> = {};
+    for (const yearId of yearIds) {
+      const yPhotoFile = formData.get(`yearPhoto_${yearId}`) as File;
+      if (yPhotoFile && yPhotoFile.size > 0) {
+        yearPhotos[yearId] = await uploadImage(yPhotoFile, "team");
+      }
+    }
+    await syncMemberships(id, yearIds, role, yearPhotos);
   } catch (error) {
     console.error("Error updating team member:", error);
     return { error: "Erreur lors de la modification du membre" };
@@ -120,14 +156,11 @@ export async function updateTeamMember(id: string, formData: FormData) {
 
 export async function deleteTeamMember(id: string) {
   try {
-    await prisma.teamMember.delete({
-      where: { id },
-    });
+    await prisma.teamMember.delete({ where: { id } });
   } catch (error) {
     console.error("Error deleting team member:", error);
     return { error: "Erreur lors de la suppression du membre" };
   }
-
   revalidatePath("/admin/team");
   revalidatePath("/");
 }

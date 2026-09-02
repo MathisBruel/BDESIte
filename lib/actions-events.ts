@@ -12,11 +12,13 @@ const eventSchema = z.object({
   title: z.string().min(3),
   slug: z.string().min(3),
   date: z.string(),
+  endDate: z.string().optional().or(z.literal("")),
   place: z.string().min(3),
   description: z.string().min(10),
   ticketUrl: z.string().optional().or(z.literal("")),
   photosUrl: z.string().optional().or(z.literal("")),
-  published: z.string().optional(), // Checkbox sends "on" or undefined
+  academicYearId: z.string().optional().or(z.literal("")),
+  published: z.string().optional(),
 });
 
 async function uploadImage(file: File, folder: string): Promise<string> {
@@ -36,10 +38,12 @@ export async function createEvent(formData: FormData) {
     title: formData.get("title"),
     slug: formData.get("slug"),
     date: formData.get("date"),
+    endDate: formData.get("endDate") || "",
     place: formData.get("place"),
     description: formData.get("description"),
     ticketUrl: formData.get("ticketUrl") || "",
     photosUrl: formData.get("photosUrl") || "",
+    academicYearId: formData.get("academicYearId") || "",
     published: formData.get("published"),
   });
 
@@ -47,7 +51,7 @@ export async function createEvent(formData: FormData) {
     return { error: "Champs invalides" };
   }
 
-  const { title, slug, date, place, description, ticketUrl, photosUrl, published } = validatedFields.data;
+  const { title, slug, date, endDate, place, description, ticketUrl, photosUrl, academicYearId, published } = validatedFields.data;
 
   const coverFile = formData.get("cover") as File;
   let coverPath = undefined;
@@ -57,17 +61,17 @@ export async function createEvent(formData: FormData) {
   }
 
   try {
-
-
     await prisma.event.create({
       data: {
         title,
         slug,
         date: new Date(date),
+        endDate: endDate ? new Date(endDate) : null,
         place,
         description,
         ticketUrl: ticketUrl || null,
         photosUrl: photosUrl || null,
+        academicYearId: academicYearId || null,
         published: published === "on",
         cover: coverPath || null,
       },
@@ -87,10 +91,12 @@ export async function updateEvent(slug: string, formData: FormData) {
     title: formData.get("title"),
     slug: formData.get("slug"),
     date: formData.get("date"),
+    endDate: formData.get("endDate") || "",
     place: formData.get("place"),
     description: formData.get("description"),
     ticketUrl: formData.get("ticketUrl") || "",
     photosUrl: formData.get("photosUrl") || "",
+    academicYearId: formData.get("academicYearId") || "",
     published: formData.get("published"),
   });
 
@@ -98,7 +104,7 @@ export async function updateEvent(slug: string, formData: FormData) {
     return { error: "Champs invalides" };
   }
 
-  const { title, slug: newSlug, date, place, description, ticketUrl, photosUrl, published } = validatedFields.data;
+  const { title, slug: newSlug, date, endDate, place, description, ticketUrl, photosUrl, academicYearId, published } = validatedFields.data;
 
   const coverFile = formData.get("cover") as File;
   let coverPath = undefined;
@@ -114,10 +120,12 @@ export async function updateEvent(slug: string, formData: FormData) {
         title,
         slug: newSlug,
         date: new Date(date),
+        endDate: endDate ? new Date(endDate) : null,
         place,
         description,
         ticketUrl: ticketUrl || null,
         photosUrl: photosUrl || null,
+        academicYearId: academicYearId || null,
         published: published === "on",
         ...(coverPath && { cover: coverPath }),
       },

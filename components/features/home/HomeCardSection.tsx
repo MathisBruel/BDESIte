@@ -1,63 +1,77 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Section } from "@/components/ui/Section";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import Link from "next/link";
+import { Container } from "@/components/ui/Container";
 import { formatText } from "@/lib/utils";
 
 interface HomeCardSectionProps {
-    texts: any;
-    settings: any;
-    partnersCount: number;
+  texts: any;
+  settings: any;
+  partnersCount: number;
 }
 
 export function HomeCardSection({ texts, settings, partnersCount }: HomeCardSectionProps) {
-    return (
-        <Section className="bg-grad-secondary relative overflow-hidden" id="carte-bde">
-            <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 right-10 text-9xl animate-spin-slow">💳</div>
-                <div className="absolute bottom-10 left-10 text-8xl animate-pulse">✨</div>
+  return (
+    <section id="carte-bde" className="bg-brand-rouge">
+      <Container>
+        <div className="py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+          {/* Texte gauche */}
+          <div>
+            <div className="font-spartan font-black text-xs uppercase tracking-widest text-white/50 mb-4">
+              {texts.home.card.subtitle ?? "Avantages exclusifs"}
             </div>
-            <motion.div
-                className="relative z-10 text-center text-brand-black py-12"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-            >
-                <h2 className="text-4xl md:text-5xl font-bold font-spartan mb-6">
-                    {formatText(texts.home.card.title, { year: settings.year })}
-                </h2>
-                <div className="w-24 h-2 bg-brand-black mx-auto mb-8 rounded-full"></div>
-                <p className="text-2xl mb-4 font-bold">
-                    {texts.home.card.subtitle}
-                </p>
-                <p className="text-xl mb-8 max-w-3xl mx-auto">
-                    {formatText(texts.home.card.description, { partnersCount })}
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                    <Button
-                        variant="cta"
-                        href="/carte-bde"
-                        className="bg-grad-primary text-brand-black hover:scale-110 text-xl"
-                    >
-                        {texts.home.card.ctaBuy}
-                    </Button>
-                    <Button
-                        variant="outline"
-                        href="/partenaires"
-                        className="bg-transparent border-2 border-brand-black text-brand-black hover:bg-brand-black hover:text-white text-xl"
-                    >
-                        {texts.home.card.ctaSeePartners}
-                    </Button>
+            <h2 className="font-spartan font-black text-display-md text-white leading-none mb-6">
+              {formatText(texts.home.card.title, { year: settings.year })}
+            </h2>
+            <p className="font-lato text-white/70 text-lg leading-relaxed max-w-lg mb-8">
+              {formatText(texts.home.card.description, { partnersCount })}
+            </p>
+
+            <div className="flex flex-wrap gap-3 mb-8">
+              {(texts.home.card.badges ?? []).map((b: string) => (
+                <span
+                  key={b}
+                  className="font-spartan font-bold text-xs uppercase tracking-widest px-3 py-1.5 bg-white/15 text-white border border-white/20"
+                >
+                  {formatText(b, { partnersCount })}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/carte-bde"
+                className="px-8 py-4 bg-brand-noir text-white font-spartan font-bold text-xs uppercase tracking-widest hover:bg-brand-or hover:text-brand-noir transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-or"
+              >
+                {texts.home.card.ctaBuy}
+              </Link>
+              <Link
+                href="/partenaires"
+                className="px-8 py-4 border-2 border-white/30 text-white font-spartan font-bold text-xs uppercase tracking-widest hover:border-white hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-or"
+              >
+                {texts.home.card.ctaSeePartners}
+              </Link>
+            </div>
+          </div>
+
+          {/* Stat droite */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative">
+              <div className="font-spartan font-black text-[8rem] leading-none text-white/10 select-none">
+                {partnersCount}
+              </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="font-spartan font-black text-[5rem] leading-none text-white">
+                  {partnersCount}
                 </div>
-                <div className="flex flex-wrap justify-center gap-4 text-lg">
-                    {texts.home.card.badges.map((b: string) => (
-                        <Badge key={b} variant="yellow" className="text-base px-4 py-2">{formatText(b, { partnersCount })}</Badge>
-                    ))}
+                <div className="font-lato text-base text-white/60 mt-2 text-center">
+                  partenaires<br />locaux
                 </div>
-            </motion.div>
-        </Section>
-    );
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </Container>
+    </section>
+  );
 }
