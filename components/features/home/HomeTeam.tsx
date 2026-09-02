@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { TeamCard } from "@/components/features/TeamCard";
 import { formatText } from "@/lib/utils";
 import { getImageUrl } from "@/lib/image-url";
+import { BLUR_DARK } from "@/lib/image-blur";
 
 interface YearTeam {
   id: string;
@@ -106,14 +107,17 @@ export function HomeTeam({ texts, settings, yearTeams, currentYearId }: HomeTeam
           </div>
 
           {/* Photo de groupe / image de fond */}
-          <div className="relative w-full overflow-hidden mb-14" style={{ maxHeight: "420px" }}>
+          <div className="relative w-full overflow-hidden mb-14" style={{ height: "420px" }}>
             <Image
               src={getImageUrl(bgImage)}
               alt={`Équipe ${activeYear?.label ?? ""}`}
-              width={1200}
-              height={600}
-              className="w-full object-cover object-center"
-              style={{ maxHeight: "420px" }}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 1000px, 1200px"
+              quality={80}
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={BLUR_DARK}
+              className="object-cover object-center"
             />
             <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-brand-craie to-transparent" />
           </div>
@@ -132,7 +136,7 @@ export function HomeTeam({ texts, settings, yearTeams, currentYearId }: HomeTeam
 
           {/* Grille membres */}
           {team.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-noir/8">
               {team.map((member) => (
                 <TeamCard key={`${activeYearId}-${member.id}`} member={member as any} />
               ))}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Container } from "@/components/ui/Container";
 import { getActivePartners, getTexts } from "@/lib/data";
 import { PartnersClient } from "./PartnersClient";
 
@@ -23,7 +24,7 @@ export default async function PartnersPage() {
 
         {/* Hero */}
         <section className="bg-brand-noir py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Container>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end">
               <div>
                 <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-4">
@@ -44,7 +45,7 @@ export default async function PartnersPage() {
                 </Link>
               </div>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* Liste filtrée */}
@@ -52,8 +53,8 @@ export default async function PartnersPage() {
 
         {/* CTA commerçants */}
         <section className="bg-brand-craie border-t border-brand-noir/8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+          <Container>
+            <div className="py-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
               <div>
                 <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-3">
                   Vous êtes commerçant ?
@@ -70,7 +71,7 @@ export default async function PartnersPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </Container>
         </section>
 
       </main>

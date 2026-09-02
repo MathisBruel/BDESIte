@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { animateScrollToY } from "@/lib/utils";
 import { SCROLL_OFFSET } from "@/lib/constants";
 import { getImageUrl } from "@/lib/image-url";
+import { BLUR_DARK } from "@/lib/image-blur";
 import { useEffect, useState, useCallback } from "react";
 
 interface HomeHeroProps {
@@ -17,7 +18,7 @@ interface HomeHeroProps {
 }
 
 export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
-  const [current, setCurrent] = useState<number | null>(null);
+  const [current, setCurrent] = useState<number>(0);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -27,38 +28,39 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
     }
   };
 
-  useEffect(() => {
-    if (heroPhotos.length > 0) {
-      setCurrent(Math.floor(Math.random() * heroPhotos.length));
-    }
-  }, [heroPhotos.length]);
-
   const goTo = useCallback((idx: number) => {
     setCurrent(idx);
   }, []);
 
+  // randomise après hydration (SSR démarre à 0 pour LCP)
   useEffect(() => {
-    if (heroPhotos.length <= 1 || current === null) return;
+    if (heroPhotos.length > 1) {
+      setCurrent(Math.floor(Math.random() * heroPhotos.length));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (heroPhotos.length <= 1) return;
     const t = setTimeout(() => {
-      setCurrent((prev) => (prev === null ? 0 : (prev + 1) % heroPhotos.length));
+      setCurrent((prev) => (prev + 1) % heroPhotos.length);
     }, 5000);
     return () => clearTimeout(t);
   }, [current, heroPhotos.length]);
 
-  const hasPhotos = heroPhotos.length > 0 && current !== null;
+  const hasPhotos = heroPhotos.length > 0;
 
   return (
     <section className="relative bg-brand-noir min-h-[90vh] flex flex-col overflow-hidden">
-      {/* Slideshow background */}
+      {/* Slideshow — toutes les slides restent dans le DOM pour garantir le cross-fade CSS */}
       {hasPhotos && heroPhotos.map((photo, idx) => {
         const isCurrent = idx === current;
-        const isNext = idx === (current! + 1) % heroPhotos.length;
+        const isNext = idx === (current + 1) % heroPhotos.length && heroPhotos.length > 1;
         return (
           <div
             key={photo.path}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              isCurrent ? "opacity-100" : "opacity-0"
-            }`}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{ opacity: isCurrent ? 1 : 0 }}
           >
             <Image
               src={photo.path}
@@ -69,7 +71,9 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
               sizes="100vw"
               priority={isCurrent}
               loading={isCurrent || isNext ? "eager" : "lazy"}
-              quality={85}
+              quality={82}
+              placeholder="blur"
+              blurDataURL={BLUR_DARK}
             />
           </div>
         );

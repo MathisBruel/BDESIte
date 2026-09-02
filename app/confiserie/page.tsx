@@ -1,4 +1,4 @@
-import { Container } from "@/components/Container";
+import { Container } from "@/components/ui/Container";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import StockDisplay from "@/components/StockDisplay";
@@ -20,7 +20,7 @@ export default async function StockPage() {
 
         {/* Hero */}
         <section className="bg-brand-noir py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Container>
             <div className="flex items-start justify-between gap-8 flex-wrap">
               <div>
                 <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-4">
@@ -46,52 +46,55 @@ export default async function StockPage() {
                 ))}
               </div>
             </div>
-          </div>
+          </Container>
         </section>
 
         {/* Produits */}
         <section className="bg-brand-craie" id="stock-list">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="mb-12">
-              <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-3">
-                Ce qu'on a
+          <Container>
+            <div className="py-16">
+              <div className="mb-12">
+                <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-3">
+                  Ce qu'on a
+                </div>
+                <h2 className="font-spartan font-black text-display-md text-brand-noir leading-none mb-3">
+                  Nos produits
+                </h2>
+                <p className="font-lato text-sm text-brand-noir/55">
+                  Tous les prix sont affichés. Passez au local BDE pour acheter.
+                </p>
               </div>
-              <h2 className="font-spartan font-black text-display-md text-brand-noir leading-none mb-3">
-                Nos produits
-              </h2>
-              <p className="font-lato text-sm text-brand-noir/55">
-                Tous les prix sont affichés. Passez au local BDE pour acheter.
-              </p>
+              <StockDisplay />
             </div>
-
-            <StockDisplay />
-          </div>
+          </Container>
         </section>
 
         {/* Suggestion */}
         <section className="bg-brand-noir py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-            <div>
-              <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-3">
-                Un produit manque ?
+          <Container>
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+              <div>
+                <div className="font-spartan font-black text-xs uppercase tracking-widest text-brand-rouge mb-3">
+                  Un produit manque ?
+                </div>
+                <h2 className="font-spartan font-black text-2xl text-white mb-2">
+                  Dis-nous ce que tu veux.
+                </h2>
+                <p className="font-lato text-sm text-white/50 max-w-md">
+                  On fait de notre mieux pour satisfaire les envies de la promo.
+                </p>
               </div>
-              <h2 className="font-spartan font-black text-2xl text-white mb-2">
-                Dis-nous ce que tu veux.
-              </h2>
-              <p className="font-lato text-sm text-white/50 max-w-md">
-                On fait de notre mieux pour satisfaire les envies de la promo.
-              </p>
+              <a
+                href="https://www.instagram.com/bde_sup_rnova/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 flex items-center gap-3 px-8 py-4 bg-brand-rouge text-white font-spartan font-bold text-xs uppercase tracking-widest hover:bg-brand-or hover:text-brand-noir transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-or"
+              >
+                <Instagram className="h-4 w-4" />
+                Nous contacter
+              </a>
             </div>
-            <a
-              href="https://www.instagram.com/bde_sup_rnova/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 flex items-center gap-3 px-8 py-4 bg-brand-rouge text-white font-spartan font-bold text-xs uppercase tracking-widest hover:bg-brand-or hover:text-brand-noir transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-or"
-            >
-              <Instagram className="h-4 w-4" />
-              Nous contacter
-            </a>
-          </div>
+          </Container>
         </section>
 
       </main>

@@ -4,6 +4,7 @@ import { Camera } from "lucide-react";
 import type { Event } from "@/lib/schemas";
 import { formatDate, formatTime } from "@/lib/utils";
 import { getImageUrl } from "@/lib/image-url";
+import { BLUR_DARK } from "@/lib/image-blur";
 
 interface EventCardProps {
   event: Event;
@@ -30,6 +31,11 @@ export function EventCard({ event, compact = false, texts, past = false }: Event
             src={getImageUrl(event.cover)}
             alt={event.title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            quality={72}
+            loading="lazy"
+            placeholder="blur"
+            blurDataURL={BLUR_DARK}
             className={`object-cover transition-all duration-500 group-hover:scale-105 ${
               isPast ? "grayscale-[60%] group-hover:grayscale-0" : ""
             }`}

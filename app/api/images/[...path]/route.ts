@@ -1,5 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import minioClient, { BUCKET_NAME } from '@/lib/minio';
+
+const MINIO_ENDPOINT = process.env.MINIO_ENDPOINT || 'localhost';
+const MINIO_PORT = process.env.MINIO_PORT || '9000';
+const BUCKET_NAME = process.env.MINIO_BUCKET_NAME || 'bde-images';
+
+function getMinioBaseUrl() {
+  const ep = MINIO_ENDPOINT;
+  if (ep.startsWith('http://') || ep.startsWith('https://')) {
+    return `${ep}/${BUCKET_NAME}`;
+  }
+  return `http://${ep}:${MINIO_PORT}/${BUCKET_NAME}`;
+}
 
 export async function GET(
   request: NextRequest,
@@ -7,24 +18,23 @@ export async function GET(
 ) {
   try {
     const pathFromUrl = params.path.join('/');
-    const imagePath = `images/${pathFromUrl}`;
-    
-    const objectStream = await minioClient.getObject(BUCKET_NAME, imagePath);
-    
-    const chunks: Buffer[] = [];
-    for await (const chunk of objectStream) {
-      chunks.push(chunk);
+    const minioUrl = `${getMinioBaseUrl()}/images/${pathFromUrl}`;
+
+    const res = await fetch(minioUrl);
+
+    if (!res.ok) {
+      return new NextResponse('Image not found', { status: 404 });
     }
-    const buffer = Buffer.concat(chunks);
-    
-    const contentType = getContentType(imagePath);
-    
-    return new NextResponse(buffer, {
-      headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=31536000, immutable',
-      },
-    });
+
+    const contentType = res.headers.get('content-type') || getContentType(pathFromUrl);
+    const headers: Record<string, string> = {
+      'Content-Type': contentType,
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    };
+    const cl = res.headers.get('content-length');
+    if (cl) headers['Content-Length'] = cl;
+
+    return new NextResponse(res.body, { headers });
   } catch (error) {
     console.error('Error serving image:', error);
     return new NextResponse('Image not found', { status: 404 });
