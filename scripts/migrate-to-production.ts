@@ -319,6 +319,53 @@ async function migrateStock() {
   console.log(`  ✅ ${products.length} produits migrés`);
 }
 
+async function migrateAcademicYears() {
+  console.log('🎓 Migration des années académiques...');
+
+  const existing = await prisma.academicYear.count();
+  if (existing > 0) {
+    console.log('  ℹ️  Années déjà présentes, skip');
+    return;
+  }
+
+  const teamPath = path.join(DATA_DIR, 'team.json');
+  if (!fs.existsSync(teamPath)) {
+    console.log('  ⚠️  team.json non trouvé');
+    return;
+  }
+  const team = JSON.parse(fs.readFileSync(teamPath, 'utf-8'));
+
+  const year = await prisma.academicYear.create({
+    data: {
+      label: '2025-2026',
+      slug: '2025-2026',
+      startDate: new Date('2025-09-01'),
+      endDate: new Date('2026-08-31'),
+      isCurrent: false,
+      teamBackgroundImage: 'team/groupe.jpg',
+    },
+  });
+
+  const members = await prisma.teamMember.findMany({});
+  const memberMap = new Map(members.map((m) => [m.name, m]));
+
+  let order = 0;
+  for (const t of team) {
+    const member = memberMap.get(t.name);
+    if (!member) continue;
+    await prisma.teamMembership.create({
+      data: {
+        academicYearId: year.id,
+        teamMemberId: member.id,
+        role: t.role,
+        order: order++,
+      },
+    });
+  }
+
+  console.log(`  ✅ Année 2025-2026 créée avec ${order} membres`);
+}
+
 async function createAdminUser() {
   console.log('👤 Création de l\'utilisateur admin...');
   
@@ -365,6 +412,7 @@ async function main() {
     
     await migrateSettings();
     await migrateTeam(imageMap);
+    await migrateAcademicYears();
     await migrateEvents(imageMap);
     await migratePartners(imageMap);
     await migrateStock();
