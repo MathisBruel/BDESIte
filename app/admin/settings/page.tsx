@@ -1,5 +1,6 @@
 import { getSettings } from "@/lib/data";
 import { SettingsForm } from "@/components/admin/SettingsForm";
+import { ImageOptimizer } from "@/components/admin/ImageOptimizer";
 
 export default async function AdminSettingsPage() {
   const settings = await getSettings();
@@ -15,6 +16,16 @@ export default async function AdminSettingsPage() {
 
       <div className="bg-white rounded-xl border border-gray-200 p-8">
         <SettingsForm settings={settings} />
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-8">
+        <div className="mb-6">
+          <h2 className="text-lg font-bold text-gray-900 font-spartan">
+            Gestion des <span className="text-brand-red">images</span>
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">Optimisez les performances du site</p>
+        </div>
+        <ImageOptimizer />
       </div>
     </div>
   );
