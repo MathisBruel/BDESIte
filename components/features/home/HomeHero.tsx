@@ -55,12 +55,11 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
       {/* Slideshow — toutes les slides restent dans le DOM pour garantir le cross-fade CSS */}
       {hasPhotos && heroPhotos.map((photo, idx) => {
         const isCurrent = idx === current;
-        const isNext = idx === (current + 1) % heroPhotos.length && heroPhotos.length > 1;
         return (
           <div
             key={photo.path}
             className="absolute inset-0 transition-opacity duration-1000"
-            style={{ opacity: isCurrent ? 1 : 0 }}
+            style={{ opacity: isCurrent ? 1 : 0, pointerEvents: isCurrent ? "auto" : "none" }}
           >
             <Image
               src={photo.path}
@@ -70,8 +69,8 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
               style={{ objectPosition: photo.position }}
               sizes="100vw"
               priority={isCurrent}
-              loading={isCurrent || isNext ? "eager" : "lazy"}
-              quality={82}
+              loading={isCurrent ? "eager" : "lazy"}
+              quality={72}
               placeholder="blur"
               blurDataURL={BLUR_DARK}
             />

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readdir, readFile, writeFile } from "fs/promises";
+import { readdir, readFile, writeFile, stat } from "fs/promises";
 import { join } from "path";
 import sharp from "sharp";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
@@ -73,6 +74,24 @@ export async function POST(request: NextRequest) {
     }
 
     await processDirectory(imageDir);
+
+    // Update HeroPhoto paths to use .webp if they exist
+    const heroPhotos = await prisma.heroPhoto.findMany();
+    for (const photo of heroPhotos) {
+      const webpPath = photo.path.replace(/\.(jpg|jpeg|png)$/i, ".webp");
+      const webpFullPath = join(process.cwd(), "public", webpPath.replace(/^\//, ""));
+
+      try {
+        await stat(webpFullPath);
+        // WebP exists, update the photo path
+        await prisma.heroPhoto.update({
+          where: { id: photo.id },
+          data: { path: webpPath },
+        });
+      } catch {
+        // WebP doesn't exist, keep original
+      }
+    }
 
     const savedMB = ((results.totalSizeBefore - results.totalSizeAfter) / 1024 / 1024).toFixed(2);
 
