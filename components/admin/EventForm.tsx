@@ -14,7 +14,9 @@ const eventSchema = z.object({
   title: z.string().min(3, "Le titre doit contenir au moins 3 caractères"),
   slug: z.string().min(3, "Le slug est requis"),
   date: z.string(),
+  time: z.string().optional().or(z.literal("")),
   endDate: z.string().optional().or(z.literal("")),
+  endTime: z.string().optional().or(z.literal("")),
   place: z.string().min(3, "Le lieu est requis"),
   description: z.string().min(10, "La description doit être plus détaillée"),
   ticketUrl: z.string().url().optional().or(z.literal("")),
@@ -36,17 +38,43 @@ interface EventFormProps {
   academicYears?: AcademicYearOption[];
 }
 
+function extractDateTimeComponents(dateTime: Date | string | null | undefined) {
+  if (!dateTime) return { date: "", time: "" };
+  const d = typeof dateTime === "string" ? new Date(dateTime) : dateTime;
+  const iso = d.toISOString();
+  const [dateStr, timeStr] = iso.split("T");
+  return { date: dateStr, time: timeStr.substring(0, 5) };
+}
+
 export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
+  const { date: defaultDate, time: defaultTime } = extractDateTimeComponents(initialData?.date);
+  const { date: defaultEndDate, time: defaultEndTime } = extractDateTimeComponents(initialData?.endDate);
+
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
-    defaultValues: initialData || {
+    defaultValues: initialData ? {
+      title: initialData.title || "",
+      slug: initialData.slug || "",
+      date: defaultDate,
+      time: defaultTime,
+      endDate: defaultEndDate,
+      endTime: defaultEndTime,
+      place: initialData.place || "",
+      description: initialData.description || "",
+      ticketUrl: initialData.ticketUrl || "",
+      photosUrl: initialData.photosUrl || "",
+      academicYearId: initialData.academicYearId || "",
+      published: initialData.published ?? false,
+    } : {
       title: "",
       slug: "",
       date: new Date().toISOString().split("T")[0],
+      time: "20:00",
       endDate: "",
+      endTime: "",
       place: "",
       description: "",
       ticketUrl: "",
@@ -60,11 +88,20 @@ export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
     setLoading(true);
     const toastId = toast.loading("Enregistrement en cours...");
 
+    // Combine date + time into ISO string
+    const combineDateTimeString = (date: string, time: string): string => {
+      if (!date) return "";
+      if (!time) return `${date}T00:00:00Z`;
+      return `${date}T${time}:00Z`;
+    };
+
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("slug", data.slug);
-    formData.append("date", data.date);
-    if (data.endDate) formData.append("endDate", data.endDate);
+    formData.append("date", combineDateTimeString(data.date, data.time || ""));
+    if (data.endDate) {
+      formData.append("endDate", combineDateTimeString(data.endDate, data.endTime || ""));
+    }
     formData.append("place", data.place);
     formData.append("description", data.description);
     if (data.ticketUrl) formData.append("ticketUrl", data.ticketUrl);
@@ -156,31 +193,59 @@ export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date début <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                  <input
-                    type="date"
-                    {...form.register("date")}
-                    className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${form.formState.errors.date ? "border-red-500" : ""}`}
-                  />
+              <div className="md:col-span-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Date début <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <input
+                        type="date"
+                        {...form.register("date")}
+                        className={`w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${form.formState.errors.date ? "border-red-500" : ""}`}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Heure début <span className="text-gray-400 font-normal">(optionnel)</span>
+                    </label>
+                    <input
+                      type="time"
+                      {...form.register("time")}
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date fin <span className="text-gray-400 font-normal">(optionnel)</span>
-                </label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                  <input
-                    type="date"
-                    {...form.register("endDate")}
-                    className="w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
-                  />
+              <div className="md:col-span-2">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Date fin <span className="text-gray-400 font-normal">(optionnel)</span>
+                    </label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                      <input
+                        type="date"
+                        {...form.register("endDate")}
+                        className="w-full pl-10 rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Heure fin <span className="text-gray-400 font-normal">(optionnel)</span>
+                    </label>
+                    <input
+                      type="time"
+                      {...form.register("endTime")}
+                      className="w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border"
+                    />
+                  </div>
                 </div>
               </div>
 
