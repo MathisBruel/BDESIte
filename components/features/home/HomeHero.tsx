@@ -7,7 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { animateScrollToY } from "@/lib/utils";
 import { SCROLL_OFFSET } from "@/lib/constants";
 import { BLUR_DARK } from "@/lib/image-blur";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface HomeHeroProps {
   texts: any;
@@ -18,8 +18,9 @@ interface HomeHeroProps {
 
 export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
   const [current, setCurrent] = useState<number>(0);
-  const [prev, setPrev] = useState<number | null>(null);
-  const transitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Progressive loading: images are added to the DOM on first visit, then kept.
+  // This preserves the CSS cross-fade while only loading images as needed.
+  const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0]));
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -30,13 +31,13 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
   };
 
   const goTo = useCallback((idx: number) => {
-    setCurrent((c) => {
-      if (idx === c) return c;
-      setPrev(c);
-      if (transitionTimer.current) clearTimeout(transitionTimer.current);
-      transitionTimer.current = setTimeout(() => setPrev(null), 1100);
-      return idx;
+    setLoaded((prev) => {
+      if (prev.has(idx)) return prev;
+      const next = new Set(prev);
+      next.add(idx);
+      return next;
     });
+    setCurrent(idx);
   }, []);
 
   // Randomise after hydration (SSR starts at 0 for LCP)
@@ -55,29 +56,20 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
     return () => clearTimeout(t);
   }, [current, heroPhotos.length, goTo]);
 
-  useEffect(() => () => {
-    if (transitionTimer.current) clearTimeout(transitionTimer.current);
-  }, []);
-
   const hasPhotos = heroPhotos.length > 0;
 
   return (
     <section className="relative bg-brand-noir min-h-[90vh] flex flex-col overflow-hidden">
-      {/* Slideshow — only current + prev in DOM to avoid loading all images at once */}
+      {/* Slideshow — progressive loading: images enter DOM on first visit, stay for smooth cross-fade */}
       {hasPhotos && heroPhotos.map((photo, idx) => {
+        if (!loaded.has(idx)) return null;
         const isCurrent = idx === current;
-        const isPrev = idx === prev;
-        if (!isCurrent && !isPrev) return null;
 
         return (
           <div
             key={photo.path}
             className="absolute inset-0 transition-opacity duration-1000"
-            style={{
-              opacity: isCurrent ? 1 : 0,
-              pointerEvents: isCurrent ? "auto" : "none",
-              zIndex: isCurrent ? 1 : 0,
-            }}
+            style={{ opacity: isCurrent ? 1 : 0, pointerEvents: isCurrent ? "auto" : "none" }}
           >
             <Image
               src={photo.path}
@@ -86,8 +78,8 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
               className="object-cover"
               style={{ objectPosition: photo.position }}
               sizes="100vw"
-              priority={isCurrent && prev === null}
-              loading="eager"
+              priority={idx === 0}
+              loading={idx === 0 ? "eager" : "lazy"}
               quality={72}
               placeholder="blur"
               blurDataURL={BLUR_DARK}
@@ -98,11 +90,11 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
 
       {/* Dark overlay */}
       {hasPhotos && (
-        <div className="absolute inset-0 bg-black/55 z-[2]" />
+        <div className="absolute inset-0 bg-black/55 z-[1]" />
       )}
 
       {/* Content */}
-      <div className="relative z-[3] flex-1 flex items-center w-full">
+      <div className="relative z-[2] flex-1 flex items-center w-full">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center py-16 lg:py-28">
 
@@ -160,7 +152,7 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
       </div>
 
       {/* Bottom bar: dots + scroll */}
-      <div className="relative z-[3] flex flex-col items-center gap-3 pb-6">
+      <div className="relative z-[2] flex flex-col items-center gap-3 pb-6">
         {hasPhotos && heroPhotos.length > 1 && (
           <div className="flex gap-2">
             {heroPhotos.map((_, idx) => (
