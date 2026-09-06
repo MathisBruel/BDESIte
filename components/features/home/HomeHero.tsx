@@ -48,6 +48,19 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Preload all other images into browser cache after first is shown
+  useEffect(() => {
+    if (heroPhotos.length <= 1) return;
+    const t = setTimeout(() => {
+      heroPhotos.forEach((photo) => {
+        const img = new window.Image();
+        img.src = photo.path;
+      });
+    }, 1500);
+    return () => clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (heroPhotos.length <= 1) return;
     const t = setTimeout(() => {
