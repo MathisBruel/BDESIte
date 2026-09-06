@@ -83,6 +83,7 @@ export function HomeHero({ texts, settings, heroPhotos = [] }: HomeHeroProps) {
               quality={72}
               placeholder="blur"
               blurDataURL={BLUR_DARK}
+              unoptimized
             />
           </div>
         );

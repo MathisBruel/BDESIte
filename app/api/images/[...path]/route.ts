@@ -20,21 +20,24 @@ export async function GET(
     const pathFromUrl = params.path.join('/');
     const minioUrl = `${getMinioBaseUrl()}/images/${pathFromUrl}`;
 
-    const res = await fetch(minioUrl);
+    const res = await fetch(minioUrl, {
+      next: { revalidate: 86400 }, // Next.js data cache — persists to disk, survives container restarts
+    });
 
     if (!res.ok) {
       return new NextResponse('Image not found', { status: 404 });
     }
 
     const contentType = res.headers.get('content-type') || getContentType(pathFromUrl);
-    const headers: Record<string, string> = {
-      'Content-Type': contentType,
-      'Cache-Control': 'public, max-age=31536000, immutable',
-    };
-    const cl = res.headers.get('content-length');
-    if (cl) headers['Content-Length'] = cl;
+    const data = await res.arrayBuffer();
 
-    return new NextResponse(res.body, { headers });
+    return new NextResponse(data, {
+      headers: {
+        'Content-Type': contentType,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Content-Length': String(data.byteLength),
+      },
+    });
   } catch (error) {
     console.error('Error serving image:', error);
     return new NextResponse('Image not found', { status: 404 });
