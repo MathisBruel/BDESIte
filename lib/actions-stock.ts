@@ -2,9 +2,9 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import minioClient, { BUCKET_NAME } from "./minio";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { uploadImage } from "./upload-image";
 
 const productSchema = z.object({
   name: z.string().min(2),
@@ -14,18 +14,6 @@ const productSchema = z.object({
   active: z.string().optional(),
   order: z.string().optional().transform((val) => val ? parseInt(val, 10) : 0),
 });
-
-async function uploadImage(file: File, folder: string): Promise<string> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const minioPath = `images/${filename}`;
-
-  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
-    "Content-Type": file.type,
-  });
-
-  return filename;
-}
 
 export async function createProduct(formData: FormData) {
   const validatedFields = productSchema.safeParse({

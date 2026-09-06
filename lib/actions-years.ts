@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import minioClient, { BUCKET_NAME } from "./minio";
+import { uploadImage } from "./upload-image";
 
 const yearSchema = z.object({
   label: z.string().min(3, "Label requis (ex: 2025-2026)"),
@@ -13,16 +13,6 @@ const yearSchema = z.object({
   endDate: z.string(),
   isCurrent: z.string().optional(),
 });
-
-async function uploadImage(file: File, folder: string): Promise<string> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const minioPath = `images/${filename}`;
-  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
-    "Content-Type": file.type,
-  });
-  return filename;
-}
 
 export async function createAcademicYear(formData: FormData) {
   const parsed = yearSchema.safeParse({

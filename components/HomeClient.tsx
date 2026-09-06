@@ -320,7 +320,6 @@ export function HomeClient({
                                                     loading="lazy"
                                                     placeholder={getBlurPlaceholder(event.cover) ? "blur" : "empty"}
                                                     blurDataURL={getBlurPlaceholder(event.cover)}
-                                                    unoptimized={migrateImagePath(event.cover).startsWith('/api/images/')}
                                                 />
                                                 <div className="absolute top-4 right-4 z-20">
                                                     <span className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold">

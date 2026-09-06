@@ -2,11 +2,9 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import minioClient, { BUCKET_NAME } from "./minio";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-// Removed local pool/adapter/prisma init
+import { uploadImage } from "./upload-image";
 
 const partnerSchema = z.object({
   name: z.string().min(2),
@@ -18,18 +16,6 @@ const partnerSchema = z.object({
   active: z.string().optional(), // Checkbox sends "on" or undefined
   advantages: z.string().optional(),
 });
-
-async function uploadImage(file: File, folder: string): Promise<string> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const minioPath = `images/${filename}`;
-
-  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
-    "Content-Type": file.type,
-  });
-
-  return filename;
-}
 
 export async function createPartner(formData: FormData) {
   const validatedFields = partnerSchema.safeParse({

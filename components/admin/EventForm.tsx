@@ -41,9 +41,19 @@ interface EventFormProps {
 function extractDateTimeComponents(dateTime: Date | string | null | undefined) {
   if (!dateTime) return { date: "", time: "" };
   const d = typeof dateTime === "string" ? new Date(dateTime) : dateTime;
-  const iso = d.toISOString();
-  const [dateStr, timeStr] = iso.split("T");
-  return { date: dateStr, time: timeStr.substring(0, 5) };
+  const dateStr = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+  const timeStr = new Intl.DateTimeFormat("en", {
+    timeZone: "Europe/Paris",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(d);
+  return { date: dateStr, time: timeStr };
 }
 
 export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
@@ -88,11 +98,11 @@ export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
     setLoading(true);
     const toastId = toast.loading("Enregistrement en cours...");
 
-    // Combine date + time into ISO string
+    // Interpret date+time as Paris local time, convert to UTC ISO string
     const combineDateTimeString = (date: string, time: string): string => {
       if (!date) return "";
-      if (!time) return `${date}T00:00:00Z`;
-      return `${date}T${time}:00Z`;
+      const timeStr = time || "00:00";
+      return new Date(`${date}T${timeStr}:00`).toISOString();
     };
 
     const formData = new FormData();

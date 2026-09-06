@@ -2,11 +2,9 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import minioClient, { BUCKET_NAME } from "./minio";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-// Removed local pool/adapter/prisma init
+import { uploadImage } from "./upload-image";
 
 const eventSchema = z.object({
   title: z.string().min(3),
@@ -20,18 +18,6 @@ const eventSchema = z.object({
   academicYearId: z.string().optional().or(z.literal("")),
   published: z.string().optional(),
 });
-
-async function uploadImage(file: File, folder: string): Promise<string> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const minioPath = `images/${filename}`;
-
-  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
-    "Content-Type": file.type,
-  });
-
-  return filename;
-}
 
 export async function createEvent(formData: FormData) {
   const validatedFields = eventSchema.safeParse({

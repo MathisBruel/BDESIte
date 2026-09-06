@@ -1,8 +1,9 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import minioClient, { BUCKET_NAME } from "./minio";
 import { revalidatePath } from "next/cache";
+import { uploadImage } from "./upload-image";
+import minioClient, { BUCKET_NAME } from "./minio";
 
 const DEFAULT_PHOTOS = Array.from({ length: 20 }, (_, i) => `/photos-hero/hero-${String(i + 1).padStart(2, "0")}.jpg`);
 const DEFAULT_POSITION = "center center";
@@ -35,13 +36,7 @@ export async function addHeroPhoto(formData: FormData) {
   const file = formData.get("photo") as File;
   if (!file || file.size === 0) return { error: "Aucun fichier fourni" };
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `hero/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const minioPath = `images/${filename}`;
-
-  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
-    "Content-Type": file.type,
-  });
+  const filename = await uploadImage(file, "hero");
 
   const lastPhoto = await prisma.heroPhoto.findFirst({ orderBy: { order: "desc" } });
   const order = (lastPhoto?.order ?? -1) + 1;

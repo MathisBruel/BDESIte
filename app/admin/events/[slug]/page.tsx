@@ -14,8 +14,8 @@ export default async function EditEventPage({ params }: { params: Promise<{ slug
 
   const formattedEvent = {
     ...event,
-    date: new Date(event.date).toISOString().split("T")[0],
-    endDate: event.endDate ? new Date(event.endDate).toISOString().split("T")[0] : "",
+    date: event.date.toISOString(),
+    endDate: event.endDate ? event.endDate.toISOString() : "",
     ticketUrl: event.ticketUrl || "",
     photosUrl: event.photosUrl || "",
     academicYearId: event.academicYearId || "",

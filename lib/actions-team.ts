@@ -2,9 +2,9 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import minioClient, { BUCKET_NAME } from "./minio";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { uploadImage } from "./upload-image";
 
 const teamMemberSchema = z.object({
   name: z.string().min(2),
@@ -14,16 +14,6 @@ const teamMemberSchema = z.object({
   instagram: z.string().optional().or(z.literal("")),
   email: z.string().optional().or(z.literal("")),
 });
-
-async function uploadImage(file: File, folder: string): Promise<string> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const filename = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const minioPath = `images/${filename}`;
-  await minioClient.putObject(BUCKET_NAME, minioPath, buffer, file.size, {
-    "Content-Type": file.type,
-  });
-  return filename;
-}
 
 async function syncMemberships(
   memberId: string,

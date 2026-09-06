@@ -42,7 +42,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
               fill
               className="object-cover opacity-70"
               priority
-              unoptimized={getImageUrl(event.cover).startsWith("/api/images/")}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-noir via-brand-noir/40 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">

@@ -33,7 +33,6 @@ export function EventCard({ event, compact = false, texts }: EventCardProps) {
             loading="lazy"
             placeholder={getBlurPlaceholder(event.cover) ? "blur" : "empty"}
             blurDataURL={getBlurPlaceholder(event.cover)}
-            unoptimized={migrateImagePath(event.cover).startsWith('/api/images/')}
           />
           {isPast && (
             <div className="absolute top-2 right-2">
