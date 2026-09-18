@@ -1,12 +1,13 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { createEvent, updateEvent } from "@/lib/actions-events";
 import { ImageUpload } from "@/components/ui/ImageUpload";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { toast } from "sonner";
 import { Calendar, MapPin, Link as LinkIcon, FileText, Type } from "lucide-react";
 
@@ -163,7 +164,7 @@ export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
                 <input
                   {...form.register("title")}
                   className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-2.5 border ${form.formState.errors.title ? "border-red-500" : ""}`}
-                  placeholder="Soirée d'intégration"
+                  placeholder="Soirée d&apos;intégration"
                 />
                 {form.formState.errors.title && (
                   <p className="text-red-500 text-xs mt-1">{form.formState.errors.title.message}</p>
@@ -289,11 +290,17 @@ export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  {...form.register("description")}
-                  rows={6}
-                  className={`w-full rounded-lg border-gray-300 shadow-sm focus:border-brand-red focus:ring-brand-red sm:text-sm p-3 border ${form.formState.errors.description ? "border-red-500" : ""}`}
-                  placeholder="Description détaillée de l'événement..."
+                <Controller
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={!!form.formState.errors.description}
+                      placeholder="Description détaillée de l'événement..."
+                    />
+                  )}
                 />
                 {form.formState.errors.description && (
                   <p className="text-red-500 text-xs mt-1">{form.formState.errors.description.message}</p>
@@ -363,7 +370,7 @@ export function EventForm({ initialData, academicYears = [] }: EventFormProps) {
 
             <div className="mt-6 pt-6 border-t border-gray-100">
               <Button type="submit" disabled={loading} className="w-full justify-center">
-                {loading ? "Enregistrement..." : initialData ? "Mettre à jour" : "Créer l'événement"}
+                {loading ? "Enregistrement..." : initialData ? "Mettre à jour" : "Créer l&apos;événement"}
               </Button>
             </div>
           </div>

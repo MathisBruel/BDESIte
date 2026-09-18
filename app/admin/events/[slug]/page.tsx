@@ -29,7 +29,7 @@ export default async function EditEventPage({ params }: { params: Promise<{ slug
         <h1 className="text-2xl font-bold text-gray-900 font-spartan">
           Modifier — <span className="text-brand-red">{event.title}</span>
         </h1>
-        <p className="text-gray-500 text-sm mt-1">Modifiez les informations de l'événement.</p>
+        <p className="text-gray-500 text-sm mt-1">Modifiez les informations de l&apos;événement.</p>
       </div>
       <EventForm initialData={formattedEvent} academicYears={yearOptions} />
     </div>

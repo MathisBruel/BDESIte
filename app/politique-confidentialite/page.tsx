@@ -26,7 +26,7 @@ export default async function PrivacyPage() {
         <section className="bg-white py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 prose prose-lg prose-headings:font-spartan prose-headings:font-black prose-a:text-brand-rouge">
             <p className="lead">
-              Le BDE Sup'Rennes / SUP'RNOVA accorde une grande importance à la protection de vos données personnelles.
+              Le BDE SupSup'Rennesapos;Rennes / SUP'RNOVA accorde une grande importance à la protection de vos données personnelles.
             </p>
 
             <hr />
@@ -34,7 +34,7 @@ export default async function PrivacyPage() {
             <h2>1. Responsable du traitement</h2>
             <div className="not-prose grid gap-3 sm:grid-cols-2 mb-8">
               {[
-                ["Organisation", "Sup'Rennes – SUP'RNOVA"],
+                ["Organisation", "SupSup'Rennesapos;Rennes – SUP'RNOVA"],
                 ["Adresse", "21 rue du Bignon, 35135 Chantepie, France"],
                 ["Contact RGPD", settings.email],
               ].map(([label, value]) => (
@@ -61,7 +61,7 @@ export default async function PrivacyPage() {
             <ul>
               <li>Identité : nom, prénom, adresse, nationalité, classe, statut étudiant</li>
               <li>Contact : adresse e-mail, numéro de téléphone</li>
-              <li>Images : consentement droit à l'image, date et lieu de prise de vue</li>
+              <li>Images : consentement droit à l&apos;image, date et lieu de prise de vue</li>
               <li>Formulaires : réponses (participation, boutique, événements)</li>
             </ul>
 
@@ -70,8 +70,8 @@ export default async function PrivacyPage() {
             <h2>4. Finalités et bases légales</h2>
             <ul>
               <li>Prise de contact — Consentement</li>
-              <li>Gestion de l'adhésion / boutique / billetterie — Exécution d'un contrat</li>
-              <li>Droit à l'image — Consentement explicite</li>
+              <li>Gestion de l&apos;adhésion / boutique / billetterie — Exécution d&apos;un contrat</li>
+              <li>Droit à l&apos;image — Consentement explicite</li>
               <li>Communication BDE — Intérêt légitime</li>
               <li>Obligations comptables — Obligation légale</li>
               <li>Sécurité / journalisation — Intérêt légitime</li>
@@ -81,7 +81,7 @@ export default async function PrivacyPage() {
 
             <h2>5. Durée de conservation</h2>
             <ul>
-              <li>Droit à l'image — Année scolaire + 1 an d'archive</li>
+              <li>Droit à l&apos;image — Année scolaire + 1 an d'archive</li>
               <li>Données contractuelles — 3 à 10 ans</li>
               <li>Données de contact — 2 ans après le dernier contact</li>
               <li>Logs techniques — 6 à 12 mois</li>

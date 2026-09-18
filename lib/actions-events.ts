@@ -4,7 +4,23 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+<<<<<<< Updated upstream
 import { uploadImage } from "./upload-image";
+=======
+import DOMPurify from "isomorphic-dompurify";
+
+function sanitizeDescription(html: string): string {
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      "p", "br", "strong", "em", "u", "s", "h2", "h3",
+      "ul", "ol", "li", "blockquote", "a", "img",
+    ],
+    ALLOWED_ATTR: ["href", "target", "rel", "src", "alt", "class", "style"],
+  });
+}
+
+// Removed local pool/adapter/prisma init
+>>>>>>> Stashed changes
 
 const eventSchema = z.object({
   title: z.string().min(3),
@@ -54,7 +70,7 @@ export async function createEvent(formData: FormData) {
         date: new Date(date),
         endDate: endDate ? new Date(endDate) : null,
         place,
-        description,
+        description: sanitizeDescription(description),
         ticketUrl: ticketUrl || null,
         photosUrl: photosUrl || null,
         academicYearId: academicYearId || null,
@@ -108,7 +124,7 @@ export async function updateEvent(slug: string, formData: FormData) {
         date: new Date(date),
         endDate: endDate ? new Date(endDate) : null,
         place,
-        description,
+        description: sanitizeDescription(description),
         ticketUrl: ticketUrl || null,
         photosUrl: photosUrl || null,
         academicYearId: academicYearId || null,

@@ -89,7 +89,7 @@ export default async function AdminAnneesPage() {
                         "use server";
                         await deleteAcademicYear(year.id);
                       }}
-                      confirmMessage={`Supprimer l'année ${year.label} ? Les événements liés ne seront pas supprimés.`}
+                      confirmMessage={`Supprimer l&apos;année ${year.label} ? Les événements liés ne seront pas supprimés.`}
                     />
                   </div>
                 </td>

@@ -35,7 +35,7 @@ export default async function PartnersPage() {
                   <span className="text-brand-or">Partenaires</span>
                 </h1>
                 <p className="font-lato text-white/60 text-lg leading-relaxed max-w-lg mb-10">
-                  Des avantages exclusifs toute l'année avec votre carte BDE. Bars, restaurants, sports, culture — tous à Rennes.
+                  Des avantages exclusifs toute l&apos;année avec votre carte BDE. Bars, restaurants, sports, culture — tous à Rennes.
                 </p>
                 <Link
                   href="/carte-bde"
@@ -63,11 +63,11 @@ export default async function PartnersPage() {
                   Devenez partenaire du BDE
                 </h2>
                 <p className="font-lato text-sm text-brand-noir/60 max-w-md">
-                  Touchez une communauté dynamique d'étudiants rennais.{" "}
+                  Touchez une communauté dynamique d&apos;étudiants rennais.{" "}
                   <Link href="/#contact" className="text-brand-rouge hover:underline">
                     Contactez-nous
                   </Link>{" "}
-                  pour discuter d'un partenariat sur mesure.
+                  pour discuter d&apos;un partenariat sur mesure.
                 </p>
               </div>
             </div>

@@ -43,7 +43,7 @@ export default async function AdminDashboard() {
           title="Total Événements"
           value={events.length}
           icon={TrendingUp}
-          description="Depuis le début de l'année"
+          description="Depuis le début de l&apos;année"
           className="border-l-4 border-l-gray-800 hover:shadow-md transition-shadow"
         />
         <StatsCard

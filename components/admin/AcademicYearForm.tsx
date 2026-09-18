@@ -157,7 +157,7 @@ export function AcademicYearForm({ initialData }: AcademicYearFormProps) {
               Année en cours
             </label>
             <p className="text-xs text-gray-500 mt-0.5">
-              Cocher déplacera le statut "en cours" sur cette année et désactivera les autres.
+              Cocher déplacera le statut &ldquo;en cours&rdquo; sur cette année et désactivera les autres.
             </p>
           </div>
         </div>
@@ -177,7 +177,7 @@ export function AcademicYearForm({ initialData }: AcademicYearFormProps) {
 
       <div className="flex gap-3">
         <Button type="submit" disabled={loading}>
-          {loading ? "Enregistrement..." : initialData ? "Mettre à jour" : "Créer l'année"}
+          {loading ? "Enregistrement..." : initialData ? "Mettre à jour" : "Créer l&apos;année"}
         </Button>
         <Button variant="outline" href="/admin/annees" type="button">
           Annuler

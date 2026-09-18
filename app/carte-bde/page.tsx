@@ -6,7 +6,7 @@ import { getSettings, getActivePartners, getTexts } from "@/lib/data";
 
 export const metadata = {
   title: "Carte BDE | BDE SUP'RNOVA",
-  description: "Profitez d'avantages exclusifs toute l'année avec la carte BDE SUP'RNOVA.",
+  description: "Profitez d'avantages exclusifs toute l&apos;année avec la carte BDE SUP'RNOVA.",
 };
 
 const benefits = [
@@ -31,7 +31,7 @@ const benefits = [
 const faqs = [
   {
     q: "Quelle est la validité de la carte ?",
-    a: (year: string) => `La carte BDE est valable toute l'année universitaire ${year}.`,
+    a: (year: string) => `La carte BDE est valable toute l&apos;année universitaire ${year}.`,
   },
   {
     q: "Comment retirer ma carte ?",

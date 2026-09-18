@@ -8,6 +8,14 @@ import { getEventBySlug, getTexts } from "@/lib/data";
 import { formatDate, formatTime, formatDateTimeRange } from "@/lib/utils";
 import { getImageUrl } from "@/lib/image-url";
 
+function toDescriptionHtml(description: string): string {
+  if (/<\/?[a-z][\s\S]*>/i.test(description)) return description;
+  return description
+    .split(/\n{2,}/)
+    .map((p) => `<p>${p.replace(/\n/g, "<br/>")}</p>`)
+    .join("");
+}
+
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -16,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!event) return { title: "Événement introuvable" };
   return {
     title: `${event.title} | BDE SUP'RNOVA`,
-    description: event.description,
+    description: event.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160),
   };
 }
 
@@ -114,9 +122,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <h2 className="font-spartan font-black text-xs uppercase tracking-widest text-brand-noir/40 mb-4">
                   Description
                 </h2>
-                <p className="font-lato text-brand-noir/75 leading-relaxed text-base whitespace-pre-line">
-                  {event.description}
-                </p>
+                <div
+                  className="event-content font-lato text-brand-noir/75 leading-relaxed text-base"
+                  dangerouslySetInnerHTML={{ __html: toDescriptionHtml(event.description) }}
+                />
               </div>
 
               {/* Sidebar */}

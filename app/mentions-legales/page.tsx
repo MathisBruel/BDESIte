@@ -28,7 +28,7 @@ export default async function LegalPage() {
             <h2>1. Éditeur du site</h2>
             <div className="not-prose grid gap-3 sm:grid-cols-2 mb-8">
               {[
-                ["Nom", "Sup'Rennes (loi 1901)"],
+                ["Nom", "SupSup'Rennesapos;Rennes (loi 1901)"],
                 ["Nom d'usage", "SUP'RNOVA"],
                 ["Siège social", "21 rue du Bignon, 35135 Chantepie, France"],
                 ["SIRET", "938 236 031 00010"],
@@ -85,8 +85,8 @@ export default async function LegalPage() {
 
             <h2>4. Conception et développement</h2>
             <ul>
-              <li>Conception, développement et maintenance : BDE Sup'Rennes</li>
-              <li>Crédits graphiques : BDE Sup'Rennes — Tous droits réservés</li>
+              <li>Conception, développement et maintenance : BDE SupSup'Rennesapos;Rennes</li>
+              <li>Crédits graphiques : BDE SupSup'Rennesapos;Rennes — Tous droits réservés</li>
               <li>Conditions de reproduction : réutilisation uniquement autorisée par nos partenaires</li>
             </ul>
             <p><strong>Dernière mise à jour :</strong> 15/10/2025</p>
