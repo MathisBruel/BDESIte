@@ -4,9 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-<<<<<<< Updated upstream
 import { uploadImage } from "./upload-image";
-=======
 import DOMPurify from "isomorphic-dompurify";
 
 function sanitizeDescription(html: string): string {
@@ -18,9 +16,6 @@ function sanitizeDescription(html: string): string {
     ALLOWED_ATTR: ["href", "target", "rel", "src", "alt", "class", "style"],
   });
 }
-
-// Removed local pool/adapter/prisma init
->>>>>>> Stashed changes
 
 const eventSchema = z.object({
   title: z.string().min(3),
