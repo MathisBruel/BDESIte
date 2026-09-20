@@ -1,0 +1,227 @@
+/**
+ * EXAMPLE: Required CSS changes for scroll flickering fix
+ * 
+ * Add these changes to app/globals.css to prevent scroll flickering
+ * on Windows browsers.
+ * 
+ * The issue: CSS smooth-scroll and JavaScript scrollTo() conflict
+ * Solution: Temporarily disable CSS smooth-scroll during JS scrolling
+ */
+
+/* ===== EXISTING CODE ===== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-brand-black;
+  }
+  
+  body {
+    @apply bg-white text-brand-black font-merriweather antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-spartan;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-scroll-behavior: smooth; /* ✅ ADD: Safari support */
+  }
+  
+  /* ✅ NEW: Disable CSS smooth scroll when JavaScript is handling it */
+  /* This prevents double-smoothing that causes flickering on Windows */
+  html.js-scrolling {
+    scroll-behavior: auto;
+    -webkit-scroll-behavior: auto;
+  }
+  
+  /* Hardware acceleration for better animation performance on Windows */
+  * {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* ===== EXISTING UTILITIES ===== */
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+    -webkit-animation: spin 8s linear infinite;
+    -moz-animation: spin 8s linear infinite;
+    /* Force hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    will-change: transform;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+  }
+
+  @-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+    -webkit-animation: fadeIn 0.3s ease-in-out;
+    -moz-animation: fadeIn 0.3s ease-in-out;
+    /* Force hardware acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @-webkit-keyframes fadeIn {
+    from {
+      opacity: 0;
+      -webkit-transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      -webkit-transform: translateY(0);
+    }
+  }
+
+  @-moz-keyframes fadeIn {
+    from {
+      opacity: 0;
+      -moz-transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      -moz-transform: translateY(0);
+    }
+  }
+
+  /* ===== DELAY CLASSES ===== */
+  .delay-100 {
+    animation-delay: 0.1s;
+    -webkit-animation-delay: 0.1s;
+    -moz-animation-delay: 0.1s;
+  }
+
+  .delay-200 {
+    animation-delay: 0.2s;
+    -webkit-animation-delay: 0.2s;
+    -moz-animation-delay: 0.2s;
+  }
+
+  .delay-300 {
+    animation-delay: 0.3s;
+    -webkit-animation-delay: 0.3s;
+    -moz-animation-delay: 0.3s;
+  }
+
+  /* ===== HARDWARE ACCELERATION UTILITIES ===== */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .smooth-transition {
+    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    -webkit-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    -moz-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+    -ms-transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  }
+
+  /* ✅ NEW: Scroll optimization for mobile */
+  @media (max-width: 768px) {
+    html {
+      /* Optimize scroll on mobile devices */
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Reduce animations on mobile for better performance */
+    .animate-pulse,
+    .animate-bounce {
+      animation-duration: 3s; /* Slower on mobile */
+    }
+  }
+
+  /* ✅ NEW: Performance hint for transforms */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  .will-change-all {
+    will-change: transform, opacity;
+  }
+}
+
+/**
+ * Key Changes Summary:
+ * 
+ * 1. ✅ Added html.js-scrolling class
+ *    - Disables CSS smooth-scroll during JavaScript scrolling
+ *    - Prevents double-smoothing flicker on Windows
+ * 
+ * 2. ✅ Added -webkit-scroll-behavior
+ *    - Better Safari support
+ * 
+ * 3. ✅ Added mobile optimizations
+ *    - Touch scrolling optimization
+ *    - Slower animations on mobile
+ * 
+ * 4. ✅ Added will-change utilities
+ *    - Better performance hints for browsers
+ *    - Reusable classes for optimization
+ * 
+ * Usage Notes:
+ * - The .js-scrolling class is automatically added/removed by utils/scroll.ts
+ * - No manual class management needed in components
+ * - Works seamlessly with smoothScrollTo() utility
+ */
