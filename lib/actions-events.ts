@@ -5,9 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { uploadImage } from "./upload-image";
-import DOMPurify from "isomorphic-dompurify";
 
 function sanitizeDescription(html: string): string {
+  const DOMPurify = require("isomorphic-dompurify");
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
       "p", "br", "strong", "em", "u", "s", "h2", "h3",
